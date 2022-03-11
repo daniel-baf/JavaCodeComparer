@@ -1,0 +1,150 @@
+/***************************************/
+/********** USER CODE SECTION **********/
+/***************************************/
+
+package Parser;
+import java_cup.runtime.*;
+import Lexer.JavaCodeLexer;
+
+/* Preliminaries to set up and use the scanner.  */
+parser code {:
+
+    // constructor
+    public JavaCodeParser(JavaCodeLexer lexer) {
+        super(lexer);
+    }
+
+    /* ERRORS METHOD */
+    public void report_error(String message, Object info) {
+        System.out.println("public void report_error");
+    }
+    
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("public void report_fatal_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println("Error en simbolo: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right);
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token) {
+        System.out.println("UNrecovered syntax error");
+    }
+
+    public void printK(String message) {
+        System.out.println(message);
+    }
+:}
+
+/**************************************/
+/********** TERMINAL SECTION **********/
+/**************************************/
+// from lexer
+terminal DOT, COMMA, PLUS, MINUS, DIV, MOD, STAR, GE, GT, LE, LT, ASSIGN, EQ, NE,
+    INC, DEC, AND, OR, BRAC_OPEN, BRAC_CLOSE, PAR_OPEN, PAR_CLOSE, SQR_OPEN, SQR_CLOSE,
+    SEMICOLON, COLON, IMPORT, VISIBILITY, CLASS, VAR_TYPE, FUNC_TYPE,IF, ELSE, FOR, WHILE,
+    DO, SWITCH, STATIC, FINAL, NEW, BREAK, RETURN, VAL_COMILLAS, CHAR, NUMBER, DECIMAL, ID,
+    UNKNOWN, TRUE, FALSE;
+
+non terminal main, section, class_section, import_section, import_def, id_dots, class_content, class_content_section,
+    vars_declaration,func_declaration, assign_expr, obj_attrs, mult_attrs_call, element, func_constructor, func_other,
+    mult_param_receive;
+
+precedence left IMPORT;
+
+start with main;
+
+main::=
+       section
+     | main section
+;
+
+section::=
+      import_section        {: printK("import section"); :}
+    | class_section         {: printK("class def"); :}
+;
+
+import_section::=
+      import_def
+    | import_section import_def
+;
+
+class_section::=
+      VISIBILITY CLASS ID BRAC_OPEN class_content BRAC_CLOSE
+    | CLASS ID BRAC_OPEN class_content BRAC_CLOSE
+    | VISIBILITY CLASS ID BRAC_OPEN BRAC_CLOSE
+    | CLASS ID BRAC_OPEN BRAC_CLOSE
+    | error class_section
+;
+
+import_def::=
+    IMPORT id_dots SEMICOLON
+;
+
+id_dots::=
+      ID
+    | id_dots DOT ID
+    | id_dots DOT STAR
+    | error
+;
+
+class_content::=
+      class_content_section
+    | class_content class_content_section
+;
+
+class_content_section::=
+      vars_declaration
+    | func_declaration
+;
+
+vars_declaration::=
+      VISIBILITY VAR_TYPE ID SEMICOLON
+    | VISIBILITY ID ID SEMICOLON
+    | VISIBILITY VAR_TYPE ID ASSIGN assign_expr SEMICOLON
+    | VISIBILITY ID ID ASSIGN assign_expr SEMICOLON
+;
+
+func_declaration::=
+      func_constructor
+    | func_other
+;
+
+assign_expr::=
+      element
+    | NEW ID obj_attrs
+;
+
+obj_attrs::=
+      PAR_OPEN PAR_CLOSE
+    | PAR_OPEN mult_attrs_call PAR_CLOSE
+;
+
+mult_attrs_call::=
+      element
+    | mult_attrs_call COMMA element
+;
+
+func_constructor::=
+      VISIBILITY ID PAR_OPEN PAR_CLOSE BRAC_OPEN BRAC_CLOSE
+    | VISIBILITY ID PAR_OPEN mult_param_receive PAR_CLOSE BRAC_OPEN BRAC_CLOSE
+    | VISIBILITY FUNC_TYPE ID PAR_OPEN PAR_CLOSE BRAC_OPEN BRAC_CLOSE
+    | VISIBILITY FUNC_TYPE ID PAR_OPEN mult_param_receive PAR_CLOSE BRAC_OPEN BRAC_CLOSE
+;
+
+mult_param_receive::=
+      VAR_TYPE ID
+    | ID ID
+    | mult_param_receive COMMA VAR_TYPE ID
+    | mult_param_receive COMMA ID ID
+;
+
+element::=
+      NUMBER
+    | DECIMAL
+    | VAL_COMILLAS
+    | TRUE
+    | FALSE
+    | CHAR
+    | ID
+;
