@@ -25,6 +25,7 @@ LINE_COMM=(\/\/[^\n\r]*)
 LONG_COMM=(\/\*[\s\S]*?\*\/)
 VAL_COMILL=("\""(.)*"\"")
 SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
+ID=({LETT}({LETT}|{NUM}|"_")*)
 
 %{
 
@@ -83,8 +84,6 @@ SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
 // class
 (class)       {return new Symbol(sym.CLASS, yyline+1, yycolumn+1, yytext());}
 // functions
-{VAR_TYPE}   {return new Symbol(sym.VAR_TYPE, yyline+1, yycolumn+1, yytext());}
-{FUN_TYPE}   {return new Symbol(sym.FUNC_TYPE, yyline+1, yycolumn+1, yytext());}
 (if)         {return new Symbol(sym.IF, yyline+1, yycolumn+1, yytext());}
 (else)       {return new Symbol(sym.ELSE, yyline+1, yycolumn+1, yytext());}
 (for)        {return new Symbol(sym.FOR, yyline+1, yycolumn+1, yytext());}
@@ -109,7 +108,9 @@ SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
 // ids
 {NUM}           {return new Symbol(sym.NUMBER, yyline+1, yycolumn+1, yytext());}
 ({NUM}"."{NUM}) {return new Symbol(sym.DECIMAL, yyline+1, yycolumn+1, yytext());}
-({LETT}({LETT}|{NUM}|"_")*)       {return new Symbol(sym.ID, yyline+1,yycolumn+1,yytext());}
+{VAR_TYPE}   {return new Symbol(sym.VAR_TYPE, yyline+1, yycolumn+1, yytext());}
+{FUN_TYPE}   {return new Symbol(sym.FUNC_TYPE, yyline+1, yycolumn+1, yytext());}
+{ID}         {return new Symbol(sym.ID, yyline+1,yycolumn+1,yytext());}
 
 // UNKNOWN
 [^]         {/* unknown */ return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }
