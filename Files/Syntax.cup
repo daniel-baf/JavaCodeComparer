@@ -44,110 +44,174 @@ terminal DOT, COMMA, PLUS, MINUS, DIV, MOD, STAR, GE, GT, LE, LT, ASSIGN, EQ, NE
     INC, DEC, AND, OR, BRAC_OPEN, BRAC_CLOSE, PAR_OPEN, PAR_CLOSE, SQR_OPEN, SQR_CLOSE,
     SEMICOLON, COLON, IMPORT, VISIBILITY, CLASS, VAR_TYPE, FUNC_TYPE,IF, ELSE, FOR, WHILE,
     DO, SWITCH, STATIC, FINAL, NEW, BREAK, RETURN, VAL_COMILLAS, CHAR, NUMBER, DECIMAL, ID,
-    UNKNOWN, TRUE, FALSE;
+    UNKNOWN, TRUE, FALSE, PACKAGE;
 
-non terminal main, section, class_section, import_section, import_def, id_dots, class_content, class_content_section,
-    vars_declaration,func_declaration, assign_expr, obj_attrs, mult_attrs_call, element, func_constructor, func_other,
-    mult_param_receive;
+non terminal main, package_dec, file, file_content, import_section, classes_section;
+non terminal import_declaration, class_declaration, class_braces, class_declaration_content,
+    class_declaration_sections, class_vars_section, class_method_section, class_method_section_content,
+    class_constructor, class_method,vals_receive, function_content, function_statements;
+non terminal function_statement_dec, var_assign, output_sentence;
+non terminal ids_val, var_declaration, var_typeO, assign_expression, element, vals_send,method_call;
 
-precedence left IMPORT;
+precedence left VISIBILITY, IMPORT;
 
 start with main;
 
 main::=
-       section
-     | main section
+      file
+    | package_dec file
 ;
 
-section::=
-      import_section        {: printK("import section"); :}
-    | class_section         {: printK("class def"); :}
+package_dec::=
+    PACKAGE ids_val SEMICOLON           {:printK("package dec");:}
+;
+
+file::=
+      file_content
+    | file file_content
+;
+
+file_content::=
+      import_section                    {:printK("import sec");:}
+    | classes_section                   {:printK("class sec");:}
 ;
 
 import_section::=
-      import_def
-    | import_section import_def
+      import_declaration
+    | import_section import_declaration
 ;
 
-class_section::=
-      VISIBILITY CLASS ID BRAC_OPEN class_content BRAC_CLOSE
-    | CLASS ID BRAC_OPEN class_content BRAC_CLOSE
-    | VISIBILITY CLASS ID BRAC_OPEN BRAC_CLOSE
-    | CLASS ID BRAC_OPEN BRAC_CLOSE
-    | error class_section
+classes_section::=
+      class_declaration
+    | classes_section class_declaration
 ;
 
-import_def::=
-    IMPORT id_dots SEMICOLON
+import_declaration::=
+    IMPORT ids_val SEMICOLON
 ;
 
-id_dots::=
-      ID
-    | id_dots DOT ID
-    | id_dots DOT STAR
-    | error
+class_declaration::=
+    VISIBILITY CLASS ID class_braces
 ;
 
-class_content::=
-      class_content_section
-    | class_content class_content_section
+// classes
+class_braces::=
+      BRAC_OPEN BRAC_CLOSE
+    | BRAC_OPEN class_declaration_content BRAC_CLOSE
 ;
 
-class_content_section::=
-      vars_declaration
-    | func_declaration
+class_declaration_content::=
+      class_declaration_sections
+    | class_declaration_content class_declaration_sections
 ;
 
-vars_declaration::=
-      VISIBILITY VAR_TYPE ID SEMICOLON
-    | VISIBILITY ID ID SEMICOLON
-    | VISIBILITY VAR_TYPE ID ASSIGN assign_expr SEMICOLON
-    | VISIBILITY ID ID ASSIGN assign_expr SEMICOLON
+class_declaration_sections::=
+      class_vars_section                                {:printK("class attributes dec");:}
+    | class_method_section                              {:printK("class method dec");:}
 ;
 
-func_declaration::=
-      func_constructor
-    | func_other
+class_vars_section::=
+      VISIBILITY var_declaration
+    | VISIBILITY STATIC var_declaration
+    | VISIBILITY FINAL var_declaration
+    | VISIBILITY STATIC FINAL var_declaration
 ;
 
-assign_expr::=
+class_method_section::=
+      class_method_section_content
+    | class_method_section class_method_section_content
+;
+
+class_method_section_content::=
+      class_constructor                                 {:printK("class constructor");:}                  
+    | class_method                                      {:printK("class method");:}
+;
+
+// classes functions
+class_constructor::=
+      VISIBILITY ID PAR_OPEN PAR_CLOSE function_content
+    | VISIBILITY ID PAR_OPEN vals_receive PAR_CLOSE function_content
+;
+
+class_method::=
+      VISIBILITY var_typeO ID PAR_OPEN PAR_CLOSE function_content
+    | VISIBILITY var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
+;
+
+// functions
+function_content::=
+      BRAC_OPEN BRAC_CLOSE
+    | BRAC_OPEN function_statements BRAC_CLOSE
+;
+
+function_statements::=
+      function_statement_dec
+    | function_statements function_statement_dec
+;
+
+function_statement_dec::=
+      method_call               {: printK("method call"); :}
+    | var_declaration           {: printK("var declaration"); :}
+    | var_assign                {: printK("var action"); :}
+    | output_sentence           {: printK("output action"); :}
+;
+
+method_call::=
+      ids_val PAR_OPEN PAR_CLOSE SEMICOLON
+    | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON
+;
+
+// utilities
+var_declaration::=
+      var_typeO ID SEMICOLON
+    | var_typeO ID ASSIGN assign_expression SEMICOLON
+;
+
+var_assign::=
+      ids_val ASSIGN assign_expression SEMICOLON
+    | ids_val INC SEMICOLON
+    | ids_val DEC SEMICOLON
+;
+
+assign_expression::=
       element
-    | NEW ID obj_attrs
-;
-
-obj_attrs::=
-      PAR_OPEN PAR_CLOSE
-    | PAR_OPEN mult_attrs_call PAR_CLOSE
-;
-
-mult_attrs_call::=
-      element
-    | mult_attrs_call COMMA element
-;
-
-func_constructor::=
-      VISIBILITY ID PAR_OPEN PAR_CLOSE BRAC_OPEN BRAC_CLOSE
-    | VISIBILITY ID PAR_OPEN mult_param_receive PAR_CLOSE BRAC_OPEN BRAC_CLOSE
-;
-
-func_other::=
-      VISIBILITY FUNC_TYPE ID PAR_OPEN PAR_CLOSE BRAC_OPEN BRAC_CLOSE
-    | VISIBILITY FUNC_TYPE ID PAR_OPEN mult_param_receive PAR_CLOSE BRAC_OPEN BRAC_CLOSE
-;
-
-mult_param_receive::=
-      VAR_TYPE ID
-    | ID ID
-    | mult_param_receive COMMA VAR_TYPE ID
-    | mult_param_receive COMMA ID ID
+    | NEW ID PAR_OPEN vals_send PAR_CLOSE
 ;
 
 element::=
       NUMBER
     | DECIMAL
     | VAL_COMILLAS
+    | CHAR
     | TRUE
     | FALSE
-    | CHAR
+    | ids_val
+;
+
+output_sentence::=
+      RETURN SEMICOLON
+    | RETURN element SEMICOLON
+    | BREAK SEMICOLON
+;
+
+vals_send::=
+      element
+    | vals_send COMMA element
+;
+
+vals_receive::=
+      var_typeO ID
+    | vals_receive COMMA var_typeO ID
+;
+
+var_typeO::=
+      VAR_TYPE
     | ID
+    | FUNC_TYPE
+;
+
+ids_val::=
+      ID
+    | ids_val DOT ID
+    | ids_val DOT STAR
 ;
