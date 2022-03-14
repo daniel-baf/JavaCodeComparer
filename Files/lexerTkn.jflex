@@ -77,8 +77,6 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 ("}")                   {saveData(); return Tokens.BRAC_CLOSE;}
 ("(")                   {saveData(); return Tokens.PAR_OPEN;}
 (")")                   {saveData(); return Tokens.PAR_CLOSE;}
-("[")                   {saveData(); return Tokens.SQR_OPEN;}
-("]")                   {saveData(); return Tokens.SQR_CLOSE;}
 // end 
 (";")                   {saveData(); return Tokens.SEMICOLON;}
 (":")                   {saveData(); return Tokens.COLON;}
@@ -102,6 +100,8 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 (static)                {saveData(); return Tokens.STATIC;}
 (final)                 {saveData(); return Tokens.FINAL;}
 (new)                   {saveData(); return Tokens.NEW;}
+(case)                  {saveData(); return Tokens.CASE;}
+(default)               {saveData(); return Tokens.DEFAULT;}
 // out break points
 (break)                 {saveData(); return Tokens.BREAK;}
 (return)                {saveData(); return Tokens.RETURN;}

@@ -70,8 +70,6 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 ("}")               {return new Symbol(sym.BRAC_CLOSE, yyline+1, yycolumn+1, yytext());}
 ("(")               {return new Symbol(sym.PAR_OPEN, yyline+1, yycolumn+1, yytext());}
 (")")               {return new Symbol(sym.PAR_CLOSE, yyline+1, yycolumn+1, yytext());}
-("[")               {return new Symbol(sym.SQR_OPEN, yyline+1, yycolumn+1, yytext());}
-("]")               {return new Symbol(sym.SQR_CLOSE, yyline+1, yycolumn+1, yytext());}
 // end 
 (";")               {return new Symbol(sym.SEMICOLON, yyline+1, yycolumn+1, yytext());}
 (":")               {return new Symbol(sym.COLON, yyline+1, yycolumn+1, yytext());}
@@ -95,6 +93,8 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 (static)            {return new Symbol(sym.STATIC, yyline+1, yycolumn+1, yytext());}
 (final)             {return new Symbol(sym.FINAL, yyline+1, yycolumn+1, yytext());}
 (new)               {return new Symbol(sym.NEW, yyline+1, yycolumn+1, yytext());}
+(case)              {return new Symbol(sym.CASE, yyline+1, yycolumn+1, yytext());}
+(default)              {return new Symbol(sym.DEFAULT, yyline+1, yycolumn+1, yytext());}
 // out break points
 (break)             {return new Symbol(sym.BREAK, yyline+1, yycolumn+1, yytext());}
 (return)            {return new Symbol(sym.RETURN, yyline+1, yycolumn+1, yytext());}

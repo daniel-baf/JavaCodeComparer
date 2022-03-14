@@ -41,49 +41,54 @@ parser code {:
 /**************************************/
 // from lexer
 terminal DOT, COMMA, PLUS, MINUS, DIV, MOD, STAR, GE, GT, LE, LT, ASSIGN, EQ, NE,
-    INC, DEC, AND, OR, BRAC_OPEN, BRAC_CLOSE, PAR_OPEN, PAR_CLOSE, SQR_OPEN, SQR_CLOSE,
-    SEMICOLON, COLON, IMPORT, VISIBILITY, CLASS, VAR_TYPE, FUNC_TYPE,IF, ELSE, FOR, WHILE,
+    INC, DEC, AND, OR, BRAC_OPEN, BRAC_CLOSE, PAR_OPEN, PAR_CLOSE,SEMICOLON, COLON, 
+    IMPORT, VISIBILITY, CLASS, VAR_TYPE, FUNC_TYPE,IF, ELSE, FOR, WHILE,
     DO, SWITCH, STATIC, FINAL, NEW, BREAK, RETURN, VAL_COMILLAS, CHAR, NUMBER, DECIMAL, ID,
-    UNKNOWN, TRUE, FALSE, PACKAGE;
+    UNKNOWN, TRUE, FALSE, PACKAGE, CASE, DEFAULT;
 
 non terminal main, package_dec, file, file_content, import_section, classes_section;
 non terminal import_declaration, class_declaration, class_braces, class_declaration_content,
     class_declaration_sections, class_vars_section, class_method_section, class_method_section_content,
     class_constructor, class_method,vals_receive, function_content, function_statements;
-non terminal function_statement_dec, var_assign, output_sentence;
-non terminal ids_val, var_declaration, var_typeO, assign_expression, element, vals_send,method_call;
+non terminal function_statement_dec, var_assign, output_sentence, bool_compare, if_statement,
+    for_statement, while_statement, switch_statement, case_section, case_declaration, case_content;
+non terminal ids_val, var_declaration, var_typeO, assign_expression, element, vals_send,method_call,
+    math_expression, arithm_sym, compare_syms, inc_dec_syms, inc_dec_num_syms;
 
-precedence left VISIBILITY, IMPORT;
+precedence left PLUS, MINUS, VISIBILITY, CLASS, IMPORT;
+precedence left STAR, DIV, MOD;
+precedence left PAR_OPEN, PAR_CLOSE;
 
 start with main;
 
 main::=
-      file
-    | package_dec file
+    file
+  | package_dec file
 ;
 
 package_dec::=
     PACKAGE ids_val SEMICOLON           {:printK("package dec");:}
+  | error SEMICOLON
 ;
 
 file::=
-      file_content
-    | file file_content
+    file_content
+  | file file_content
 ;
 
 file_content::=
-      import_section                    {:printK("import sec");:}
-    | classes_section                   {:printK("class sec");:}
+    import_section                    {:printK("import sec");:}
+  | classes_section                   {:printK("class sec");:}
 ;
 
 import_section::=
-      import_declaration
-    | import_section import_declaration
+    import_declaration
+  | import_section import_declaration
 ;
 
 classes_section::=
-      class_declaration
-    | classes_section class_declaration
+    class_declaration
+  | classes_section class_declaration
 ;
 
 import_declaration::=
@@ -91,127 +96,209 @@ import_declaration::=
 ;
 
 class_declaration::=
-    VISIBILITY CLASS ID class_braces
+    CLASS ID class_braces
+  | VISIBILITY CLASS ID class_braces
 ;
 
 // classes
 class_braces::=
-      BRAC_OPEN BRAC_CLOSE
-    | BRAC_OPEN class_declaration_content BRAC_CLOSE
+    BRAC_OPEN BRAC_CLOSE
+  | BRAC_OPEN class_declaration_content BRAC_CLOSE
 ;
 
 class_declaration_content::=
-      class_declaration_sections
-    | class_declaration_content class_declaration_sections
+    class_declaration_sections
+  | class_declaration_content class_declaration_sections
 ;
 
 class_declaration_sections::=
-      class_vars_section                                {:printK("class attributes dec");:}
-    | class_method_section                              {:printK("class method dec");:}
+    class_vars_section                                {:printK("class attributes dec");:}
+  | class_method_section                              {:printK("class method dec");:}
 ;
 
 class_vars_section::=
-      VISIBILITY var_declaration
-    | VISIBILITY STATIC var_declaration
-    | VISIBILITY FINAL var_declaration
-    | VISIBILITY STATIC FINAL var_declaration
+    VISIBILITY var_declaration
+  | VISIBILITY STATIC var_declaration
+  | VISIBILITY FINAL var_declaration
+  | VISIBILITY STATIC FINAL var_declaration
 ;
 
 class_method_section::=
-      class_method_section_content
-    | class_method_section class_method_section_content
+    class_method_section_content
+  | class_method_section class_method_section_content
 ;
 
 class_method_section_content::=
-      class_constructor                                 {:printK("class constructor");:}                  
-    | class_method                                      {:printK("class method");:}
+    class_constructor                                 {:printK("class constructor");:}                  
+  | class_method                                      {:printK("class method");:}
 ;
 
 // classes functions
 class_constructor::=
-      VISIBILITY ID PAR_OPEN PAR_CLOSE function_content
-    | VISIBILITY ID PAR_OPEN vals_receive PAR_CLOSE function_content
+    VISIBILITY ID PAR_OPEN PAR_CLOSE function_content
+  | VISIBILITY ID PAR_OPEN vals_receive PAR_CLOSE function_content
 ;
 
 class_method::=
-      VISIBILITY var_typeO ID PAR_OPEN PAR_CLOSE function_content
-    | VISIBILITY var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
+    VISIBILITY var_typeO ID PAR_OPEN PAR_CLOSE function_content
+  | VISIBILITY var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
 ;
 
 // functions
 function_content::=
-      BRAC_OPEN BRAC_CLOSE
-    | BRAC_OPEN function_statements BRAC_CLOSE
+    BRAC_OPEN BRAC_CLOSE
+  | BRAC_OPEN function_statements BRAC_CLOSE
 ;
 
 function_statements::=
-      function_statement_dec
-    | function_statements function_statement_dec
+    function_statement_dec
+  | function_statements function_statement_dec
 ;
 
 function_statement_dec::=
-      method_call               {: printK("method call"); :}
-    | var_declaration           {: printK("var declaration"); :}
-    | var_assign                {: printK("var action"); :}
-    | output_sentence           {: printK("output action"); :}
+    method_call               {: printK("method call"); :}
+  | var_declaration           {: printK("var declaration"); :}
+  | var_assign                {: printK("var action"); :}
+  | output_sentence           {: printK("output action"); :}
+  | if_statement              {: printK("if statement"); :}
+  | for_statement             {: printK("for statement"); :}
+  | while_statement           {: printK("while/do while statement"); :}
+  | switch_statement          {: printK("switch statement"); :}
 ;
 
 method_call::=
-      ids_val PAR_OPEN PAR_CLOSE SEMICOLON
-    | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON
+    ids_val PAR_OPEN PAR_CLOSE SEMICOLON
+  | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON
+;
+
+// functions
+if_statement::=
+    IF PAR_OPEN bool_compare PAR_CLOSE function_content
+  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content
+;
+
+for_statement::=
+    FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON 
+      ID compare_syms NUMBER SEMICOLON ID inc_dec_syms PAR_CLOSE function_content
+  | FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON 
+      ID compare_syms NUMBER SEMICOLON ID inc_dec_num_syms NUMBER PAR_CLOSE function_content
+;
+
+while_statement::=
+    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content
+  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE
+;
+
+switch_statement::=
+  SWITCH PAR_OPEN ids_val PAR_CLOSE BRAC_OPEN case_section BRAC_CLOSE
+;
+
+case_section::=
+    case_declaration
+  | case_section case_declaration
+;
+
+case_declaration::=
+    CASE element COLON case_content
+  | DEFAULT COLON case_content
+;
+
+case_content::=
+    function_statements BREAK SEMICOLON
+  | function_statements SEMICOLON
+  | BREAK SEMICOLON
+  | SEMICOLON
 ;
 
 // utilities
 var_declaration::=
-      var_typeO ID SEMICOLON
-    | var_typeO ID ASSIGN assign_expression SEMICOLON
+    var_typeO ID SEMICOLON
+  | var_typeO ID ASSIGN assign_expression SEMICOLON
 ;
 
 var_assign::=
-      ids_val ASSIGN assign_expression SEMICOLON
-    | ids_val INC SEMICOLON
-    | ids_val DEC SEMICOLON
-;
-
-assign_expression::=
-      element
-    | NEW ID PAR_OPEN vals_send PAR_CLOSE
-;
-
-element::=
-      NUMBER
-    | DECIMAL
-    | VAL_COMILLAS
-    | CHAR
-    | TRUE
-    | FALSE
-    | ids_val
+    ids_val ASSIGN assign_expression SEMICOLON
+  | ids_val inc_dec_syms SEMICOLON
+  | ids_val inc_dec_num_syms math_expression SEMICOLON
 ;
 
 output_sentence::=
-      RETURN SEMICOLON
-    | RETURN element SEMICOLON
-    | BREAK SEMICOLON
+    RETURN SEMICOLON
+  | RETURN math_expression SEMICOLON
+  | RETURN bool_compare SEMICOLON
+  | BREAK SEMICOLON
+;
+
+bool_compare::=
+  math_expression compare_syms math_expression
+;
+
+assign_expression::=
+    math_expression
+  | NEW ID PAR_OPEN PAR_CLOSE
+  | NEW ID PAR_OPEN vals_send PAR_CLOSE
+;
+
+math_expression::=
+    element
+  | PAR_OPEN math_expression PAR_CLOSE
+  | math_expression arithm_sym math_expression
 ;
 
 vals_send::=
-      element
-    | vals_send COMMA element
+    assign_expression
+  | vals_send COMMA assign_expression
 ;
 
 vals_receive::=
-      var_typeO ID
-    | vals_receive COMMA var_typeO ID
+    var_typeO ID
+  | vals_receive COMMA var_typeO ID
+;
+
+element::=
+    NUMBER
+  | DECIMAL
+  | VAL_COMILLAS
+  | CHAR
+  | TRUE
+  | FALSE
+  | ids_val
+;
+
+arithm_sym::=
+    PLUS
+  | MINUS
+  | DIV
+  | MOD
+  | STAR
 ;
 
 var_typeO::=
-      VAR_TYPE
-    | ID
-    | FUNC_TYPE
+    VAR_TYPE
+  | ID
+  | FUNC_TYPE
 ;
 
 ids_val::=
-      ID
-    | ids_val DOT ID
-    | ids_val DOT STAR
+    ID
+  | ids_val DOT ID
+  | ids_val DOT STAR
+;
+compare_syms::=
+    GE
+  | GT
+  | LE
+  | LT
+  | EQ
+  | NE
+;
+
+inc_dec_syms::=
+    INC
+  | DEC
+;
+
+inc_dec_num_syms::=
+    PLUS ASSIGN
+  | MINUS ASSIGN
 ;
