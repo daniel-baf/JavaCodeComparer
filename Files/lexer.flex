@@ -7,11 +7,11 @@ import Parser.sym;
 %%
 %class JavaCodeLexer
 %type java_cup.runtime.Symbol
-%full
 %cup
+%column
+%full
 %unicode
 %line
-%column
 %public
 
 // define language
@@ -22,8 +22,8 @@ VISIB=(private|public|protected)
 VAR_TYPE=(int|boolean|String|char|double) // add OBject type, but this is an ID
 FUN_TYPE=(void|{VAR_TYPE})
 LINE_COMM=(\/\/[^\n\r]*)
-LONG_COMM=(\/\*[\s\S]*?\*\/)
-VAL_COMILL=("\""(.)*"\"")
+LONG_COMM=(\/\*[^*]*\*+(\?\:[^\/\*][^\*]*\*+)*\/)
+VAL_COMILL=("\""[^\"\n\r]*"\"")
 SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
 ID=({LETT}({LETT}|{NUM}|"_")*)
 

@@ -9,6 +9,8 @@ import Lexer.JavaCodeLexer;
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
 
+  int counter = 0;
+
     // constructor
     public JavaCodeParser(JavaCodeLexer lexer) {
         super(lexer);
@@ -32,7 +34,8 @@ parser code {:
     }
 
     public void printK(String message) {
-        System.out.println(message);
+        System.out.println((counter + 1) + ": " + message);
+        counter++;
     }
 :}
 
@@ -52,63 +55,64 @@ non terminal import_declaration, class_declaration, class_braces, class_declarat
     class_constructor, class_method,vals_receive, function_content, function_statements;
 non terminal function_statement_dec, var_assign, output_sentence, bool_compare, if_statement,
     for_statement, while_statement, switch_statement, case_section, case_declaration, case_content;
-non terminal ids_val, var_declaration, var_typeO, assign_expression, element, vals_send,method_call,
-    math_expression, arithm_sym, compare_syms, inc_dec_syms, inc_dec_num_syms;
+non terminal ids_val, var_declaration, class_vars_section_sub, var_typeO, assign_expression, element, vals_send,method_call,
+    math_expression, arithm_sym, compare_syms, inc_dec_syms, inc_dec_num_syms, class_constructor_cont,
+    class_method_cont, for_statement_left_part;
 
-precedence left PLUS, MINUS, VISIBILITY, CLASS, IMPORT;
+precedence left VISIBILITY, VAR_TYPE, ID, CLASS, IMPORT, FUNC_TYPE, SEMICOLON, error;
+precedence left PLUS, MINUS;
 precedence left STAR, DIV, MOD;
 precedence left PAR_OPEN, PAR_CLOSE;
 
 start with main;
 
 main::=
-    file
-  | package_dec file
+    file                                    {:printK("end file");:}
+  | package_dec file                        {:printK("multiple files");:}
 ;
 
 package_dec::=
-    PACKAGE ids_val SEMICOLON           {:printK("package dec");:}
-  | error SEMICOLON
+    PACKAGE ids_val SEMICOLON               {:printK("package dec");:}
 ;
 
 file::=
-    file_content
-  | file file_content
+    file_content                            {:printK("final file content");:}
+  | file file_content                       {:printK("multiple file content");:}
 ;
 
 file_content::=
-    import_section                    {:printK("import sec");:}
-  | classes_section                   {:printK("class sec");:}
+    import_section                          {:printK("import sec");:}
+  | classes_section                         {:printK("class sec");:}
 ;
 
 import_section::=
-    import_declaration
+    import_declaration                      {:printK("import dec");:}
   | import_section import_declaration
 ;
 
 classes_section::=
-    class_declaration
-  | classes_section class_declaration
+    class_declaration                       {:printK("final class declared");:}
+  | classes_section class_declaration       {:printK("multiple class declaration");:}
 ;
 
 import_declaration::=
-    IMPORT ids_val SEMICOLON
+    IMPORT ids_val SEMICOLON                {:printK("import dec");:}
 ;
 
 class_declaration::=
-    CLASS ID class_braces
-  | VISIBILITY CLASS ID class_braces
+    CLASS ID class_braces                   {:printK("class declaration");:}
+  | VISIBILITY CLASS ID class_braces        {:printK("class declaration");:}
 ;
 
 // classes
 class_braces::=
-    BRAC_OPEN BRAC_CLOSE
-  | BRAC_OPEN class_declaration_content BRAC_CLOSE
+    BRAC_OPEN BRAC_CLOSE                              {:printK("empty class content");:}
+  | BRAC_OPEN class_declaration_content BRAC_CLOSE    {:printK("non empty class content");:}
 ;
 
 class_declaration_content::=
-    class_declaration_sections
-  | class_declaration_content class_declaration_sections
+    class_declaration_sections                              {:printK("final class content");:}
+  | class_declaration_content class_declaration_sections    {:printK("multiple class content");:}
 ;
 
 class_declaration_sections::=
@@ -117,15 +121,20 @@ class_declaration_sections::=
 ;
 
 class_vars_section::=
-    VISIBILITY var_declaration
-  | VISIBILITY STATIC var_declaration
-  | VISIBILITY FINAL var_declaration
-  | VISIBILITY STATIC FINAL var_declaration
+    VISIBILITY class_vars_section_sub               {:printK("var declaration visibilitiy");:}
+  | class_vars_section_sub                          {:printK("static final var declaration");:}
+;
+
+class_vars_section_sub::=
+  var_declaration
+  | STATIC var_declaration
+  | FINAL var_declaration
+  | STATIC FINAL var_declaration
 ;
 
 class_method_section::=
-    class_method_section_content
-  | class_method_section class_method_section_content
+    class_method_section_content                        {:printK("final class method dec");:}
+  | class_method_section class_method_section_content   {:printK("multiple class method dec");:}
 ;
 
 class_method_section_content::=
@@ -135,24 +144,34 @@ class_method_section_content::=
 
 // classes functions
 class_constructor::=
-    VISIBILITY ID PAR_OPEN PAR_CLOSE function_content
-  | VISIBILITY ID PAR_OPEN vals_receive PAR_CLOSE function_content
+    VISIBILITY class_constructor_cont          {:printK("class constructor dec no params");:}
+  | class_constructor_cont                     {:printK("class constructor dec no params");:}
+;
+
+class_constructor_cont::=
+    ID PAR_OPEN PAR_CLOSE function_content
+  | ID PAR_OPEN vals_receive PAR_CLOSE function_content
 ;
 
 class_method::=
-    VISIBILITY var_typeO ID PAR_OPEN PAR_CLOSE function_content
-  | VISIBILITY var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
+    VISIBILITY class_method_cont                 {:printK("class method dec params");:}
+  | class_method_cont                 {:printK("class method dec params");:}
+;
+
+class_method_cont::=
+    var_typeO ID PAR_OPEN PAR_CLOSE function_content
+  | var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
 ;
 
 // functions
 function_content::=
-    BRAC_OPEN BRAC_CLOSE
-  | BRAC_OPEN function_statements BRAC_CLOSE
+    BRAC_OPEN BRAC_CLOSE                                        {:printK("method content empty");:}
+  | BRAC_OPEN function_statements BRAC_CLOSE                    {:printK("method content no empty");:}
 ;
 
 function_statements::=
-    function_statement_dec
-  | function_statements function_statement_dec
+    function_statement_dec                                     {:printK("final function statment");:} 
+  | function_statements function_statement_dec                 {:printK("multiple function statement");:}
 ;
 
 function_statement_dec::=
@@ -167,138 +186,148 @@ function_statement_dec::=
 ;
 
 method_call::=
-    ids_val PAR_OPEN PAR_CLOSE SEMICOLON
-  | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON
+    ids_val PAR_OPEN PAR_CLOSE SEMICOLON                {:printK("method call empty");:}
+  | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON      {:printK("method call with params");:}
 ;
 
 // functions
+
 if_statement::=
-    IF PAR_OPEN bool_compare PAR_CLOSE function_content
-  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content
+    IF PAR_OPEN bool_compare PAR_CLOSE function_content                             {:printK("if content no else");:}
+  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content       {:printK("if content with else");:}
 ;
 
 for_statement::=
-    FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON 
-      ID compare_syms NUMBER SEMICOLON ID inc_dec_syms PAR_CLOSE function_content
-  | FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON 
-      ID compare_syms NUMBER SEMICOLON ID inc_dec_num_syms NUMBER PAR_CLOSE function_content
+     FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON
+      ID compare_syms NUMBER SEMICOLON ID for_statement_left_part                 {:printK("for content n steps");:}
+;
+
+for_statement_left_part::=
+    inc_dec_syms PAR_CLOSE function_content 
+  | inc_dec_num_syms NUMBER PAR_CLOSE function_content
 ;
 
 while_statement::=
-    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content
-  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE
+    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content          {:printK("while content normal");:}
+  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE       {:printK("do while content");:}
 ;
 
 switch_statement::=
-  SWITCH PAR_OPEN ids_val PAR_CLOSE BRAC_OPEN case_section BRAC_CLOSE
+  SWITCH PAR_OPEN ids_val PAR_CLOSE BRAC_OPEN case_section BRAC_CLOSE     {:printK("switch content main");:}
 ;
 
 case_section::=
-    case_declaration
-  | case_section case_declaration
+    case_declaration                        {:printK("switch content case");:}
+  | case_section case_declaration           {:printK("switch content multiple case");:}
 ;
 
 case_declaration::=
-    CASE element COLON case_content
-  | DEFAULT COLON case_content
+    CASE element COLON case_content         {:printK("case 'n' dec");:}
+  | DEFAULT COLON case_content              {:printK("Default case");:}
 ;
 
 case_content::=
-    function_statements BREAK SEMICOLON
-  | function_statements SEMICOLON
-  | BREAK SEMICOLON
-  | SEMICOLON
+    function_statements BREAK SEMICOLON     {:printK("case values with statements and break");:}
+  | function_statements SEMICOLON           {:printK("case values with statements no break");:}
+  | BREAK SEMICOLON                         {:printK("case values no statements but break");:}
+  | SEMICOLON                               {:printK("case values no statement no break");:}
 ;
 
 // utilities
 var_declaration::=
-    var_typeO ID SEMICOLON
-  | var_typeO ID ASSIGN assign_expression SEMICOLON
+    var_typeO ID SEMICOLON                            {:printK("var declaration no assign");:}
+  | var_typeO ID ASSIGN assign_expression SEMICOLON   {:printK("var declaration with assign");:}
 ;
 
 var_assign::=
-    ids_val ASSIGN assign_expression SEMICOLON
-  | ids_val inc_dec_syms SEMICOLON
-  | ids_val inc_dec_num_syms math_expression SEMICOLON
+    ids_val ASSIGN assign_expression SEMICOLON            {:printK("var assign with expression");:}
+  | ids_val inc_dec_syms SEMICOLON                        {:printK("var assign increase/decresse");:}
+  | ids_val inc_dec_num_syms math_expression SEMICOLON    {:printK("var assign increase/decrease with expression");:}
+  | error SEMICOLON
 ;
 
+
 output_sentence::=
-    RETURN SEMICOLON
-  | RETURN math_expression SEMICOLON
-  | RETURN bool_compare SEMICOLON
-  | BREAK SEMICOLON
+    RETURN SEMICOLON                      {:printK("return alone");:}  
+  | RETURN math_expression SEMICOLON      {:printK("return with expression");:}  
+  | RETURN bool_compare SEMICOLON         {:printK("return bool expression");:}  
+  | BREAK SEMICOLON                       {:printK("break output");:}
 ;
 
 bool_compare::=
-  math_expression compare_syms math_expression
+    math_expression compare_syms math_expression    {:printK("boolean compare");:}
+  | math_expression                                 {:printK("boolean compare");:}
 ;
 
 assign_expression::=
-    math_expression
-  | NEW ID PAR_OPEN PAR_CLOSE
-  | NEW ID PAR_OPEN vals_send PAR_CLOSE
+    math_expression                            {:printK("assign expr: math");:} 
+  | NEW ID PAR_OPEN PAR_CLOSE                  {:printK("assign expr: new objt no params");:} 
+  | NEW ID PAR_OPEN vals_send PAR_CLOSE        {:printK("assign expr: new objt with params");:}
 ;
 
 math_expression::=
-    element
-  | PAR_OPEN math_expression PAR_CLOSE
-  | math_expression arithm_sym math_expression
+    element                                       {:printK("math expr: element");:}  
+  | PAR_OPEN math_expression PAR_CLOSE            {:printK("math expr: parenthesis");:}
+  | math_expression arithm_sym math_expression    {:printK("math expr: multiple math expr with arithm sym");:}
 ;
 
 vals_send::=
-    assign_expression
-  | vals_send COMMA assign_expression
+    assign_expression                             {:printK("final vals send");:}
+  | vals_send COMMA assign_expression             {:printK("multiple vals send");:}
 ;
 
 vals_receive::=
-    var_typeO ID
-  | vals_receive COMMA var_typeO ID
+    var_typeO ID                                  {:printK("final val receive");:}
+  | vals_receive COMMA var_typeO ID               {:printK("multiple val receive");:}
+  | error
 ;
 
 element::=
-    NUMBER
-  | DECIMAL
-  | VAL_COMILLAS
-  | CHAR
-  | TRUE
-  | FALSE
-  | ids_val
+    NUMBER              {:printK("number");:}    
+  | DECIMAL             {:printK("decimal");:}
+  | VAL_COMILLAS        {:printK("val comillas");:}
+  | CHAR                {:printK("char");:}
+  | TRUE                {:printK("true");:}
+  | FALSE               {:printK("false");:}
+  | ids_val             {:printK("ids_val call");:}
 ;
 
 arithm_sym::=
-    PLUS
-  | MINUS
-  | DIV
-  | MOD
-  | STAR
+    PLUS      {:printK("plus");:}
+  | MINUS     {:printK("minus");:}
+  | DIV       {:printK("div");:}
+  | MOD       {:printK("mod");:}
+  | STAR      {:printK("times");:}
 ;
 
 var_typeO::=
-    VAR_TYPE
-  | ID
-  | FUNC_TYPE
+    VAR_TYPE    {:printK("var type");:}
+  | ID          {:printK("id");:}
+  | FUNC_TYPE   {:printK("func type");:}
+  | error       {:printK("error var type");:}
 ;
 
 ids_val::=
-    ID
-  | ids_val DOT ID
-  | ids_val DOT STAR
+    ID                  {:printK("id");:}
+  | ids_val DOT ID      {:printK("di and dot");:}
+  | ids_val DOT STAR    {:printK("id and star");:}
+  | error
 ;
 compare_syms::=
-    GE
-  | GT
-  | LE
-  | LT
-  | EQ
-  | NE
+    GE            {:printK("GE");:}
+  | GT            {:printK("GT");:}
+  | LE            {:printK("LE");:}
+  | LT            {:printK("LT");:}
+  | EQ            {:printK("EQ");:}
+  | NE            {:printK("NE");:}
 ;
 
 inc_dec_syms::=
-    INC
-  | DEC
+    INC           {:printK("inc");:}
+  | DEC           {:printK("dec");:}
 ;
 
 inc_dec_num_syms::=
-    PLUS ASSIGN
-  | MINUS ASSIGN
+    PLUS ASSIGN       {:printK("plus equals");:}
+  | MINUS ASSIGN      {:printK("less equals");:}
 ;
