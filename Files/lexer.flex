@@ -22,7 +22,8 @@ VISIB=(private|public|protected)
 VAR_TYPE=(int|boolean|String|char|double) // add OBject type, but this is an ID
 FUN_TYPE=(void|{VAR_TYPE})
 LINE_COMM=(\/\/[^\n\r]*)
-LONG_COMM=(\/\*[^*]*\*+(\?\:[^\/\*][^\*]*\*+)*\/)
+//LONG_COMM=(\/\*[^*]*\*+(\?\:[^\/\*][^\*]*\*+)*\/)
+LONG_COMM=(\/\*([^\*]|[\r\n]|(\*+([^\*\/]|[\r\n])))*\*+\/)
 VAL_COMILL=("\""[^\"\n\r]*"\"")
 SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
 ID=({LETT}({LETT}|{NUM}|"_")*)
@@ -62,6 +63,11 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 // increase and decrease
 ("++")              {return new Symbol(sym.INC, yyline+1, yycolumn+1, yytext());}
 ("--")              {return new Symbol(sym.DEC, yyline+1, yycolumn+1, yytext());}
+("*=")              {return new Symbol(sym.MULT_T, yyline+1, yycolumn+1, yytext());}
+("/=")              {return new Symbol(sym.DIV_T, yyline+1, yycolumn+1, yytext());}
+("+=")              {return new Symbol(sym.PLUS_T, yyline+1, yycolumn+1, yytext());}
+("-=")              {return new Symbol(sym.LESS_T, yyline+1, yycolumn+1, yytext());}
+("!")               {return new Symbol(sym.NOT, yyline+1, yycolumn+1, yytext());}
 //  logical
 ("&&")              {return new Symbol(sym.AND, yyline+1, yycolumn+1, yytext());}
 ("||")              {return new Symbol(sym.OR, yyline+1, yycolumn+1, yytext());}

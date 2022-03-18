@@ -20,7 +20,8 @@ VISIB=(private|public|protected)
 VAR_TYPE=(int|boolean|String|char|double) // add OBject type, but this is an ID
 FUN_TYPE=(void|{VAR_TYPE})
 LINE_COMM=(\/\/[^\n\r]*)
-LONG_COMM=(\/\*[^*]*\*+(\?\:[^\/\*][^\*]*\*+)*\/)
+//LONG_COMM=(\/\*[^*]*\*+(\?\:[^\/\*][^\*]*\*+)*\/)
+LONG_COMM=(\/\*([^\*]|[\r\n]|(\*+([^\*\/]|[\r\n])))*\*+\/)
 VAL_COMILL=("\""[^\"\n\r]*"\"")
 SING_LETT=('[a-zA-ZáéíóúÁÉÍÓÚñÑ]')
 ID=({LETT}({LETT}|{NUM}|"_")*)
@@ -69,6 +70,11 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 // increase and decrease
 ("++")                  {saveData(); return Tokens.INC;}
 ("--")                  {saveData(); return Tokens.DEC;}
+("*=")                  {saveData(); return Tokens.MULT_T;}
+("/=")                  {saveData(); return Tokens.DIV_T;}
+("+=")                  {saveData(); return Tokens.PLUS_T;}
+("-=")                  {saveData(); return Tokens.LESS_T;}
+("!")                   {saveData(); return Tokens.NOT;}   
 //  logical
 ("&&")                  {saveData(); return Tokens.AND;}
 ("||")                  {saveData(); return Tokens.OR;}

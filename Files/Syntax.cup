@@ -34,7 +34,7 @@ parser code {:
     }
 
     public void printK(String message) {
-        System.out.println((counter + 1) + ": " + message);
+        System.out.println((counter + 1) + ":" + "::" + cur_token.left + "(" + cur_token.right + ") ->" + message);
         counter++;
     }
 :}
@@ -43,291 +43,323 @@ parser code {:
 /********** TERMINAL SECTION **********/
 /**************************************/
 // from lexer
-terminal DOT, COMMA, PLUS, MINUS, DIV, MOD, STAR, GE, GT, LE, LT, ASSIGN, EQ, NE,
-    INC, DEC, AND, OR, BRAC_OPEN, BRAC_CLOSE, PAR_OPEN, PAR_CLOSE,SEMICOLON, COLON, 
-    IMPORT, VISIBILITY, CLASS, VAR_TYPE, FUNC_TYPE,IF, ELSE, FOR, WHILE,
-    DO, SWITCH, STATIC, FINAL, NEW, BREAK, RETURN, VAL_COMILLAS, CHAR, NUMBER, DECIMAL, ID,
-    UNKNOWN, TRUE, FALSE, PACKAGE, CASE, DEFAULT;
+// symbols
+terminal INC, DEC, PLUS_T, LESS_T, MULT_T, DIV_T, AND, OR, GE, GT, LE, LT, EQ, NE, DOT, STAR, PLUS, MINUS,
+    DIV, MOD, COMMA, PAR_OPEN, PAR_CLOSE, NOT, SEMICOLON, ASSIGN, BRAC_OPEN, BRAC_CLOSE, COLON, UNKNOWN;
+// elements
+terminal ID, VAR_TYPE, NUMBER, DECIMAL,VAL_COMILLAS,CHAR,TRUE,FALSE, NEW, RETURN, BREAK, VISIBILITY, FINAL, STATIC;
+// methods
+terminal IF, ELSE, FOR, WHILE, DO, SWITCH, CASE, DEFAULT, FUNC_TYPE, CLASS, PACKAGE, IMPORT;
 
-non terminal main, package_dec, file, file_content, import_section, classes_section;
-non terminal import_declaration, class_declaration, class_braces, class_declaration_content,
-    class_declaration_sections, class_vars_section, class_method_section, class_method_section_content,
-    class_constructor, class_method,vals_receive, function_content, function_statements;
-non terminal function_statement_dec, var_assign, output_sentence, bool_compare, if_statement,
-    for_statement, while_statement, switch_statement, case_section, case_declaration, case_content;
-non terminal ids_val, var_declaration, class_vars_section_sub, var_typeO, assign_expression, element, vals_send,method_call,
-    math_expression, arithm_sym, compare_syms, inc_dec_syms, inc_dec_num_syms, class_constructor_cont,
-    class_method_cont, for_statement_left_part;
+// symbols
+non terminal sym_conc_bool, sym_inc_asgn, sym_inc_step, sym_compare, sym_arithm, var_type0;
+// items
+non terminal id_item, element;
+// methods
+non terminal vals_receive, var_with_type, val_declaration_asgn, new_object_asgn, vals_send, bool_compare, bool_compare_sub, 
+    output_sentence, output_actions, var_assign, var_assign_act, var_declaration, var_declaration_sub, var_declaration_sub_extra,
+    function_content, if_structure, function_part, function_parts, for_structure, for_par_content, while_structure, switch_structure,
+    switch_content, case_section, case_content, constructor_structure, par_receive_vals, method_structure, non_constructor_structure,
+    method_structure_sub, method_call_structure, for_validation, functions_methods;
+// class
+non terminal class_content, class_content_sub, class_structure, class_structure_sub, file,  package_structure, class_data, class_data_sub,
+    import_structure;
 
-precedence left VISIBILITY, VAR_TYPE, ID, CLASS, IMPORT, FUNC_TYPE, SEMICOLON, error;
+// math
+non terminal arithm_expr;
+
+
 precedence left PLUS, MINUS;
-precedence left STAR, DIV, MOD;
+precedence left DIV, MOD, STAR;
 precedence left PAR_OPEN, PAR_CLOSE;
 
-start with main;
-
-main::=
-    file                                    {:printK("end file");:}
-  | package_dec file                        {:printK("multiple files");:}
-;
-
-package_dec::=
-    PACKAGE ids_val SEMICOLON               {:printK("package dec");:}
-;
+start with file;
 
 file::=
-    file_content                            {:printK("final file content");:}
-  | file file_content                       {:printK("multiple file content");:}
+    package_structure class_data
+  | class_data
 ;
 
-file_content::=
-    import_section                          {:printK("import sec");:}
-  | classes_section                         {:printK("class sec");:}
+class_data::=
+    class_data_sub
+  | class_data class_data_sub
 ;
 
-import_section::=
-    import_declaration                      {:printK("import dec");:}
-  | import_section import_declaration
+class_data_sub::=
+    import_structure
+  | class_structure
+  | error class_data_sub
 ;
 
-classes_section::=
-    class_declaration                       {:printK("final class declared");:}
-  | classes_section class_declaration       {:printK("multiple class declaration");:}
+// package
+package_structure::=
+  PACKAGE id_item SEMICOLON                 {: printK("package delcared"); :}
 ;
 
-import_declaration::=
-    IMPORT ids_val SEMICOLON                {:printK("import dec");:}
+// import
+import_structure::=
+    IMPORT id_item SEMICOLON                {: printK("import delcared"); :}
+  | IMPORT id_item DOT STAR SEMICOLON       {: printK("import delcared, star"); :}
 ;
 
-class_declaration::=
-    CLASS ID class_braces                   {:printK("class declaration");:}
-  | VISIBILITY CLASS ID class_braces        {:printK("class declaration");:}
+// class
+class_structure::=
+    class_structure_sub                 {: printK("class delcared"); :}
+  | VISIBILITY class_structure_sub      {: printK("class delcared"); :}
 ;
 
-// classes
-class_braces::=
-    BRAC_OPEN BRAC_CLOSE                              {:printK("empty class content");:}
-  | BRAC_OPEN class_declaration_content BRAC_CLOSE    {:printK("non empty class content");:}
+class_structure_sub::=
+    CLASS ID BRAC_OPEN BRAC_CLOSE
+  | CLASS ID BRAC_OPEN class_content BRAC_CLOSE
 ;
 
-class_declaration_content::=
-    class_declaration_sections                              {:printK("final class content");:}
-  | class_declaration_content class_declaration_sections    {:printK("multiple class content");:}
+class_content::=
+    class_content_sub
+  | class_content class_content_sub
 ;
 
-class_declaration_sections::=
-    class_vars_section                                {:printK("class attributes dec");:}
-  | class_method_section                              {:printK("class method dec");:}
+class_content_sub::=
+    method_structure
+  | var_declaration             {: printK("class declared: variable"); :}
 ;
 
-class_vars_section::=
-    VISIBILITY class_vars_section_sub               {:printK("var declaration visibilitiy");:}
-  | class_vars_section_sub                          {:printK("static final var declaration");:}
+// method declaration
+method_structure::=
+    method_structure_sub
+  | VISIBILITY method_structure_sub
 ;
 
-class_vars_section_sub::=
-  var_declaration
-  | STATIC var_declaration
-  | FINAL var_declaration
-  | STATIC FINAL var_declaration
+method_structure_sub::=
+    constructor_structure           {: printK("method delcared, constructor"); :}
+  | non_constructor_structure       {: printK("method delcared, method"); :}
 ;
 
-class_method_section::=
-    class_method_section_content                        {:printK("final class method dec");:}
-  | class_method_section class_method_section_content   {:printK("multiple class method dec");:}
+non_constructor_structure::=
+    FUNC_TYPE constructor_structure
+  | var_type0 constructor_structure
 ;
 
-class_method_section_content::=
-    class_constructor                                 {:printK("class constructor");:}                  
-  | class_method                                      {:printK("class method");:}
+constructor_structure::=
+    ID par_receive_vals function_content
+  | error function_content
 ;
 
-// classes functions
-class_constructor::=
-    VISIBILITY class_constructor_cont          {:printK("class constructor dec no params");:}
-  | class_constructor_cont                     {:printK("class constructor dec no params");:}
-;
-
-class_constructor_cont::=
-    ID PAR_OPEN PAR_CLOSE function_content
-  | ID PAR_OPEN vals_receive PAR_CLOSE function_content
-;
-
-class_method::=
-    VISIBILITY class_method_cont                 {:printK("class method dec params");:}
-  | class_method_cont                 {:printK("class method dec params");:}
-;
-
-class_method_cont::=
-    var_typeO ID PAR_OPEN PAR_CLOSE function_content
-  | var_typeO ID PAR_OPEN vals_receive PAR_CLOSE function_content
-;
-
-// functions
+// method common
 function_content::=
-    BRAC_OPEN BRAC_CLOSE                                        {:printK("method content empty");:}
-  | BRAC_OPEN function_statements BRAC_CLOSE                    {:printK("method content no empty");:}
+    BRAC_OPEN BRAC_CLOSE
+  | BRAC_OPEN function_parts BRAC_CLOSE
 ;
 
-function_statements::=
-    function_statement_dec                                     {:printK("final function statment");:} 
-  | function_statements function_statement_dec                 {:printK("multiple function statement");:}
+function_parts::=
+    function_part
+  | function_parts function_part
 ;
 
-function_statement_dec::=
-    method_call               {: printK("method call"); :}
-  | var_declaration           {: printK("var declaration"); :}
-  | var_assign                {: printK("var action"); :}
-  | output_sentence           {: printK("output action"); :}
-  | if_statement              {: printK("if statement"); :}
-  | for_statement             {: printK("for statement"); :}
-  | while_statement           {: printK("while/do while statement"); :}
-  | switch_statement          {: printK("switch statement"); :}
+function_part::=
+    var_declaration_sub       {: printK("variable declaration"); :}
+  | var_assign                {: printK("variable assgination"); :}
+  | output_sentence           {: printK("output sentence"); :}
+  | method_call_structure     {: printK("method call"); :}
+  | functions_methods
 ;
 
-method_call::=
-    ids_val PAR_OPEN PAR_CLOSE SEMICOLON                {:printK("method call empty");:}
-  | ids_val PAR_OPEN vals_send PAR_CLOSE SEMICOLON      {:printK("method call with params");:}
+functions_methods::=
+    if_structure              {: printK("if declaration"); :}
+  | for_structure             {: printK("for declaration"); :}
+  | while_structure           {: printK("while/do while declaration"); :}
+  | switch_structure          {: printK("switch declaration"); :}
+  | error function_content
 ;
 
-// functions
-
-if_statement::=
-    IF PAR_OPEN bool_compare PAR_CLOSE function_content                             {:printK("if content no else");:}
-  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content       {:printK("if content with else");:}
+method_call_structure::=
+    id_item PAR_OPEN PAR_CLOSE SEMICOLON
+  | id_item PAR_OPEN vals_send PAR_CLOSE SEMICOLON
 ;
 
-for_statement::=
-     FOR PAR_OPEN VAR_TYPE ID ASSIGN NUMBER SEMICOLON
-      ID compare_syms NUMBER SEMICOLON ID for_statement_left_part                 {:printK("for content n steps");:}
+// methods structures
+switch_structure::=
+  SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content BRAC_CLOSE
 ;
 
-for_statement_left_part::=
-    inc_dec_syms PAR_CLOSE function_content 
-  | inc_dec_num_syms NUMBER PAR_CLOSE function_content
-;
-
-while_statement::=
-    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content          {:printK("while content normal");:}
-  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE       {:printK("do while content");:}
-;
-
-switch_statement::=
-  SWITCH PAR_OPEN ids_val PAR_CLOSE BRAC_OPEN case_section BRAC_CLOSE     {:printK("switch content main");:}
+switch_content::=
+    case_section
+  | switch_content case_section
 ;
 
 case_section::=
-    case_declaration                        {:printK("switch content case");:}
-  | case_section case_declaration           {:printK("switch content multiple case");:}
-;
-
-case_declaration::=
-    CASE element COLON case_content         {:printK("case 'n' dec");:}
-  | DEFAULT COLON case_content              {:printK("Default case");:}
+    CASE element case_content
+  | DEFAULT case_content
 ;
 
 case_content::=
-    function_statements BREAK SEMICOLON     {:printK("case values with statements and break");:}
-  | function_statements SEMICOLON           {:printK("case values with statements no break");:}
-  | BREAK SEMICOLON                         {:printK("case values no statements but break");:}
-  | SEMICOLON                               {:printK("case values no statement no break");:}
+    COLON
+  | COLON function_parts
 ;
 
-// utilities
+while_structure::=
+    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content
+  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON
+;
+
+
+for_structure::=
+  FOR PAR_OPEN for_par_content PAR_CLOSE function_content
+;
+
+for_par_content::=
+    VAR_TYPE for_validation SEMICOLON for_validation SEMICOLON ID sym_inc_step
+  | VAR_TYPE for_validation SEMICOLON for_validation SEMICOLON ID sym_inc_asgn arithm_expr
+;
+
+for_validation::=
+    ID ASSIGN arithm_expr
+  | ID sym_compare arithm_expr
+;
+
+
+
+if_structure::=
+    IF PAR_OPEN bool_compare PAR_CLOSE function_content
+  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content
+;
+
+
+// into methods
+par_receive_vals::=
+    PAR_OPEN vals_receive PAR_CLOSE
+  | PAR_OPEN PAR_CLOSE
+;
+
+
 var_declaration::=
-    var_typeO ID SEMICOLON                            {:printK("var declaration no assign");:}
-  | var_typeO ID ASSIGN assign_expression SEMICOLON   {:printK("var declaration with assign");:}
+    var_declaration_sub
+  | VISIBILITY var_declaration_sub
 ;
 
-var_assign::=
-    ids_val ASSIGN assign_expression SEMICOLON            {:printK("var assign with expression");:}
-  | ids_val inc_dec_syms SEMICOLON                        {:printK("var assign increase/decresse");:}
-  | ids_val inc_dec_num_syms math_expression SEMICOLON    {:printK("var assign increase/decrease with expression");:}
+var_declaration_sub::=
+    var_declaration_sub_extra             
+  | FINAL var_declaration_sub_extra       
+  | STATIC var_declaration_sub_extra      
+  | STATIC FINAL var_declaration_sub_extra
+;
+
+var_declaration_sub_extra::=
+    var_type0 var_assign
+  | var_type0 id_item SEMICOLON
   | error SEMICOLON
 ;
 
+var_assign::=
+  id_item var_assign_act SEMICOLON
+;
+
+var_assign_act::=
+    ASSIGN val_declaration_asgn               
+  | sym_inc_asgn arithm_expr                  
+  | sym_inc_step                              
+;
 
 output_sentence::=
-    RETURN SEMICOLON                      {:printK("return alone");:}  
-  | RETURN math_expression SEMICOLON      {:printK("return with expression");:}  
-  | RETURN bool_compare SEMICOLON         {:printK("return bool expression");:}  
-  | BREAK SEMICOLON                       {:printK("break output");:}
+    BREAK SEMICOLON                
+  | RETURN SEMICOLON               
+  | RETURN output_actions SEMICOLON
+;
+
+output_actions::=
+  bool_compare
 ;
 
 bool_compare::=
-    math_expression compare_syms math_expression    {:printK("boolean compare");:}
-  | math_expression                                 {:printK("boolean compare");:}
+    bool_compare_sub                              {: printK("bool compare"); :}
+  | bool_compare sym_conc_bool bool_compare_sub
 ;
 
-assign_expression::=
-    math_expression                            {:printK("assign expr: math");:} 
-  | NEW ID PAR_OPEN PAR_CLOSE                  {:printK("assign expr: new objt no params");:} 
-  | NEW ID PAR_OPEN vals_send PAR_CLOSE        {:printK("assign expr: new objt with params");:}
-;
-
-math_expression::=
-    element                                       {:printK("math expr: element");:}  
-  | PAR_OPEN math_expression PAR_CLOSE            {:printK("math expr: parenthesis");:}
-  | math_expression arithm_sym math_expression    {:printK("math expr: multiple math expr with arithm sym");:}
+bool_compare_sub::=
+    arithm_expr
+  | arithm_expr sym_compare arithm_expr
+  | NOT PAR_OPEN bool_compare_sub PAR_CLOSE
 ;
 
 vals_send::=
-    assign_expression                             {:printK("final vals send");:}
-  | vals_send COMMA assign_expression             {:printK("multiple vals send");:}
+    val_declaration_asgn                    {: printK("params send"); :}
+  | vals_send COMMA val_declaration_asgn
 ;
 
 vals_receive::=
-    var_typeO ID                                  {:printK("final val receive");:}
-  | vals_receive COMMA var_typeO ID               {:printK("multiple val receive");:}
-  | error
+    var_with_type                         {: printK("params receive"); :}
+  | vals_receive COMMA var_with_type
+;
+
+val_declaration_asgn::=
+    arithm_expr
+  | new_object_asgn
+;
+
+new_object_asgn::=
+    NEW ID PAR_OPEN PAR_CLOSE
+  | NEW ID PAR_OPEN vals_send PAR_CLOSE
+;
+
+var_with_type::= 
+  var_type0 ID
+;
+
+arithm_expr::=
+    element
+  | arithm_expr sym_arithm arithm_expr
+  | PAR_OPEN arithm_expr PAR_CLOSE
 ;
 
 element::=
-    NUMBER              {:printK("number");:}    
-  | DECIMAL             {:printK("decimal");:}
-  | VAL_COMILLAS        {:printK("val comillas");:}
-  | CHAR                {:printK("char");:}
-  | TRUE                {:printK("true");:}
-  | FALSE               {:printK("false");:}
-  | ids_val             {:printK("ids_val call");:}
+    NUMBER      
+  | DECIMAL     
+  | VAL_COMILLAS
+  | CHAR        
+  | TRUE        
+  | FALSE       
+  | id_item     
 ;
 
-arithm_sym::=
-    PLUS      {:printK("plus");:}
-  | MINUS     {:printK("minus");:}
-  | DIV       {:printK("div");:}
-  | MOD       {:printK("mod");:}
-  | STAR      {:printK("times");:}
+id_item::= // catch multiple ids as k or k.a or k.b.c...
+    ID
+  | id_item DOT ID
 ;
 
-var_typeO::=
-    VAR_TYPE    {:printK("var type");:}
-  | ID          {:printK("id");:}
-  | FUNC_TYPE   {:printK("func type");:}
-  | error       {:printK("error var type");:}
+var_type0::= // the type of the variables
+    VAR_TYPE
+  | ID      
 ;
 
-ids_val::=
-    ID                  {:printK("id");:}
-  | ids_val DOT ID      {:printK("di and dot");:}
-  | ids_val DOT STAR    {:printK("id and star");:}
-  | error
-;
-compare_syms::=
-    GE            {:printK("GE");:}
-  | GT            {:printK("GT");:}
-  | LE            {:printK("LE");:}
-  | LT            {:printK("LT");:}
-  | EQ            {:printK("EQ");:}
-  | NE            {:printK("NE");:}
+sym_arithm::=
+    PLUS 
+  | MINUS
+  | DIV  
+  | MOD  
+  | STAR 
 ;
 
-inc_dec_syms::=
-    INC           {:printK("inc");:}
-  | DEC           {:printK("dec");:}
+sym_compare::=
+    GE
+  | GT
+  | LE
+  | LT
+  | EQ
+  | NE
 ;
 
-inc_dec_num_syms::=
-    PLUS ASSIGN       {:printK("plus equals");:}
-  | MINUS ASSIGN      {:printK("less equals");:}
+sym_inc_step::=
+    INC
+  | DEC
+;
+
+sym_inc_asgn::=
+    PLUS_T
+  | LESS_T
+  | MULT_T 
+  | DIV_T 
+;
+
+sym_conc_bool::=
+    AND
+  | OR 
 ;
