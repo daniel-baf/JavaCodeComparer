@@ -1,10 +1,11 @@
+
 /***************************************/
 /********** USER CODE SECTION **********/
 /***************************************/
 
-package Parser;
+package Backend.Objects.Parsers;
 import java_cup.runtime.*;
-import Lexer.JavaCodeLexer;
+import Backend.Objects.Lexers.JavaCodeLexer;
 
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
@@ -130,7 +131,11 @@ method_structure::=
 ;
 
 method_structure_sub::=
-    constructor_structure           {: printK("method delcared, constructor"); :}
+    constructor_structure:DATA
+      {:
+        RESULT = DATA;
+        printK("method delcared, constructor"); 
+      :}
   | non_constructor_structure       {: printK("method delcared, method"); :}
 ;
 
@@ -178,7 +183,8 @@ method_call_structure::=
 
 // methods structures
 switch_structure::=
-  SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content BRAC_CLOSE
+    SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content BRAC_CLOSE
+  | error BRAC_CLOSE
 ;
 
 switch_content::=
