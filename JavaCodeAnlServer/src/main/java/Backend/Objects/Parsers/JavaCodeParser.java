@@ -7,6 +7,8 @@ package Backend.Objects.Parsers;
 
 import java_cup.runtime.*;
 import Backend.Objects.Lexers.JavaCodeLexer;
+import Backend.Objects.NodeTree.Node;
+import java.util.ArrayList;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 generated parser.
@@ -773,6 +775,9 @@ class CUP$JavaCodeParser$actions {
           case 18: // class_content_sub ::= var_declaration 
             {
               Object RESULT =null;
+		int nodeDeclleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int nodeDeclright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object nodeDecl = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
 		 printK("class declared: variable"); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("class_content_sub",42, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -800,13 +805,7 @@ class CUP$JavaCodeParser$actions {
           case 21: // method_structure_sub ::= constructor_structure 
             {
               Object RESULT =null;
-		int DATAleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
-		int DATAright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
-		Object DATA = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
-		
-        RESULT = DATA;
-        printK("method delcared, constructor"); 
-      
+		 printK("method delcared, constructor"); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("method_structure_sub",37, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -824,6 +823,9 @@ class CUP$JavaCodeParser$actions {
           case 23: // non_constructor_structure ::= FUNC_TYPE constructor_structure 
             {
               Object RESULT =null;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("non_constructor_structure",36, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -833,6 +835,9 @@ class CUP$JavaCodeParser$actions {
           case 24: // non_constructor_structure ::= var_type0 constructor_structure 
             {
               Object RESULT =null;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("non_constructor_structure",36, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -842,7 +847,18 @@ class CUP$JavaCodeParser$actions {
           case 25: // constructor_structure ::= ID par_receive_vals function_content 
             {
               Object RESULT =null;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 
+        ArrayList<Node> nodes = (ArrayList<Node>) childNodes;
+        try{
+          System.out.println("Add nodes to parent: " + nodes.size());
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
 
+      
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("constructor_structure",33, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -851,7 +867,10 @@ class CUP$JavaCodeParser$actions {
           case 26: // constructor_structure ::= error function_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("constructor_structure",33, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -860,7 +879,7 @@ class CUP$JavaCodeParser$actions {
           case 27: // function_content ::= BRAC_OPEN BRAC_CLOSE 
             {
               Object RESULT =null;
-
+		 RESULT = null; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_content",22, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -869,7 +888,10 @@ class CUP$JavaCodeParser$actions {
           case 28: // function_content ::= BRAC_OPEN function_parts BRAC_CLOSE 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_content",22, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -878,7 +900,10 @@ class CUP$JavaCodeParser$actions {
           case 29: // function_parts ::= function_part 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_parts",25, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -887,7 +912,18 @@ class CUP$JavaCodeParser$actions {
           case 30: // function_parts ::= function_parts function_part 
             {
               Object RESULT =null;
-
+		int prevChildNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int prevChildNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object prevChildNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
+      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
+      newNodes.addAll(oldNodes);
+      RESULT = newNodes;
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_parts",25, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -896,7 +932,10 @@ class CUP$JavaCodeParser$actions {
           case 31: // function_part ::= var_declaration_sub 
             {
               Object RESULT =null;
-		 printK("variable declaration"); 
+		int nodeDeclleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int nodeDeclright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object nodeDecl = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = new ArrayList<Node>().add((Node) nodeDecl); printK("variable declaration");
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_part",24, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -932,7 +971,10 @@ class CUP$JavaCodeParser$actions {
           case 35: // function_part ::= functions_methods 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("function_part",24, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -941,7 +983,10 @@ class CUP$JavaCodeParser$actions {
           case 36: // functions_methods ::= if_structure 
             {
               Object RESULT =null;
-		 printK("if declaration"); 
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 printK("if declaration"); RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("functions_methods",40, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -950,7 +995,10 @@ class CUP$JavaCodeParser$actions {
           case 37: // functions_methods ::= for_structure 
             {
               Object RESULT =null;
-		 printK("for declaration"); 
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 printK("for declaration"); RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("functions_methods",40, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -959,7 +1007,10 @@ class CUP$JavaCodeParser$actions {
           case 38: // functions_methods ::= while_structure 
             {
               Object RESULT =null;
-		 printK("while/do while declaration"); 
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 printK("while/do while declaration"); RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("functions_methods",40, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -968,7 +1019,10 @@ class CUP$JavaCodeParser$actions {
           case 39: // functions_methods ::= switch_structure 
             {
               Object RESULT =null;
-		 printK("switch declaration"); 
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 printK("switch declaration"); RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("functions_methods",40, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -977,7 +1031,10 @@ class CUP$JavaCodeParser$actions {
           case 40: // functions_methods ::= error function_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("functions_methods",40, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1004,7 +1061,10 @@ class CUP$JavaCodeParser$actions {
           case 43: // switch_structure ::= SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content BRAC_CLOSE 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("switch_structure",29, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-6)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1022,7 +1082,10 @@ class CUP$JavaCodeParser$actions {
           case 45: // switch_content ::= case_section 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("switch_content",30, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1031,7 +1094,18 @@ class CUP$JavaCodeParser$actions {
           case 46: // switch_content ::= switch_content case_section 
             {
               Object RESULT =null;
-
+		int prevChildNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int prevChildNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object prevChildNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
+      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
+      newNodes.addAll(oldNodes);
+      RESULT = newNodes;
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("switch_content",30, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1040,7 +1114,10 @@ class CUP$JavaCodeParser$actions {
           case 47: // case_section ::= CASE element case_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("case_section",31, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1049,7 +1126,10 @@ class CUP$JavaCodeParser$actions {
           case 48: // case_section ::= DEFAULT case_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("case_section",31, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1067,7 +1147,10 @@ class CUP$JavaCodeParser$actions {
           case 50: // case_content ::= COLON function_parts 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("case_content",32, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1076,7 +1159,10 @@ class CUP$JavaCodeParser$actions {
           case 51: // while_structure ::= WHILE PAR_OPEN bool_compare PAR_CLOSE function_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("while_structure",28, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-4)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1085,7 +1171,10 @@ class CUP$JavaCodeParser$actions {
           case 52: // while_structure ::= DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-5)).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-5)).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-5)).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("while_structure",28, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-6)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1094,6 +1183,9 @@ class CUP$JavaCodeParser$actions {
           case 53: // for_structure ::= FOR PAR_OPEN for_par_content PAR_CLOSE function_content 
             {
               Object RESULT =null;
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("for_structure",26, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-4)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -1139,7 +1231,10 @@ class CUP$JavaCodeParser$actions {
           case 58: // if_structure ::= IF PAR_OPEN bool_compare PAR_CLOSE function_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = childNodes; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("if_structure",23, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-4)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1148,7 +1243,17 @@ class CUP$JavaCodeParser$actions {
           case 59: // if_structure ::= IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content 
             {
               Object RESULT =null;
-
+		int childNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).left;
+		int childNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).right;
+		Object childNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).value;
+		int extraChildNodesleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int extraChildNodesright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object extraChildNodes = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+        ArrayList<Node> mergedChildNodes = (ArrayList<Node>) childNodes;
+        mergedChildNodes.addAll((ArrayList<Node>) extraChildNodes);
+        RESULT = mergedChildNodes;
+      
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("if_structure",23, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-6)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1175,7 +1280,10 @@ class CUP$JavaCodeParser$actions {
           case 62: // var_declaration ::= var_declaration_sub 
             {
               Object RESULT =null;
-
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = declNode; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration",19, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1184,7 +1292,17 @@ class CUP$JavaCodeParser$actions {
           case 63: // var_declaration ::= VISIBILITY var_declaration_sub 
             {
               Object RESULT =null;
-
+		int visibleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int visibright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object visib = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 
+      Node decNode = (Node) declNode;
+      decNode.addAttributes(visib.toString().toUpperCase()); 
+      RESULT = decNode;  
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration",19, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1193,7 +1311,10 @@ class CUP$JavaCodeParser$actions {
           case 64: // var_declaration_sub ::= var_declaration_sub_extra 
             {
               Object RESULT =null;
-
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = declNode; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub",20, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1202,7 +1323,14 @@ class CUP$JavaCodeParser$actions {
           case 65: // var_declaration_sub ::= FINAL var_declaration_sub_extra 
             {
               Object RESULT =null;
-
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("FINAL"); 
+      RESULT = decNode; 
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub",20, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1211,7 +1339,14 @@ class CUP$JavaCodeParser$actions {
           case 66: // var_declaration_sub ::= STATIC var_declaration_sub_extra 
             {
               Object RESULT =null;
-
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("STATIC"); 
+      RESULT = declNode;
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub",20, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1220,7 +1355,14 @@ class CUP$JavaCodeParser$actions {
           case 67: // var_declaration_sub ::= STATIC FINAL var_declaration_sub_extra 
             {
               Object RESULT =null;
-
+		int declNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int declNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object declNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("STATIC", "FINAL"); 
+      RESULT = declNode;
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub",20, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1229,7 +1371,13 @@ class CUP$JavaCodeParser$actions {
           case 68: // var_declaration_sub_extra ::= var_type0 var_assign 
             {
               Object RESULT =null;
-
+		int TYPEleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int TYPEright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object TYPE = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		int ITEMleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int ITEMright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object ITEM = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = new Node(TYPE.toString(),ITEM.toString(),null); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub_extra",21, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1238,7 +1386,13 @@ class CUP$JavaCodeParser$actions {
           case 69: // var_declaration_sub_extra ::= var_type0 id_item SEMICOLON 
             {
               Object RESULT =null;
-
+		int TYPEleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).left;
+		int TYPEright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).right;
+		Object TYPE = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).value;
+		int ITEMleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).left;
+		int ITEMright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).right;
+		Object ITEM = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)).value;
+		 RESULT = new Node(TYPE.toString(),ITEM.toString(),null); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_declaration_sub_extra",21, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1256,7 +1410,10 @@ class CUP$JavaCodeParser$actions {
           case 71: // var_assign ::= id_item var_assign_act SEMICOLON 
             {
               Object RESULT =null;
-
+		int ITEMleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).left;
+		int ITEMright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).right;
+		Object ITEM = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).value;
+		 RESULT = ITEM.toString(); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_assign",17, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1544,7 +1701,10 @@ class CUP$JavaCodeParser$actions {
           case 103: // id_item ::= ID 
             {
               Object RESULT =null;
-
+		int idValleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int idValright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object idVal = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT =  idVal.toString(); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("id_item",6, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1553,7 +1713,17 @@ class CUP$JavaCodeParser$actions {
           case 104: // id_item ::= id_item DOT ID 
             {
               Object RESULT =null;
-
+		int lastIDleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).left;
+		int lastIDright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).right;
+		Object lastID = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).value;
+		int idValleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int idValright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object idVal = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 
+      String item =  idVal.toString(); 
+      String newItem = lastID + "." + item;
+      RESULT = newItem;
+    
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("id_item",6, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1562,7 +1732,10 @@ class CUP$JavaCodeParser$actions {
           case 105: // var_type0 ::= VAR_TYPE 
             {
               Object RESULT =null;
-
+		int typeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int typeright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object type = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = type.toString(); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_type0",5, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -1571,7 +1744,10 @@ class CUP$JavaCodeParser$actions {
           case 106: // var_type0 ::= ID 
             {
               Object RESULT =null;
-
+		int typeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int typeright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object type = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 RESULT = type.toString(); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("var_type0",5, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;

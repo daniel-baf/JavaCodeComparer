@@ -771,12 +771,12 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 61: break;
           case 4: 
-            { return new Symbol(sym.DIV, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DIV, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 62: break;
           case 5: 
-            { return new Symbol(sym.STAR, yyline+1, yycolumn+1);
+            { return new Symbol(sym.STAR, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 63: break;
@@ -786,87 +786,87 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 64: break;
           case 7: 
-            { return new Symbol(sym.DOT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DOT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 65: break;
           case 8: 
-            { return new Symbol(sym.COMMA, yyline+1, yycolumn+1);
+            { return new Symbol(sym.COMMA, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 66: break;
           case 9: 
-            { return new Symbol(sym.PLUS, yyline+1, yycolumn+1);
+            { return new Symbol(sym.PLUS, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 67: break;
           case 10: 
-            { return new Symbol(sym.MINUS, yyline+1, yycolumn+1);
+            { return new Symbol(sym.MINUS, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 68: break;
           case 11: 
-            { return new Symbol(sym.MOD, yyline+1, yycolumn+1);
+            { return new Symbol(sym.MOD, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 69: break;
           case 12: 
-            { return new Symbol(sym.GT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.GT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 70: break;
           case 13: 
-            { return new Symbol(sym.ASSIGN, yyline+1, yycolumn+1);
+            { return new Symbol(sym.ASSIGN, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 71: break;
           case 14: 
-            { return new Symbol(sym.LT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.LT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 72: break;
           case 15: 
-            { return new Symbol(sym.NOT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.NOT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 73: break;
           case 16: 
-            { return new Symbol(sym.BRAC_OPEN, yyline+1, yycolumn+1);
+            { return new Symbol(sym.BRAC_OPEN, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 74: break;
           case 17: 
-            { return new Symbol(sym.BRAC_CLOSE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.BRAC_CLOSE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 75: break;
           case 18: 
-            { return new Symbol(sym.PAR_OPEN, yyline+1, yycolumn+1);
+            { return new Symbol(sym.PAR_OPEN, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 76: break;
           case 19: 
-            { return new Symbol(sym.PAR_CLOSE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.PAR_CLOSE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 77: break;
           case 20: 
-            { return new Symbol(sym.SEMICOLON, yyline+1, yycolumn+1);
+            { return new Symbol(sym.SEMICOLON, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 78: break;
           case 21: 
-            { return new Symbol(sym.COLON, yyline+1, yycolumn+1);
+            { return new Symbol(sym.COLON, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 79: break;
           case 22: 
-            { return new Symbol(sym.IF, yyline+1, yycolumn+1);
+            { return new Symbol(sym.IF, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 80: break;
           case 23: 
-            { return new Symbol(sym.DO, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DO, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 81: break;
@@ -876,12 +876,12 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 82: break;
           case 25: 
-            { return new Symbol(sym.DIV_T, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DIV_T, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 83: break;
           case 26: 
-            { return new Symbol(sym.MULT_T, yyline+1, yycolumn+1);
+            { return new Symbol(sym.MULT_T, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 84: break;
@@ -891,52 +891,52 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 85: break;
           case 28: 
-            { return new Symbol(sym.INC, yyline+1, yycolumn+1);
+            { return new Symbol(sym.INC, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 86: break;
           case 29: 
-            { return new Symbol(sym.PLUS_T, yyline+1, yycolumn+1);
+            { return new Symbol(sym.PLUS_T, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 87: break;
           case 30: 
-            { return new Symbol(sym.DEC, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DEC, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 88: break;
           case 31: 
-            { return new Symbol(sym.LESS_T, yyline+1, yycolumn+1);
+            { return new Symbol(sym.LESS_T, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 89: break;
           case 32: 
-            { return new Symbol(sym.GE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.GE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 90: break;
           case 33: 
-            { return new Symbol(sym.EQ, yyline+1, yycolumn+1);
+            { return new Symbol(sym.EQ, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 91: break;
           case 34: 
-            { return new Symbol(sym.LE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.LE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 92: break;
           case 35: 
-            { return new Symbol(sym.NE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.NE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 93: break;
           case 36: 
-            { return new Symbol(sym.AND, yyline+1, yycolumn+1);
+            { return new Symbol(sym.AND, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 94: break;
           case 37: 
-            { return new Symbol(sym.OR, yyline+1, yycolumn+1);
+            { return new Symbol(sym.OR, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 95: break;
@@ -951,7 +951,7 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 97: break;
           case 40: 
-            { return new Symbol(sym.NEW, yyline+1, yycolumn+1);
+            { return new Symbol(sym.NEW, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 98: break;
@@ -961,7 +961,7 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 99: break;
           case 42: 
-            { return new Symbol(sym.FOR, yyline+1, yycolumn+1);
+            { return new Symbol(sym.FOR, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 100: break;
@@ -971,42 +971,42 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 101: break;
           case 44: 
-            { return new Symbol(sym.TRUE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.TRUE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 102: break;
           case 45: 
-            { return new Symbol(sym.ELSE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.ELSE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 103: break;
           case 46: 
-            { return new Symbol(sym.CASE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.CASE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 104: break;
           case 47: 
-            { return new Symbol(sym.BREAK, yyline+1, yycolumn+1);
+            { return new Symbol(sym.BREAK, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 105: break;
           case 48: 
-            { return new Symbol(sym.CLASS, yyline+1, yycolumn+1);
+            { return new Symbol(sym.CLASS, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 106: break;
           case 49: 
-            { return new Symbol(sym.FINAL, yyline+1, yycolumn+1);
+            { return new Symbol(sym.FINAL, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 107: break;
           case 50: 
-            { return new Symbol(sym.FALSE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.FALSE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 108: break;
           case 51: 
-            { return new Symbol(sym.WHILE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.WHILE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 109: break;
@@ -1016,32 +1016,32 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 110: break;
           case 53: 
-            { return new Symbol(sym.RETURN, yyline+1, yycolumn+1);
+            { return new Symbol(sym.RETURN, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 111: break;
           case 54: 
-            { return new Symbol(sym.IMPORT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.IMPORT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 112: break;
           case 55: 
-            { return new Symbol(sym.STATIC, yyline+1, yycolumn+1);
+            { return new Symbol(sym.STATIC, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 113: break;
           case 56: 
-            { return new Symbol(sym.SWITCH, yyline+1, yycolumn+1);
+            { return new Symbol(sym.SWITCH, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 114: break;
           case 57: 
-            { return new Symbol(sym.PACKAGE, yyline+1, yycolumn+1);
+            { return new Symbol(sym.PACKAGE, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 115: break;
           case 58: 
-            { return new Symbol(sym.DEFAULT, yyline+1, yycolumn+1);
+            { return new Symbol(sym.DEFAULT, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 116: break;

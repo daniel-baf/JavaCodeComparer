@@ -17,7 +17,7 @@ public class JavaCodeServer {
 
     static final int PORT = 5000;
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
 
         System.out.println("Seting-up server");
         try ( ServerSocket serverSocket = new ServerSocket(PORT)) {

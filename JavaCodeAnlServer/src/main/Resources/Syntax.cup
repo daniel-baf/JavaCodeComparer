@@ -6,38 +6,43 @@
 package Backend.Objects.Parsers;
 import java_cup.runtime.*;
 import Backend.Objects.Lexers.JavaCodeLexer;
+import Backend.Objects.NodeTree.*;
+import java.util.ArrayList;
 
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
 
   int counter = 0;
+  TreeActioner tree;
 
-    // constructor
-    public JavaCodeParser(JavaCodeLexer lexer) {
-        super(lexer);
-    }
+  // constructor
+  public JavaCodeParser(JavaCodeLexer lexer) {
+    super(lexer);
+    counter = 0;
+    tree = new TreeActioner();
+  }
 
-    /* ERRORS METHOD */
-    public void report_error(String message, Object info) {
-        System.out.println("public void report_error");
-    }
-    
-    public void report_fatal_error(String message, Object info) {
-        System.out.println("public void report_fatal_error");
-    }
+  /* ERRORS METHOD */
+  public void report_error(String message, Object info) {
+      System.out.println("public void report_error");
+  }
+  
+  public void report_fatal_error(String message, Object info) {
+      System.out.println("public void report_fatal_error");
+  }
 
-    public void syntax_error(Symbol cur_token) {
-        System.out.println("Error en simbolo: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right);
-    }
+  public void syntax_error(Symbol cur_token) {
+      System.out.println("Error en simbolo: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right);
+  }
 
-    public void unrecovered_syntax_error(Symbol cur_token) {
-        System.out.println("UNrecovered syntax error");
-    }
+  public void unrecovered_syntax_error(Symbol cur_token) {
+      System.out.println("UNrecovered syntax error");
+  }
 
-    public void printK(String message) {
-        System.out.println((counter + 1) + ":" + "::" + cur_token.left + "(" + cur_token.right + ") ->" + message);
-        counter++;
-    }
+  public void printK(String message) {
+      System.out.println((counter + 1) + ":" + "::" + cur_token.left + "(" + cur_token.right + ") ->" + message);
+      counter++;
+  }
 :}
 
 /**************************************/
@@ -121,7 +126,7 @@ class_content::=
 
 class_content_sub::=
     method_structure
-  | var_declaration             {: printK("class declared: variable"); :}
+  | var_declaration:nodeDecl {: printK("class declared: variable"); :}
 ;
 
 // method declaration
@@ -131,49 +136,60 @@ method_structure::=
 ;
 
 method_structure_sub::=
-    constructor_structure:DATA
-      {:
-        RESULT = DATA;
-        printK("method delcared, constructor"); 
-      :}
+    constructor_structure           {: printK("method delcared, constructor"); :}
   | non_constructor_structure       {: printK("method delcared, method"); :}
 ;
 
 non_constructor_structure::=
-    FUNC_TYPE constructor_structure
-  | var_type0 constructor_structure
+    FUNC_TYPE constructor_structure:childNodes
+  | var_type0 constructor_structure:childNodes
 ;
 
 constructor_structure::=
-    ID par_receive_vals function_content
-  | error function_content
+    ID par_receive_vals function_content:childNodes 
+      {: 
+        ArrayList<Node> nodes = (ArrayList<Node>) childNodes;
+        try{
+          System.out.println("Add nodes to parent: " + nodes.size());
+        } catch(Exception e) {
+          e.printStackTrace();
+        }
+
+      :}
+  | error function_content:childNodes      {: RESULT = childNodes; :}
 ;
 
 // method common
 function_content::=
-    BRAC_OPEN BRAC_CLOSE
-  | BRAC_OPEN function_parts BRAC_CLOSE
+    BRAC_OPEN BRAC_CLOSE                            {: RESULT = null; :}
+  | BRAC_OPEN function_parts:childNodes BRAC_CLOSE  {: RESULT = childNodes; :}
 ;
 
 function_parts::=
-    function_part
-  | function_parts function_part
+    function_part:childNodes      {: RESULT = childNodes; :}
+  | function_parts:prevChildNodes function_part:childNodes
+    {:
+      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
+      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
+      newNodes.addAll(oldNodes);
+      RESULT = newNodes;
+    :}
 ;
 
 function_part::=
-    var_declaration_sub       {: printK("variable declaration"); :}
-  | var_assign                {: printK("variable assgination"); :}
-  | output_sentence           {: printK("output sentence"); :}
-  | method_call_structure     {: printK("method call"); :}
-  | functions_methods
+    var_declaration_sub:nodeDecl    {: RESULT = new ArrayList<Node>().add((Node) nodeDecl); printK("variable declaration");:}
+  | var_assign                      {: printK("variable assgination"); :}
+  | output_sentence                 {: printK("output sentence"); :}
+  | method_call_structure           {: printK("method call"); :}
+  | functions_methods:childNodes    {: RESULT = childNodes; :}
 ;
 
 functions_methods::=
-    if_structure              {: printK("if declaration"); :}
-  | for_structure             {: printK("for declaration"); :}
-  | while_structure           {: printK("while/do while declaration"); :}
-  | switch_structure          {: printK("switch declaration"); :}
-  | error function_content
+    if_structure:childNodes              {: printK("if declaration"); RESULT = childNodes; :}
+  | for_structure:childNodes             {: printK("for declaration"); RESULT = childNodes; :}
+  | while_structure:childNodes           {: printK("while/do while declaration"); RESULT = childNodes; :}
+  | switch_structure:childNodes          {: printK("switch declaration"); RESULT = childNodes; :}
+  | error function_content:childNodes {: RESULT = childNodes; :}
 ;
 
 method_call_structure::=
@@ -183,33 +199,39 @@ method_call_structure::=
 
 // methods structures
 switch_structure::=
-    SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content BRAC_CLOSE
+    SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content:childNodes BRAC_CLOSE {: RESULT = childNodes; :}
   | error BRAC_CLOSE
 ;
 
 switch_content::=
-    case_section
-  | switch_content case_section
+    case_section:childNodes  {: RESULT = childNodes; :}
+  | switch_content:prevChildNodes case_section:childNodes
+    {:
+      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
+      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
+      newNodes.addAll(oldNodes);
+      RESULT = newNodes;
+    :}
 ;
 
 case_section::=
-    CASE element case_content
-  | DEFAULT case_content
+    CASE element case_content:childNodes {: RESULT = childNodes; :}
+  | DEFAULT case_content:childNodes      {: RESULT = childNodes; :}
 ;
 
 case_content::=
     COLON
-  | COLON function_parts
+  | COLON function_parts:childNodes {: RESULT = childNodes; :}
 ;
 
 while_structure::=
-    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content
-  | DO function_content WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON
+    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes {: RESULT = childNodes; :}
+  | DO function_content:childNodes WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON {: RESULT = childNodes; :}
 ;
 
 
 for_structure::=
-  FOR PAR_OPEN for_par_content PAR_CLOSE function_content
+  FOR PAR_OPEN for_par_content PAR_CLOSE function_content:childNodes
 ;
 
 for_par_content::=
@@ -225,8 +247,13 @@ for_validation::=
 
 
 if_structure::=
-    IF PAR_OPEN bool_compare PAR_CLOSE function_content
-  | IF PAR_OPEN bool_compare PAR_CLOSE function_content ELSE function_content
+    IF PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes  {: RESULT = childNodes; :}
+  | IF PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes ELSE function_content:extraChildNodes
+      {:
+        ArrayList<Node> mergedChildNodes = (ArrayList<Node>) childNodes;
+        mergedChildNodes.addAll((ArrayList<Node>) extraChildNodes);
+        RESULT = mergedChildNodes;
+      :}
 ;
 
 
@@ -238,25 +265,45 @@ par_receive_vals::=
 
 
 var_declaration::=
-    var_declaration_sub
-  | VISIBILITY var_declaration_sub
+    var_declaration_sub:declNode      {: RESULT = declNode; :}
+  | VISIBILITY:visib var_declaration_sub:declNode
+    {: 
+      Node decNode = (Node) declNode;
+      decNode.addAttributes(visib.toString().toUpperCase()); 
+      RESULT = decNode;  
+    :}
 ;
 
 var_declaration_sub::=
-    var_declaration_sub_extra             
-  | FINAL var_declaration_sub_extra       
-  | STATIC var_declaration_sub_extra      
-  | STATIC FINAL var_declaration_sub_extra
+    var_declaration_sub_extra:declNode            {: RESULT = declNode; :}
+  | FINAL var_declaration_sub_extra:declNode
+    {:
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("FINAL"); 
+      RESULT = decNode; 
+    :}
+  | STATIC var_declaration_sub_extra:declNode
+    {:
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("STATIC"); 
+      RESULT = declNode;
+    :}
+  | STATIC FINAL var_declaration_sub_extra:declNode
+    {:
+      Node decNode = (Node) declNode;
+      decNode.addAttributes("STATIC", "FINAL"); 
+      RESULT = declNode;
+    :}
 ;
 
 var_declaration_sub_extra::=
-    var_type0 var_assign
-  | var_type0 id_item SEMICOLON
+    var_type0:TYPE var_assign:ITEM            {: RESULT = new Node(TYPE.toString(),ITEM.toString(),null); :}
+  | var_type0:TYPE id_item:ITEM SEMICOLON     {: RESULT = new Node(TYPE.toString(),ITEM.toString(),null); :}
   | error SEMICOLON
 ;
 
 var_assign::=
-  id_item var_assign_act SEMICOLON
+  id_item:ITEM var_assign_act SEMICOLON {: RESULT = ITEM.toString(); :}
 ;
 
 var_assign_act::=
@@ -327,13 +374,18 @@ element::=
 ;
 
 id_item::= // catch multiple ids as k or k.a or k.b.c...
-    ID
-  | id_item DOT ID
+    ID:idVal                      {: RESULT =  idVal.toString(); :}
+  | id_item:lastID DOT ID:idVal   
+    {: 
+      String item =  idVal.toString(); 
+      String newItem = lastID + "." + item;
+      RESULT = newItem;
+    :}
 ;
 
 var_type0::= // the type of the variables
-    VAR_TYPE
-  | ID      
+    VAR_TYPE:type  {: RESULT = type.toString(); :}
+  | ID:type        {: RESULT = type.toString(); :}
 ;
 
 sym_arithm::=

@@ -1,0 +1,6 @@
+class MyClass {
+    int MyClass() {
+        /* se buguea si pongo esto?*/
+    }
+
+}
