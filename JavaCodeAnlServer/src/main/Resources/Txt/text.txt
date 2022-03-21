@@ -1,6 +1,47 @@
 class MyClass {
-    int MyClass() {
-        /* se buguea si pongo esto?*/
+    int myClassVal1 = 1;
+
+    private void methodMeth(char a) {
+        int methodMethInt = 0;
+        do {
+            tmp++;
+            int methodMethIntDo = methodMethInt;
+            if(methodMethIntDo < 9) {
+                int methodMethDoIf = 21;
+                
+                for(int k = 1; k < 21 + 2; k++) {
+                    String methodMethDoIfFOR = "hola";
+                }
+                
+            }
+        } while(tmp<9);
     }
 
+    public void fixSwitch() {
+        int tSwitch = 1;
+        switch(tSwitch) {
+            case 1:
+                boolean bolCaseSwitch = false;
+                if(bolCaseSwitch) {
+                    bool bolCaseSwitchIf = true;
+                }
+                break;
+            default:
+                // ignore
+        }
+    }
+}
+
+class newClass {
+    public method() {
+        int tmp = 1;
+        char myChar = 'a';
+        if(true) {
+            int tmp2 = 2;
+
+            for(int k = 1; k < 21 + 2; k++) {
+                String tmp = "hola";
+            }
+        }
+    }
 }

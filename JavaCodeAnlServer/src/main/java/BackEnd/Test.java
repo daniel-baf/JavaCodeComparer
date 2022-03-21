@@ -6,28 +6,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Backend.Objects.Lexers.JavaCodeLexer;
-import Backend.Objects.NodeTree.Node;
 import Backend.Objects.Parsers.JavaCodeParser;
 
 public class Test {
-    
+
     public static void main(String[] args) {
         JavaCodeLexer lexer = new JavaCodeLexer(new StringReader(readFile("src/main/Resources/Txt/text.txt")));
         JavaCodeParser parser = new JavaCodeParser(lexer);
-
-        ArrayList<Node> nodes = new ArrayList<>();
-        nodes.add(null);
-        nodes.add(new Node("class", "Main"));
-
-        for (Node nd : nodes) {
-            System.out.println("IS NULL: " + (nd == null));
-            if(nd != null) {
-                System.out.println(nd.toString());
-            }
-        }
-
-        System.out.println("SIZE: " + nodes.size());
-
         try {
             // printTOkens();
             parser.parse();
@@ -38,6 +23,9 @@ public class Test {
             for (String comment : comments) {
                 System.out.println(comment);
             }
+
+            // print actioners
+
         } catch (Exception e) {
         }
     }

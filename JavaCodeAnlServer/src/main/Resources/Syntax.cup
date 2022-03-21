@@ -6,20 +6,18 @@
 package Backend.Objects.Parsers;
 import java_cup.runtime.*;
 import Backend.Objects.Lexers.JavaCodeLexer;
-import Backend.Objects.NodeTree.*;
-import java.util.ArrayList;
 
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
 
-  int counter = 0;
-  TreeActioner tree;
+  private int counter = 0;
+  private ParserActioner actioner;
 
   // constructor
   public JavaCodeParser(JavaCodeLexer lexer) {
     super(lexer);
     counter = 0;
-    tree = new TreeActioner();
+    actioner = new ParserActioner();
   }
 
   /* ERRORS METHOD */
@@ -43,6 +41,11 @@ parser code {:
       System.out.println((counter + 1) + ":" + "::" + cur_token.left + "(" + cur_token.right + ") ->" + message);
       counter++;
   }
+
+  public ParserActioner getActioner() {
+    return actioner;
+  }
+
 :}
 
 /**************************************/
@@ -83,17 +86,17 @@ start with file;
 
 file::=
     package_structure class_data
-  | class_data
+  | class_data:children {: actioner.saveRoot(children); :}
 ;
 
 class_data::=
-    class_data_sub
-  | class_data class_data_sub
+    class_data_sub:classNode                            {: RESULT = actioner.getItemAsArray(classNode); :} // return class
+  | class_data:prevClassNode class_data_sub:classNode   {: RESULT = actioner.getArray(actioner.getItemAsArray(classNode), prevClassNode); :}
 ;
 
 class_data_sub::=
     import_structure
-  | class_structure
+  | class_structure:classNode               {: RESULT = classNode; :} // class node
   | error class_data_sub
 ;
 
@@ -110,86 +113,98 @@ import_structure::=
 
 // class
 class_structure::=
-    class_structure_sub                 {: printK("class delcared"); :}
-  | VISIBILITY class_structure_sub      {: printK("class delcared"); :}
+    class_structure_sub:classNode                       {:  RESULT = classNode; printK("class delcared"); :}
+  | VISIBILITY:attribute class_structure_sub:classNode  
+        {:
+            RESULT = actioner.addAttrNode(classNode, attribute.toString()); 
+            printK("class delcared"); 
+        :}
 ;
 
 class_structure_sub::=
-    CLASS ID BRAC_OPEN BRAC_CLOSE
-  | CLASS ID BRAC_OPEN class_content BRAC_CLOSE
+    CLASS ID:variable BRAC_OPEN BRAC_CLOSE                          {: RESULT =  actioner.getNode("CLASS",variable.toString()); :}
+  | CLASS ID:variable BRAC_OPEN class_content:children BRAC_CLOSE   
+        {: 
+            RESULT = actioner.getNode("CLASS",variable.toString());
+            actioner.saveParent(RESULT, children);
+        :}
 ;
 
 class_content::=
-    class_content_sub
-  | class_content class_content_sub
+    class_content_sub:child                         {: RESULT=actioner.getItemAsArray(child); :}
+  | class_content:children class_content_sub:child  {: RESULT=actioner.getArray(actioner.getItemAsArray(child), children); :}
 ;
 
 class_content_sub::=
-    method_structure
-  | var_declaration:nodeDecl {: printK("class declared: variable"); :}
+    method_structure:nodeMethod {: RESULT=nodeMethod; :}
+  | var_declaration:nodeDec     {: 
+                                  printK("class declared: variable"); 
+                                  RESULT=nodeDec; // get the node type VAL DECLARATION
+                                :}
 ;
 
 // method declaration
 method_structure::=
-    method_structure_sub
-  | VISIBILITY method_structure_sub
+    method_structure_sub:nodeMethod                       {: RESULT=nodeMethod; :}
+  | VISIBILITY:attribute method_structure_sub:nodeMethod  {: RESULT=actioner.addAttrNode(nodeMethod,attribute.toString().toUpperCase()); :}
 ;
 
 method_structure_sub::=
-    constructor_structure           {: printK("method delcared, constructor"); :}
-  | non_constructor_structure       {: printK("method delcared, method"); :}
+    constructor_structure:nodeMethod        
+        {: 
+            printK("method delcared, constructor"); 
+            RESULT=nodeMethod;
+        :}
+  | non_constructor_structure:nodeMethod    
+        {: 
+            printK("method delcared, method"); 
+            RESULT=nodeMethod;
+        :}
 ;
 
 non_constructor_structure::=
-    FUNC_TYPE constructor_structure:childNodes
-  | var_type0 constructor_structure:childNodes
+    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
+  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
 ;
 
 constructor_structure::=
-    ID par_receive_vals function_content:childNodes 
-      {: 
-        ArrayList<Node> nodes = (ArrayList<Node>) childNodes;
-        try{
-          System.out.println("Add nodes to parent: " + nodes.size());
-        } catch(Exception e) {
-          e.printStackTrace();
-        }
-
-      :}
-  | error function_content:childNodes      {: RESULT = childNodes; :}
+    ID:variable par_receive_vals:valsGet function_content:children  
+        {: 
+            RESULT = actioner.getNode("METHOD",variable.toString());
+            actioner.saveParent(RESULT, actioner.getArray( children, valsGet));
+        :}
+  | error function_content:children                                 {: RESULT= :}
+        {: 
+            RESULT = actioner.getNode("ERROR", "error");
+            actioner.saveParent(RESULT, children);
+        :}
 ;
 
 // method common
 function_content::=
-    BRAC_OPEN BRAC_CLOSE                            {: RESULT = null; :}
-  | BRAC_OPEN function_parts:childNodes BRAC_CLOSE  {: RESULT = childNodes; :}
+    BRAC_OPEN BRAC_CLOSE                            
+  | BRAC_OPEN function_parts:children BRAC_CLOSE  {: RESULT=children; :}
 ;
 
 function_parts::=
-    function_part:childNodes      {: RESULT = childNodes; :}
-  | function_parts:prevChildNodes function_part:childNodes
-    {:
-      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
-      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
-      newNodes.addAll(oldNodes);
-      RESULT = newNodes;
-    :}
+    function_part:child                             {: RESULT=child; :}
+  | function_parts:children function_part:child     {: RESULT=actioner.getArray(child,children); :}
 ;
 
 function_part::=
-    var_declaration_sub:nodeDecl    {: RESULT = new ArrayList<Node>().add((Node) nodeDecl); printK("variable declaration");:}
-  | var_assign                      {: printK("variable assgination"); :}
-  | output_sentence                 {: printK("output sentence"); :}
-  | method_call_structure           {: printK("method call"); :}
-  | functions_methods:childNodes    {: RESULT = childNodes; :}
+    var_declaration_sub_extra:nodeDec       {: RESULT=actioner.getItemAsArray(nodeDec);  printK("variable declaration"); :}
+  | var_assign                              {: printK("variable assgination"); :}
+  | output_sentence                         {: printK("output sentence"); :}
+  | method_call_structure                   {: printK("method call"); :}
+  | functions_methods:children              {: RESULT=children; :}
 ;
 
 functions_methods::=
-    if_structure:childNodes              {: printK("if declaration"); RESULT = childNodes; :}
-  | for_structure:childNodes             {: printK("for declaration"); RESULT = childNodes; :}
-  | while_structure:childNodes           {: printK("while/do while declaration"); RESULT = childNodes; :}
-  | switch_structure:childNodes          {: printK("switch declaration"); RESULT = childNodes; :}
-  | error function_content:childNodes {: RESULT = childNodes; :}
+    if_structure:children               {: RESULT=children; printK("if declaration"); :}
+  | for_structure:children              {: RESULT=children; printK("for declaration"); :}
+  | while_structure:children            {: RESULT=children;  printK("while/do while declaration"); :}
+  | switch_structure:children           {: RESULT=children; printK("switch declaration"); :}
+  | error function_content:children     
 ;
 
 method_call_structure::=
@@ -199,39 +214,33 @@ method_call_structure::=
 
 // methods structures
 switch_structure::=
-    SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content:childNodes BRAC_CLOSE {: RESULT = childNodes; :}
+    SWITCH PAR_OPEN element PAR_CLOSE BRAC_OPEN switch_content:children BRAC_CLOSE {: RESULT=children; :}
   | error BRAC_CLOSE
 ;
 
 switch_content::=
-    case_section:childNodes  {: RESULT = childNodes; :}
-  | switch_content:prevChildNodes case_section:childNodes
-    {:
-      ArrayList<Node> newNodes = (ArrayList<Node>) childNodes;
-      ArrayList<Node> oldNodes = (ArrayList<Node>) prevChildNodes;
-      newNodes.addAll(oldNodes);
-      RESULT = newNodes;
-    :}
+    case_section:child                          {: RESULT=child; :} // array
+  | switch_content:children case_section:child  {: RESULT=actioner.getArray(children,child); :}
 ;
 
 case_section::=
-    CASE element case_content:childNodes {: RESULT = childNodes; :}
-  | DEFAULT case_content:childNodes      {: RESULT = childNodes; :}
+    CASE element case_content:children      {: RESULT=children; :}
+  | DEFAULT case_content:children           {: RESULT=children; :}
 ;
 
 case_content::=
     COLON
-  | COLON function_parts:childNodes {: RESULT = childNodes; :}
+  | COLON function_parts:children    {: RESULT=children; :}
 ;
 
 while_structure::=
-    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes {: RESULT = childNodes; :}
-  | DO function_content:childNodes WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON {: RESULT = childNodes; :}
+    WHILE PAR_OPEN bool_compare PAR_CLOSE function_content:children                 {: RESULT=children; :}
+  | DO function_content:children WHILE PAR_OPEN bool_compare PAR_CLOSE SEMICOLON    {: RESULT=children; :}
 ;
 
 
 for_structure::=
-  FOR PAR_OPEN for_par_content PAR_CLOSE function_content:childNodes
+  FOR PAR_OPEN for_par_content PAR_CLOSE function_content:children      {: RESULT=children; :}
 ;
 
 for_par_content::=
@@ -247,63 +256,38 @@ for_validation::=
 
 
 if_structure::=
-    IF PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes  {: RESULT = childNodes; :}
-  | IF PAR_OPEN bool_compare PAR_CLOSE function_content:childNodes ELSE function_content:extraChildNodes
-      {:
-        ArrayList<Node> mergedChildNodes = (ArrayList<Node>) childNodes;
-        mergedChildNodes.addAll((ArrayList<Node>) extraChildNodes);
-        RESULT = mergedChildNodes;
-      :}
+    IF PAR_OPEN bool_compare PAR_CLOSE function_content:children  {: RESULT=children; :} // is an arraylist
+  | IF PAR_OPEN bool_compare PAR_CLOSE function_content:children ELSE function_content:children2 {: RESULT=actioner.getArray(children,children2); :}
 ;
 
 
 // into methods
 par_receive_vals::=
-    PAR_OPEN vals_receive PAR_CLOSE
+    PAR_OPEN vals_receive:children PAR_CLOSE            {: RESULT=children; :}
   | PAR_OPEN PAR_CLOSE
 ;
 
 
 var_declaration::=
-    var_declaration_sub:declNode      {: RESULT = declNode; :}
-  | VISIBILITY:visib var_declaration_sub:declNode
-    {: 
-      Node decNode = (Node) declNode;
-      decNode.addAttributes(visib.toString().toUpperCase()); 
-      RESULT = decNode;  
-    :}
+    var_declaration_sub:nodeDec                         {: RESULT=nodeDec; :}
+  | VISIBILITY:attribute var_declaration_sub:nodeDec    {: RESULT=actioner.addAttrNode(nodeDec,attribute.toString().toUpperCase()); :}
 ;
 
 var_declaration_sub::=
-    var_declaration_sub_extra:declNode            {: RESULT = declNode; :}
-  | FINAL var_declaration_sub_extra:declNode
-    {:
-      Node decNode = (Node) declNode;
-      decNode.addAttributes("FINAL"); 
-      RESULT = decNode; 
-    :}
-  | STATIC var_declaration_sub_extra:declNode
-    {:
-      Node decNode = (Node) declNode;
-      decNode.addAttributes("STATIC"); 
-      RESULT = declNode;
-    :}
-  | STATIC FINAL var_declaration_sub_extra:declNode
-    {:
-      Node decNode = (Node) declNode;
-      decNode.addAttributes("STATIC", "FINAL"); 
-      RESULT = declNode;
-    :}
+    var_declaration_sub_extra:nodeDec                   {: RESULT=nodeDec; :}
+  | FINAL var_declaration_sub_extra:nodeDec             {: RESULT=actioner.addAttrNode(nodeDec,"FINAL"); :}
+  | STATIC var_declaration_sub_extra:nodeDec            {: RESULT=actioner.addAttrNode(nodeDec, "STATIC"); :}
+  | STATIC FINAL var_declaration_sub_extra:nodeDec      {: RESULT=actioner.addAttrNode(nodeDec, "FINAL", "STATIC"); :}
 ;
 
 var_declaration_sub_extra::=
-    var_type0:TYPE var_assign:ITEM            {: RESULT = new Node(TYPE.toString(),ITEM.toString(),null); :}
-  | var_type0:TYPE id_item:ITEM SEMICOLON     {: RESULT = new Node(TYPE.toString(),ITEM.toString(),null); :}
+    var_type0:type var_assign:variable              {: RESULT=actioner.getNode(type.toString(), variable.toString()); :}
+  | var_type0:type id_item:variable SEMICOLON       {: RESULT=actioner.getNode(type.toString(), variable.toString()); :}
   | error SEMICOLON
 ;
 
 var_assign::=
-  id_item:ITEM var_assign_act SEMICOLON {: RESULT = ITEM.toString(); :}
+  id_item:id var_assign_act SEMICOLON               {: RESULT=id.toString(); :}
 ;
 
 var_assign_act::=
@@ -339,8 +323,8 @@ vals_send::=
 ;
 
 vals_receive::=
-    var_with_type                         {: printK("params receive"); :}
-  | vals_receive COMMA var_with_type
+    var_with_type:child                                 {: RESULT=actioner.getItemAsArray(actioner.addAttrNode(child,"PARAMETER"));; printK("params receive"); :}
+  | vals_receive:children COMMA var_with_type:child     {: RESULT=actioner.getArray(actioner.getItemAsArray(actioner.addAttrNode(child,"PARAMETER")),children); :}
 ;
 
 val_declaration_asgn::=
@@ -354,7 +338,7 @@ new_object_asgn::=
 ;
 
 var_with_type::= 
-  var_type0 ID
+  var_type0:type ID:variable  {: RESULT=actioner.getNode(type.toString(),variable.toString()); :}
 ;
 
 arithm_expr::=
@@ -374,18 +358,13 @@ element::=
 ;
 
 id_item::= // catch multiple ids as k or k.a or k.b.c...
-    ID:idVal                      {: RESULT =  idVal.toString(); :}
-  | id_item:lastID DOT ID:idVal   
-    {: 
-      String item =  idVal.toString(); 
-      String newItem = lastID + "." + item;
-      RESULT = newItem;
-    :}
+    ID:idVal                    {: RESULT =  idVal.toString(); :}
+  | id_item:lastID DOT ID:idVal {: RESULT = lastID.toString() + "." + idVal.toString(); :}
 ;
 
 var_type0::= // the type of the variables
-    VAR_TYPE:type  {: RESULT = type.toString(); :}
-  | ID:type        {: RESULT = type.toString(); :}
+    VAR_TYPE:type {: RESULT = type.toString(); :}
+  | ID:type       {: RESULT = type.toString(); :}
 ;
 
 sym_arithm::=
