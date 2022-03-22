@@ -32,10 +32,14 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 %{
 
     private ArrayList<String> comments = new ArrayList<>();
+    private int commentsCounter;
+
+    public void saveComment(String comment) { this.comments.add(comment); this.commentsCounter = 0;}
+
+    private void incCommentsCounter() {this.commentsCounter++;}
 
     public ArrayList<String> getComments () { return this.comments; }
-
-    public void saveComment(String comment) { this.comments.add(comment); }
+    public int getCommentsCounter() { return this.commentsCounter; }
 
 %}
 
@@ -117,8 +121,8 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 {VAL_COMILL}        {return new Symbol(sym.VAL_COMILLAS, yyline+1, yycolumn+1, yytext());}
 {SING_LETT}         {return new Symbol(sym.CHAR, yyline+1, yycolumn+1, yytext());}
 // COMMENTS
-{LINE_COMM}         {/* ignore */ saveComment(yytext()); } // line comment
-{LONG_COMM}         {/* ignore */ saveComment(yytext()); } // multi line commment
+{LINE_COMM}         {/* ignore */ saveComment(yytext()); incCommentsCounter(); } // line comment
+{LONG_COMM}         {/* ignore */ saveComment(yytext()); incCommentsCounter(); } // multi line commment
 // ids
 {NUM}               {return new Symbol(sym.NUMBER, yyline+1, yycolumn+1, yytext());}
 ({NUM}"."{NUM})     {return new Symbol(sym.DECIMAL, yyline+1, yycolumn+1, yytext());}

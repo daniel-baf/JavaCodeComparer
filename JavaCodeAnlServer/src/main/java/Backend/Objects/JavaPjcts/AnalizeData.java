@@ -8,6 +8,8 @@ package Backend.Objects.JavaPjcts;
 import java.io.Serializable;
 
 /**
+ * This class contains data of 2 Projects into one single file, to send this
+ * into a Message to Client-server
  *
  * @author jefemayoneso
  */

@@ -9,6 +9,9 @@ import Utilities.ReqRes;
 import java.io.Serializable;
 
 /**
+ * This class is a message, used to receive files from client app and the type
+ * of action to execute, this message contains T data, a request type (this is
+ * part of the enum ReqRes) and a message
  *
  * @author jefemayoneso
  */

@@ -10,14 +10,14 @@ import Backend.Objects.Lexers.JavaCodeLexer;
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
 
-  private int counter = 0;
   private ParserActioner actioner;
+  private String fileName;
 
   // constructor
-  public JavaCodeParser(JavaCodeLexer lexer) {
+  public JavaCodeParser(JavaCodeLexer lexer, String fileName) {
     super(lexer);
-    counter = 0;
     actioner = new ParserActioner();
+    this.fileName = fileName;
   }
 
   /* ERRORS METHOD */
@@ -30,16 +30,11 @@ parser code {:
   }
 
   public void syntax_error(Symbol cur_token) {
-      System.out.println("Error en simbolo: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right);
+      System.out.println("Error sym: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right + " file: " + this.fileName);
   }
 
   public void unrecovered_syntax_error(Symbol cur_token) {
       System.out.println("UNrecovered syntax error");
-  }
-
-  public void printK(String message) {
-      System.out.println((counter + 1) + ":" + "::" + cur_token.left + "(" + cur_token.right + ") ->" + message);
-      counter++;
   }
 
   public ParserActioner getActioner() {
@@ -69,7 +64,7 @@ non terminal vals_receive, var_with_type, val_declaration_asgn, new_object_asgn,
     output_sentence, output_actions, var_assign, var_assign_act, var_declaration, var_declaration_sub, var_declaration_sub_extra,
     function_content, if_structure, function_part, function_parts, for_structure, for_par_content, while_structure, switch_structure,
     switch_content, case_section, case_content, constructor_structure, par_receive_vals, method_structure, non_constructor_structure,
-    method_structure_sub, method_call_structure, for_validation, functions_methods;
+    method_structure_sub, method_call_structure, for_validation, functions_methods, method_extra, method_call_structure_sub;
 // class
 non terminal class_content, class_content_sub, class_structure, class_structure_sub, file,  package_structure, class_data, class_data_sub,
     import_structure;
@@ -96,29 +91,25 @@ class_data::=
 
 class_data_sub::=
     import_structure
-  | class_structure:classNode               {: RESULT = classNode; :} // class node
+  | class_structure:classNode               {: RESULT = classNode; actioner.increaseClassDeclared(); :} // class node
   | error class_data_sub
 ;
 
 // package
 package_structure::=
-  PACKAGE id_item SEMICOLON                 {: printK("package delcared"); :}
+  PACKAGE id_item SEMICOLON
 ;
 
 // import
 import_structure::=
-    IMPORT id_item SEMICOLON                {: printK("import delcared"); :}
-  | IMPORT id_item DOT STAR SEMICOLON       {: printK("import delcared, star"); :}
+    IMPORT id_item SEMICOLON
+  | IMPORT id_item DOT STAR SEMICOLON
 ;
 
 // class
 class_structure::=
-    class_structure_sub:classNode                       {:  RESULT = classNode; printK("class delcared"); :}
-  | VISIBILITY:attribute class_structure_sub:classNode  
-        {:
-            RESULT = actioner.addAttrNode(classNode, attribute.toString()); 
-            printK("class delcared"); 
-        :}
+    class_structure_sub:classNode                      {: RESULT = classNode; :}
+  | VISIBILITY:attribute class_structure_sub:classNode {: RESULT = actioner.addAttrNode(classNode, attribute.toString()); :}
 ;
 
 class_structure_sub::=
@@ -137,34 +128,28 @@ class_content::=
 
 class_content_sub::=
     method_structure:nodeMethod {: RESULT=nodeMethod; :}
-  | var_declaration:nodeDec     {: 
-                                  printK("class declared: variable"); 
-                                  RESULT=nodeDec; // get the node type VAL DECLARATION
-                                :}
+  | var_declaration:nodeDec     {: RESULT=nodeDec; // get the node type VAL DECLARATION :}
 ;
 
 // method declaration
 method_structure::=
-    method_structure_sub:nodeMethod                       {: RESULT=nodeMethod; :}
-  | VISIBILITY:attribute method_structure_sub:nodeMethod  {: RESULT=actioner.addAttrNode(nodeMethod,attribute.toString().toUpperCase()); :}
+    method_extra:nodeMethod                       {: RESULT=nodeMethod; :}
+  | VISIBILITY:attribute method_extra:nodeMethod  {: RESULT=actioner.addAttrNode(nodeMethod,attribute.toString().toUpperCase()); :}
+;
+
+method_extra::=
+    method_structure_sub:nodeMethod                   {: RESULT=nodeMethod; :}
+  | STATIC:attribute method_structure_sub:nodeMethod  {: RESULT=actioner.addAttrNode(nodeMethod, attribute.toString().toUpperCase()); :}
 ;
 
 method_structure_sub::=
-    constructor_structure:nodeMethod        
-        {: 
-            printK("method delcared, constructor"); 
-            RESULT=nodeMethod;
-        :}
-  | non_constructor_structure:nodeMethod    
-        {: 
-            printK("method delcared, method"); 
-            RESULT=nodeMethod;
-        :}
+    constructor_structure:nodeMethod        {: RESULT=nodeMethod; :}
+  | non_constructor_structure:nodeMethod    {: RESULT=nodeMethod; :}
 ;
 
 non_constructor_structure::=
-    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
-  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
+    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter();  :}
+  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter(); :}
 ;
 
 constructor_structure::=
@@ -173,7 +158,7 @@ constructor_structure::=
             RESULT = actioner.getNode("METHOD",variable.toString());
             actioner.saveParent(RESULT, actioner.getArray( children, valsGet));
         :}
-  | error function_content:children                                 {: RESULT= :}
+  | error function_content:children
         {: 
             RESULT = actioner.getNode("ERROR", "error");
             actioner.saveParent(RESULT, children);
@@ -192,24 +177,28 @@ function_parts::=
 ;
 
 function_part::=
-    var_declaration_sub_extra:nodeDec       {: RESULT=actioner.getItemAsArray(nodeDec);  printK("variable declaration"); :}
-  | var_assign                              {: printK("variable assgination"); :}
-  | output_sentence                         {: printK("output sentence"); :}
-  | method_call_structure                   {: printK("method call"); :}
+    var_declaration_sub_extra:nodeDec       {: RESULT=actioner.getItemAsArray(nodeDec); :}
+  | var_assign
+  | output_sentence
+  | method_call_structure
   | functions_methods:children              {: RESULT=children; :}
 ;
 
 functions_methods::=
-    if_structure:children               {: RESULT=children; printK("if declaration"); :}
-  | for_structure:children              {: RESULT=children; printK("for declaration"); :}
-  | while_structure:children            {: RESULT=children;  printK("while/do while declaration"); :}
-  | switch_structure:children           {: RESULT=children; printK("switch declaration"); :}
+    if_structure:children               {: RESULT=children; :}
+  | for_structure:children              {: RESULT=children; :}
+  | while_structure:children            {: RESULT=children; :}
+  | switch_structure:children           {: RESULT=children; :}
   | error function_content:children     
 ;
 
 method_call_structure::=
-    id_item PAR_OPEN PAR_CLOSE SEMICOLON
-  | id_item PAR_OPEN vals_send PAR_CLOSE SEMICOLON
+  method_call_structure_sub SEMICOLON
+;
+
+method_call_structure_sub::=
+    id_item PAR_OPEN PAR_CLOSE
+  | id_item PAR_OPEN vals_send PAR_CLOSE
 ;
 
 // methods structures
@@ -281,9 +270,9 @@ var_declaration_sub::=
 ;
 
 var_declaration_sub_extra::=
-    var_type0:type var_assign:variable              {: RESULT=actioner.getNode(type.toString(), variable.toString()); :}
-  | var_type0:type id_item:variable SEMICOLON       {: RESULT=actioner.getNode(type.toString(), variable.toString()); :}
-  | error SEMICOLON
+    var_type0:type var_assign:variable              {: RESULT=actioner.getNode(type.toString(), variable.toString()); actioner.increaseVarsDeclared(variable.toString()); :}
+  | var_type0:type id_item:variable SEMICOLON       {: RESULT=actioner.getNode(type.toString(), variable.toString()); actioner.increaseVarsDeclared(variable.toString()); :}
+  | error SEMICOLON                                 
 ;
 
 var_assign::=
@@ -293,22 +282,23 @@ var_assign::=
 var_assign_act::=
     ASSIGN val_declaration_asgn               
   | sym_inc_asgn arithm_expr                  
-  | sym_inc_step                              
+  | sym_inc_step                            
 ;
 
 output_sentence::=
     BREAK SEMICOLON                
   | RETURN SEMICOLON               
   | RETURN output_actions SEMICOLON
+  | RETURN method_call_structure_sub SEMICOLON
 ;
 
 output_actions::=
-  bool_compare
+    bool_compare
 ;
 
 bool_compare::=
-    bool_compare_sub                              {: printK("bool compare"); :}
-  | bool_compare sym_conc_bool bool_compare_sub
+      bool_compare_sub
+    | bool_compare sym_conc_bool bool_compare_sub
 ;
 
 bool_compare_sub::=
@@ -318,18 +308,19 @@ bool_compare_sub::=
 ;
 
 vals_send::=
-    val_declaration_asgn                    {: printK("params send"); :}
+    val_declaration_asgn
   | vals_send COMMA val_declaration_asgn
 ;
 
 vals_receive::=
-    var_with_type:child                                 {: RESULT=actioner.getItemAsArray(actioner.addAttrNode(child,"PARAMETER"));; printK("params receive"); :}
+    var_with_type:child                                 {: RESULT=actioner.getItemAsArray(actioner.addAttrNode(child,"PARAMETER")); :}
   | vals_receive:children COMMA var_with_type:child     {: RESULT=actioner.getArray(actioner.getItemAsArray(actioner.addAttrNode(child,"PARAMETER")),children); :}
 ;
 
 val_declaration_asgn::=
     arithm_expr
   | new_object_asgn
+  | method_call_structure_sub
 ;
 
 new_object_asgn::=
@@ -338,7 +329,7 @@ new_object_asgn::=
 ;
 
 var_with_type::= 
-  var_type0:type ID:variable  {: RESULT=actioner.getNode(type.toString(),variable.toString()); :}
+  var_type0:type ID:variable  {: RESULT=actioner.getNode(type.toString(),variable.toString()); actioner.increaseVarsDeclared(variable.toString()); :}
 ;
 
 arithm_expr::=

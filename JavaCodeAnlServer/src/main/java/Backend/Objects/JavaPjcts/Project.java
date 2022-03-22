@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
+ * This class is used to save al project's files to analyze and give a copy
+ * score, this class implements serializable 'cause we send this data with
+ * sockets connection
  *
  * @author jefemayoneso
  */

@@ -383,10 +383,14 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
   /* user code: */
 
     private ArrayList<String> comments = new ArrayList<>();
+    private int commentsCounter;
+
+    public void saveComment(String comment) { this.comments.add(comment); this.commentsCounter = 0;}
+
+    private void incCommentsCounter() {this.commentsCounter++;}
 
     public ArrayList<String> getComments () { return this.comments; }
-
-    public void saveComment(String comment) { this.comments.add(comment); }
+    public int getCommentsCounter() { return this.commentsCounter; }
 
 
 
@@ -871,7 +875,7 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
             // fall through
           case 81: break;
           case 24: 
-            { /* ignore */ saveComment(yytext());
+            { /* ignore */ saveComment(yytext()); incCommentsCounter();
             } 
             // fall through
           case 82: break;
