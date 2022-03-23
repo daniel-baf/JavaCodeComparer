@@ -16,7 +16,10 @@ public class ProjectDataSaver {
     private int classesCounter;
     private DerivationTree<JavaData> tree;
     private ArrayList<String> comments;
-    private HashMap<String, Integer> variablesTable;
+    private final HashMap<String, Integer> classesTable;
+    private final HashMap<String, Integer> variablesTable;
+    private final HashMap<String, Integer> methodTable;
+    private final HashMap<String, Integer> commentsTable;
 
     // CONSTRUCTORS
     public ProjectDataSaver(String name) {
@@ -31,7 +34,7 @@ public class ProjectDataSaver {
         this.tree = tree;
         this.comments = comments;
         this.commentsCounter = comments == null ? 0 : comments.size();
-        this.variablesTable = new HashMap<>();
+        this.variablesTable = this.classesTable = this.methodTable = this.commentsTable = new HashMap<>();
         // check tree is not empty
         this.tree.setRoot(this.tree.createNode(new JavaData("MASTER", name)));
     }
@@ -60,16 +63,29 @@ public class ProjectDataSaver {
      *
      * @param variables
      */
-    public void addVariablesDeclaredCounter(HashMap<String, Integer> variables) {
+    private void addVariablesDeclaredCounter(HashMap<String, Integer> data, HashMap<String, Integer> table) {
         // check is not null
-        if (variables != null) {
-            variables.forEach((key, value) -> {
-                if (this.variablesTable.containsKey(key)) {
-                    this.variablesTable.put(key, this.variablesTable.get(key) + value);
+        if (data != null) {
+            data.forEach((key, value) -> {
+                if (table.containsKey(key)) {
+                    table.put(key, table.get(key) + value);
                 } else {
-                    this.variablesTable.put(key, value);
+                    table.put(key, value);
                 }
             });
+        }
+    }
+
+    public void addTableHash(HashMap<String, Integer> hash, int table) {
+        switch (table) {
+            case 1 ->
+                addVariablesDeclaredCounter(hash, this.variablesTable);
+            case 2 ->
+                addVariablesDeclaredCounter(hash, this.classesTable);
+            case 3 ->
+                addVariablesDeclaredCounter(hash, this.methodTable);
+            default ->
+                addVariablesDeclaredCounter(hash, this.commentsTable);
         }
     }
 
@@ -81,9 +97,9 @@ public class ProjectDataSaver {
     public void addComments(ArrayList<String> comments) {
         // check null
         if (comments != null) {
-            comments.removeAll(Collections.singleton(null)); // delete nulls
             this.comments.addAll(comments);
             this.commentsCounter = this.comments.size();
+            this.comments.removeAll(Collections.singleton(null)); // delete nulls
         }
     }
 
@@ -121,11 +137,31 @@ public class ProjectDataSaver {
     }
 
     public int getTimesVarDeclared(String key) {
-        System.out.println("Trying to get: " + key + " contains: " + this.variablesTable.containsKey(key));
-        return this.variablesTable.get(key);
+        return getTimesDeclaredIntTable(this.variablesTable, key);
+    }
+
+    public int getTimesClassDeclared(String key) {
+        return getTimesDeclaredIntTable(this.classesTable, key);
+    }
+
+    public int getTimesMethodDeclared(String key) {
+        return getTimesDeclaredIntTable(this.methodTable, key);
+    }
+
+    public int getTimesCommentDeclared(String key) {
+        return getTimesDeclaredIntTable(this.commentsTable, key);
+    }
+
+    private int getTimesDeclaredIntTable(HashMap<String, Integer> hash, String key) {
+        try {
+            return hash.get(key);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public ArrayList<String> getComments() {
         return this.comments;
     }
+
 }

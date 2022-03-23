@@ -623,7 +623,10 @@ class CUP$JavaCodeParser$actions {
           case 1: // file ::= package_structure class_data 
             {
               Object RESULT =null;
-
+		int childrenleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
+		int childrenright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
+		Object children = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
+		 actioner.saveRoot(children); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("file",47, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -683,7 +686,7 @@ class CUP$JavaCodeParser$actions {
 		int classNodeleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
 		int classNoderight = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
 		Object classNode = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
-		 RESULT = classNode; actioner.increaseClassDeclared(); 
+		 RESULT = classNode; 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("class_data_sub",50, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -758,7 +761,10 @@ class CUP$JavaCodeParser$actions {
 		int variableleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).left;
 		int variableright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).right;
 		Object variable = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)).value;
-		 RESULT =  actioner.getNode("CLASS",variable.toString()); 
+		 
+            RESULT =  actioner.getNode("CLASS",variable.toString()); 
+            actioner.increaseClassDeclared(variable.toString());
+        
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("class_structure_sub",46, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-3)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -776,6 +782,7 @@ class CUP$JavaCodeParser$actions {
 		 
             RESULT = actioner.getNode("CLASS",variable.toString());
             actioner.saveParent(RESULT, children);
+            actioner.increaseClassDeclared(variable.toString());
         
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("class_structure_sub",46, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-4)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -920,7 +927,7 @@ class CUP$JavaCodeParser$actions {
 		int nodeMethodleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
 		int nodeMethodright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
 		Object nodeMethod = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
-		 RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter();  
+		 RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("non_constructor_structure",36, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -935,7 +942,7 @@ class CUP$JavaCodeParser$actions {
 		int nodeMethodleft = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).left;
 		int nodeMethodright = ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()).right;
 		Object nodeMethod = (Object)((java_cup.runtime.Symbol) CUP$JavaCodeParser$stack.peek()).value;
-		 RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter(); 
+		 RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); 
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("non_constructor_structure",36, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
           return CUP$JavaCodeParser$result;
@@ -956,6 +963,7 @@ class CUP$JavaCodeParser$actions {
 		 
             RESULT = actioner.getNode("METHOD",variable.toString());
             actioner.saveParent(RESULT, actioner.getArray( children, valsGet));
+            actioner.increaseMethodDeclared(variable.toString());
         
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("constructor_structure",33, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-2)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }
@@ -971,6 +979,7 @@ class CUP$JavaCodeParser$actions {
 		 
             RESULT = actioner.getNode("ERROR", "error");
             actioner.saveParent(RESULT, children);
+            actioner.increaseMethodDeclared("error");
         
               CUP$JavaCodeParser$result = parser.getSymbolFactory().newSymbol("constructor_structure",33, ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.elementAt(CUP$JavaCodeParser$top-1)), ((java_cup.runtime.Symbol)CUP$JavaCodeParser$stack.peek()), RESULT);
             }

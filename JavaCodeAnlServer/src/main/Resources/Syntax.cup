@@ -80,7 +80,7 @@ precedence left PAR_OPEN, PAR_CLOSE;
 start with file;
 
 file::=
-    package_structure class_data
+    package_structure class_data:children {: actioner.saveRoot(children); :}
   | class_data:children {: actioner.saveRoot(children); :}
 ;
 
@@ -91,7 +91,7 @@ class_data::=
 
 class_data_sub::=
     import_structure
-  | class_structure:classNode               {: RESULT = classNode; actioner.increaseClassDeclared(); :} // class node
+  | class_structure:classNode               {: RESULT = classNode; :} // class node
   | error class_data_sub
 ;
 
@@ -113,11 +113,16 @@ class_structure::=
 ;
 
 class_structure_sub::=
-    CLASS ID:variable BRAC_OPEN BRAC_CLOSE                          {: RESULT =  actioner.getNode("CLASS",variable.toString()); :}
+    CLASS ID:variable BRAC_OPEN BRAC_CLOSE                          
+        {: 
+            RESULT =  actioner.getNode("CLASS",variable.toString()); 
+            actioner.increaseClassDeclared(variable.toString());
+        :}
   | CLASS ID:variable BRAC_OPEN class_content:children BRAC_CLOSE   
         {: 
             RESULT = actioner.getNode("CLASS",variable.toString());
             actioner.saveParent(RESULT, children);
+            actioner.increaseClassDeclared(variable.toString());
         :}
 ;
 
@@ -148,8 +153,8 @@ method_structure_sub::=
 ;
 
 non_constructor_structure::=
-    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter();  :}
-  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); actioner.increaseMethodCounter(); :}
+    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
+  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
 ;
 
 constructor_structure::=
@@ -157,11 +162,13 @@ constructor_structure::=
         {: 
             RESULT = actioner.getNode("METHOD",variable.toString());
             actioner.saveParent(RESULT, actioner.getArray( children, valsGet));
+            actioner.increaseMethodDeclared(variable.toString());
         :}
   | error function_content:children
         {: 
             RESULT = actioner.getNode("ERROR", "error");
             actioner.saveParent(RESULT, children);
+            actioner.increaseMethodDeclared("error");
         :}
 ;
 

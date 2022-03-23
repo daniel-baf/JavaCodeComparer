@@ -78,16 +78,19 @@ public class JSONCreator {
      */
     private void splitData(ArrayList<Node<JavaData>[]> nodes, ArrayList<Node<JavaData>> classes, ArrayList<Node<JavaData>> methods, ArrayList<Node<JavaData>[]> variables) {
         // split data
-        nodes.forEach(variable -> {
-            switch (variable[0].getData().getType()) {
-                case "CLASS" ->
-                    classes.add(variable[0]);
-                case "METHOD" ->
-                    methods.add(variable[0]);
-                default -> // variables
-                    variables.add(variable);
-            }
-        });
+        if (nodes != null) {
+            nodes.forEach(variable -> {
+                switch (variable[0].getData().getType()) {
+                    case "CLASS" ->
+                        classes.add(variable[0]);
+                    case "METHOD" ->
+                        methods.add(variable[0]);
+                    default -> // variables
+                        variables.add(variable);
+                }
+            });
+        }
+
     }
 
     /**

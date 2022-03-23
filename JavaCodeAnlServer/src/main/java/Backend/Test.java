@@ -6,7 +6,6 @@ import Backend.Objects.JavaPjcts.ProjectScoreCalculator;
 import Utilities.JSONCreator;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Test {
 
@@ -35,7 +34,6 @@ public class Test {
         if (path != null && new File(path).isDirectory()) {
             File[] files = new File(path).listFiles();
             addFiles(files, filesOK);
-            Collections.sort(filesOK);
         }
         return filesOK;
     }
@@ -43,7 +41,7 @@ public class Test {
     public static void addFiles(File[] files, ArrayList<File> filesOK) {
         for (File file : files) {
             if (!file.isDirectory()) {
-                if (file.isFile()) {
+                if (file.isFile() && endsWith(".java", file.getName())) {
                     filesOK.add(file);
                 }
             } else {
@@ -51,5 +49,9 @@ public class Test {
                 addFiles(filesTmp, filesOK);
             }
         }
+    }
+
+    public static boolean endsWith(String extension, String string) {
+        return string.endsWith(extension);
     }
 }

@@ -72,11 +72,11 @@ public class ProjectScoreCalculator {
             this.commonNodes.forEach(commonNode -> {
                 switch (commonNode[0].getData().getType()) {
                     case "CLASS" ->
-                        this.repeatedClasses++;
+                        this.repeatedClasses += this.project1.getTimesClassDeclared(commonNode[0].getData().getVariable()) + this.project2.getTimesClassDeclared(commonNode[0].getData().getVariable());
                     case "METHOD" ->
-                        this.repeatedMethods++;
+                        this.repeatedMethods += this.project1.getTimesMethodDeclared(commonNode[0].getData().getVariable()) + this.project2.getTimesMethodDeclared(commonNode[0].getData().getVariable());
                     default ->
-                        this.repeatedVariables++;
+                        this.repeatedVariables += this.project1.getTimesVarDeclared(commonNode[0].getData().getVariable()) + this.project2.getTimesVarDeclared(commonNode[0].getData().getVariable());
                 }
             });
         }
@@ -88,16 +88,14 @@ public class ProjectScoreCalculator {
      */
     private void searchCommonComments() {
         // move between comments
-        if (this.project1.getCommentsDeclared() == 0 || this.project2.getCommentsDeclared() == 0) {
-            // do nothing, no comments match
-        } else {
-            this.project1.getComments().forEach(comment -> {
-                this.project2.getComments().stream().filter(comment2 -> (comment.equalsIgnoreCase(comment2))).forEachOrdered(_item -> {
-                    this.commonComments.add(_item);
-                    this.repeatedComments++;
-                });
+        project1.getComments().forEach(comment -> {
+            project2.getComments().stream().filter(comment1 -> (comment.equalsIgnoreCase(comment1))).map(_item -> {
+                this.commonComments.add(comment);
+                return _item;
+            }).forEachOrdered(_item -> {
+                this.repeatedComments += this.project1.getTimesCommentDeclared(_item) + this.project2.getTimesCommentDeclared(_item);
             });
-        }
+        });
     }
 
     /**
@@ -110,6 +108,12 @@ public class ProjectScoreCalculator {
      * ITEM = class, method, comment, variable
      */
     public void calcPoints() {
+        System.out.println("DATA: ");
+        System.out.println("COMMENTS: T:" + this.totalCommentsDeclared + " R:" + this.repeatedComments);
+        System.out.println("CLASSES: T" + this.totalClassDeclared + " R:" + this.repeatedClasses);
+        System.out.println("METHODS: T:" + this.totalMethodsDeclared + " R:" + this.repeatedMethods);
+        System.out.println("VARIAB: T:" + this.totalVariablesDeclared + " R:" + this.repeatedVariables);
+
         // totalRepeated / ( SUM decls p1 & p2 ) * 0.25 -> comments, variables, methods, classes
         double valsDiv = this.totalVariablesDeclared == 0 ? 1.0 : this.totalVariablesDeclared;
         double commDiv = this.totalCommentsDeclared == 0 ? 1.0 : this.totalCommentsDeclared;

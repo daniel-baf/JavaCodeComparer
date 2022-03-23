@@ -1,4 +1,3 @@
-package BackEnd;
 
 import Backend.Objects.JavaPjcts.Project;
 import Backend.Objects.JavaPjcts.ProjectAnalizer;
@@ -7,8 +6,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Test {
-
+public class prueba {
+    
+    /* un comentario largo    */
+        // constructor
     public void main(String args) {
         // project analyze
         ProjectAnalizer pa = new ProjectAnalizer(new createProject("src/main/Resources/Txt/P1"), new createProject("src/main/Resources/Txt/P2"));
@@ -38,7 +39,7 @@ public class Test {
         return filesOK;
     }
 
-    public void addFiles(Files files, ArrayListFile filesOK) {
+    public void addFiles(Files files, ArrayListFile filesOK, Boolean myBool) {
         for(int k =0; k < 100; k++) {
             if (file.isDirectory) {
                 if (file.isFile) {
@@ -51,3 +52,4 @@ public class Test {
         }
     }
 }
+

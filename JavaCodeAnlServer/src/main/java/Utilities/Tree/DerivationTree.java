@@ -57,7 +57,7 @@ public class DerivationTree<T> {
 
     private boolean isNodeReaded(ArrayList<Node<T>[]> common, Node<T> nodeSearch) {
         if (common != null) {
-            return common.stream().anyMatch(nodes -> (nodes[0].equals(nodeSearch) || nodes[1].equals(nodeSearch)));
+            return common.stream().anyMatch(nodes -> (nodes[0].getData().equals(nodeSearch.getData()) || nodes[1].getData().equals(nodeSearch.getData())));
         }
         return false;
     }
@@ -74,12 +74,10 @@ public class DerivationTree<T> {
             if (!isNodeReaded(common, search)) {
                 common.add(new Node[]{search, current});
             }
-        } else {
-            if (current.getChildren() != null && current.getChildren().size() > 0) {
-                current.getChildren().forEach(child -> {
-                    existInTree(search, child, common);
-                });
-            }
+        } else if (current.getChildren() != null && current.getChildren().size() > 0) {
+            current.getChildren().forEach(_item -> {
+                existInTree(search, _item, common);
+            });
         }
     }
 

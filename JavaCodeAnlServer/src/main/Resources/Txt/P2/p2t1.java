@@ -1,5 +1,7 @@
 public class MyClass {
     int myInt;
+    
+        /* un comentario largo */
 
     public p2t1() {
         // constructor
@@ -13,7 +15,7 @@ public class MyClass {
         return this.myInt > numCompare;
     }
 
-    public void print(String message) {
+    public void print(String message, boolean myBool) {
         message= "ESTE MENSAJE ES: " + message;
         boolean print = false;
         if(print) {

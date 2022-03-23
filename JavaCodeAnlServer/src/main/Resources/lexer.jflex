@@ -3,6 +3,7 @@ package Backend.Objects.Lexers;
 import java_cup.runtime.*;
 import Backend.Objects.Parsers.sym;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /* SECTION 2: CONFIG */
 %%
@@ -31,16 +32,32 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 
 %{
 
-    private ArrayList<String> comments = new ArrayList<>();
-    private int commentsCounter;
+    private final ArrayList<String> comments = new ArrayList<>();
+    private int commentsCounter = 0;
+    private final HashMap<String, Integer> commentsDeclTimes = new HashMap<>();
 
-    public void saveComment(String comment) { this.comments.add(comment); this.commentsCounter = 0;}
+    public void saveComment(String comment, boolean isLong) {
+        if(isLong) {
+            comment = comment.substring(2, comment.length() - 2).trim();
+        } else {
+            comment = comment.substring(2, comment.length()).trim();
+        }
+        this.comments.add(comment.trim()); 
+        this.commentsCounter++;
+
+        // check if exists
+        if (!commentsDeclTimes.containsKey(comment)) {
+            commentsDeclTimes.put(comment, 1);
+        } else {
+            commentsDeclTimes.put(comment, commentsDeclTimes.get(comment) + 1);
+        }
+    }
 
     private void incCommentsCounter() {this.commentsCounter++;}
 
     public ArrayList<String> getComments () { return this.comments; }
     public int getCommentsCounter() { return this.commentsCounter; }
-
+    public HashMap<String, Integer> getHashComments() { return this.commentsDeclTimes; }
 %}
 
 
@@ -121,8 +138,8 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 {VAL_COMILL}        {return new Symbol(sym.VAL_COMILLAS, yyline+1, yycolumn+1, yytext());}
 {SING_LETT}         {return new Symbol(sym.CHAR, yyline+1, yycolumn+1, yytext());}
 // COMMENTS
-{LINE_COMM}         {/* ignore */ saveComment(yytext()); incCommentsCounter(); } // line comment
-{LONG_COMM}         {/* ignore */ saveComment(yytext()); incCommentsCounter(); } // multi line commment
+{LINE_COMM}         {/* ignore */ saveComment(yytext(), false); incCommentsCounter(); } // line comment
+{LONG_COMM}         {/* ignore */ saveComment(yytext(), true); incCommentsCounter(); } // multi line commment
 // ids
 {NUM}               {return new Symbol(sym.NUMBER, yyline+1, yycolumn+1, yytext());}
 ({NUM}"."{NUM})     {return new Symbol(sym.DECIMAL, yyline+1, yycolumn+1, yytext());}

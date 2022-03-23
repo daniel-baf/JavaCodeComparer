@@ -22,11 +22,14 @@ public class ParserActioner {
     private int classDeclared;
     private int methodsDeclared;
     private final HashMap<String, Integer> varsTable;
+    private final HashMap<String, Integer> classTable;
+    private final HashMap<String, Integer> methodTable;
 
     public ParserActioner() {
         this.tree = new DerivationTree();
         this.varsTable = new HashMap<>();
-        this.varsTable.put("classVal1", 1);
+        this.classTable = new HashMap<>();
+        this.methodTable = new HashMap<>();
     }
 
     /**
@@ -132,7 +135,7 @@ public class ParserActioner {
      */
     public Object getNode(String type, String variable) {
         try {
-            return new Node<JavaData>(new JavaData(variable, type));
+            return new Node<>(new JavaData(variable, type));
         } catch (Exception e) {
             System.out.println("ERROR CREATING NODE: " + e.getMessage());
             return null;
@@ -145,13 +148,13 @@ public class ParserActioner {
      *
      * @param variable
      */
-    public void addVarToVarsTable(String variable) {
+    public void addVarToVarsTable(String variable, HashMap<String, Integer> table) {
         try {
             // check if exists
-            if (!this.varsTable.containsKey(variable)) {
-                this.varsTable.put(variable, 1);
+            if (!table.containsKey(variable)) {
+                table.put(variable, 1);
             } else {
-                this.varsTable.put(variable, this.varsTable.get(variable) + 1);
+                table.put(variable, table.get(variable) + 1);
             }
         } catch (Exception e) {
             System.out.println("ERROR ADDING VARIABLE TO VARS TABLE: " + e.getMessage());
@@ -161,15 +164,18 @@ public class ParserActioner {
     // GETTERS
     public void increaseVarsDeclared(String variable) {
         this.varsDeclared++;
-        addVarToVarsTable(variable);
+        addVarToVarsTable(variable, this.varsTable);
     }
 
-    public void increaseClassDeclared() {
+    public void increaseClassDeclared(String classDecl) {
         this.classDeclared++;
+        addVarToVarsTable(classDecl, this.classTable);
+
     }
 
-    public void increaseMethodCounter() {
+    public void increaseMethodDeclared(String methodDecl) {
         this.methodsDeclared++;
+        addVarToVarsTable(methodDecl, methodTable);
     }
 
     public DerivationTree<JavaData> getTree() {
@@ -190,6 +196,14 @@ public class ParserActioner {
 
     public HashMap<String, Integer> getVarsTable() {
         return this.varsTable;
+    }
+
+    public HashMap<String, Integer> getClassTable() {
+        return classTable;
+    }
+
+    public HashMap<String, Integer> getMethodTable() {
+        return methodTable;
     }
 
 }

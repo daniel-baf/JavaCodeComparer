@@ -70,9 +70,10 @@ public class ProjectAnalizer {
             this.parser.parse();
             // create root file and add it to slice tree
             this.parser.getActioner().getTree().getRoot().getData().setVariable(file.getName().toUpperCase());
-            saveDataToMasterTree(project);
         } catch (Exception e) {
             System.out.println("Error at project analizer: " + e.getMessage());
+        } finally {
+            saveDataToMasterTree(project);
         }
     }
 
@@ -84,12 +85,15 @@ public class ProjectAnalizer {
      * @param project
      */
     private void saveDataToMasterTree(ProjectDataSaver project) {
+        project.addComments(this.lexer.getComments()); // add comments
         project.addChildren(this.parser.getActioner().getTree().getRoot());// add children
         project.addVariablesCounter(this.parser.getActioner().getVarsDeclared()); // add variables counter
         project.addMethodsCounter(this.parser.getActioner().getMethodsDeclared()); // add methods counter
         project.addClassesCounter(this.parser.getActioner().getClassDeclared()); // add classes counter
-        project.addComments(this.lexer.getComments()); // add comments
-        project.addVariablesDeclaredCounter(this.parser.getActioner().getVarsTable()); // add variables counter table
+        project.addTableHash(this.parser.getActioner().getVarsTable(), 1); // add variables counter table       
+        project.addTableHash(this.parser.getActioner().getClassTable(), 2); // add variables counter table
+        project.addTableHash(this.parser.getActioner().getMethodTable(), 3); // add variables counter table
+        project.addTableHash(this.lexer.getHashComments(), 4);
     }
 
     // GETTRES AND SETTERS
