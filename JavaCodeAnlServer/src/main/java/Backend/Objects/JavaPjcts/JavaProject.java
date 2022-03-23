@@ -16,15 +16,15 @@ import java.util.ArrayList;
  *
  * @author jefemayoneso
  */
-public class Project implements Serializable {
+public class JavaProject implements Serializable {
 
     private int filesCuantity;
     private ArrayList<File> files;
 
-    public Project() {
+    public JavaProject() {
     }
 
-    public Project(int filesCuantity, ArrayList<File> files) {
+    public JavaProject(int filesCuantity, ArrayList<File> files) {
         this.filesCuantity = filesCuantity;
         this.files = files;
     }

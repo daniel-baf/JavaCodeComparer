@@ -5,8 +5,7 @@ import java.io.StringReader;
 
 import Backend.Objects.Lexers.JavaCodeLexer;
 import Backend.Objects.Parsers.JavaCodeParser;
-import Backend.Objects.Parsers.ProjectDataSaver;
-import Utilities.FileReader;
+import Utilities.FileActioner;
 
 public class ProjectAnalizer {
 
@@ -14,18 +13,24 @@ public class ProjectAnalizer {
     private final ProjectDataSaver project2;
     private JavaCodeLexer lexer;
     private JavaCodeParser parser;
-    private final FileReader reader;
-    private final Project project1Data;
-    private final Project project2Data;
+    private final FileActioner reader;
+    private final JavaProject project1Data;
+    private final JavaProject project2Data;
 
-    public ProjectAnalizer(Project project1, Project project2) {
+    public ProjectAnalizer(JavaProject project1, JavaProject project2) {
         this.project1 = new ProjectDataSaver("PJCT1");
         this.project2 = new ProjectDataSaver("PJCT2");
         this.project1Data = project1;
         this.project2Data = project2;
-        this.reader = new FileReader();
+        this.reader = new FileActioner();
     }
 
+    /**
+     * Execute a full lexical and sintactical analyzis of 2 project, each
+     * project contains multiple java files, this method creates 2 Objects
+     * ProjectDataSaver wich contains all comments, variables, method an classes
+     * declared... all information used after to calculate a copy score
+     */
     public void execAnalyzis() {
         // analyze project1
         try {
@@ -49,6 +54,14 @@ public class ProjectAnalizer {
         }
     }
 
+    /**
+     * Analyze a file and create a derivation tree with the project data, also
+     * validate errors and get comments, the data generated is used to compare a
+     * tree with other tree and calculate the copy score
+     *
+     * @param file
+     * @param project
+     */
     private void startAnalyzing(File file, ProjectDataSaver project) {
         try {
             this.lexer = new JavaCodeLexer(new StringReader(this.reader.readFile(file)));
@@ -56,13 +69,20 @@ public class ProjectAnalizer {
             // sintactical analysis
             this.parser.parse();
             // create root file and add it to slice tree
-            this.parser.getActioner().getTree().getRoot().setVariable(file.getName().toUpperCase());
+            this.parser.getActioner().getTree().getRoot().getData().setVariable(file.getName().toUpperCase());
             saveDataToMasterTree(project);
         } catch (Exception e) {
             System.out.println("Error at project analizer: " + e.getMessage());
         }
     }
 
+    /**
+     * Add data to a new three slice, this new slice can be added to a master
+     * tree then and save multiple file.java trees into a master tree with .java
+     * files as children
+     *
+     * @param project
+     */
     private void saveDataToMasterTree(ProjectDataSaver project) {
         project.addChildren(this.parser.getActioner().getTree().getRoot());// add children
         project.addVariablesCounter(this.parser.getActioner().getVarsDeclared()); // add variables counter
@@ -72,6 +92,7 @@ public class ProjectAnalizer {
         project.addVariablesDeclaredCounter(this.parser.getActioner().getVarsTable()); // add variables counter table
     }
 
+    // GETTRES AND SETTERS
     public ProjectDataSaver getProject1() {
         return project1;
     }

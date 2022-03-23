@@ -1,31 +1,26 @@
-package Backend.Objects.NodeTree;
+package Utilities.Tree;
 
 import java.util.ArrayList;
 
-public class TreeActioner {
+public class DerivationTree<T> {
 
-    private Node root;
+    private Node<T> root;
 
-    public TreeActioner() {
+    public DerivationTree() {
         this.root = null;
     }
 
-    /**
-     * Print in console the tree
-     *
-     * @param root main node
-     * @param parent the parent of actual node
-     * @param tab n visual spaces \t
-     */
-    public void printTree(Node root, String tab) {
-        if (root != null) {
-            System.out.println(tab + root.toString());
-            if (root.getChildren() != null && root.getChildren().size() > 0) {
-                root.getChildren().forEach(child -> {
-                    printTree(child, tab + "\t");
+    public void print() {
+        print(this.root, "");
+    }
+
+    private void print(Node<T> current, String tab) {
+        if (current != null) {
+            System.out.println(tab + current.toString());
+            if (current.getChildren() != null && current.getChildren().size() > 0) {
+                current.getChildren().forEach(node -> {
+                    print(node, tab + "\t");
                 });
-            } else {
-                root.setChildren(null);
             }
         }
     }
@@ -36,8 +31,8 @@ public class TreeActioner {
      * @param otherRoot the other tree root
      * @return an array with common nodes, null if doesn't exist
      */
-    public ArrayList<Node[]> searchCommons(Node otherRoot) {
-        ArrayList<Node[]> common = new ArrayList<>(); // reset array each time to avoid duplicates
+    public ArrayList<Node<T>[]> searchCommons(Node<T> otherRoot) {
+        ArrayList<Node<T>[]> common = new ArrayList<>(); // reset array each time to avoid duplicates
         searchCommons(otherRoot, common);
         return common.size() > 0 ? common : null;
     }
@@ -48,7 +43,7 @@ public class TreeActioner {
      * @param otherRoot the other tree to compare with
      * @param common an array to save common nodes
      */
-    private void searchCommons(Node otherRoot, ArrayList<Node[]> common) {
+    private void searchCommons(Node<T> otherRoot, ArrayList<Node<T>[]> common) {
         // start searching
         if (otherRoot != null && this.root != null) {
             existInTree(otherRoot, this.root, common);
@@ -60,7 +55,7 @@ public class TreeActioner {
         }
     }
 
-    private boolean isNodeReaded(ArrayList<Node[]> common, Node nodeSearch) {
+    private boolean isNodeReaded(ArrayList<Node<T>[]> common, Node<T> nodeSearch) {
         if (common != null) {
             return common.stream().anyMatch(nodes -> (nodes[0].equals(nodeSearch) || nodes[1].equals(nodeSearch)));
         }
@@ -74,8 +69,8 @@ public class TreeActioner {
      * @param current the node we are looking
      * @param common an array to save common nodes
      */
-    private void existInTree(Node search, Node current, ArrayList<Node[]> common) {
-        if (search.equals(current)) {
+    private void existInTree(Node<T> search, Node<T> current, ArrayList<Node<T>[]> common) {
+        if (search.getData().equals(current.getData())) {
             if (!isNodeReaded(common, search)) {
                 common.add(new Node[]{search, current});
             }
@@ -94,7 +89,7 @@ public class TreeActioner {
      * @param parent the master node
      * @param children the master node children
      */
-    public void setParents(Node parent, ArrayList<Node> children) {
+    public void setParents(Node<T> parent, ArrayList<Node<T>> children) {
         if (children != null) {
             children.stream().filter(child -> (child != null)).forEachOrdered(child -> {
                 child.setParent(parent);
@@ -103,19 +98,19 @@ public class TreeActioner {
     }
 
     // GETTERS AND SETTERS + node create
-    public Node createNode(String type, String variable) {
-        return createNode(type, variable, null);
+    public Node<T> createNode(T data) {
+        return createNode(data, null);
     }
 
-    public Node createNode(String type, String variable, Node parent) {
-        return new Node(type.toUpperCase(), variable, parent);
+    public Node<T> createNode(T data, Node<T> parent) {
+        return new Node<>(data, parent);
     }
 
-    public Node getRoot() {
+    public Node<T> getRoot() {
         return this.root;
     }
 
-    public void setRoot(Node root) {
+    public void setRoot(Node<T> root) {
         this.root = root;
     }
 

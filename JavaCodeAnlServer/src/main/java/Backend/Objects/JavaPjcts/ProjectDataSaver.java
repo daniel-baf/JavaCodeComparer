@@ -1,9 +1,9 @@
-package Backend.Objects.Parsers;
+package Backend.Objects.JavaPjcts;
 
 import java.util.ArrayList;
 
-import Backend.Objects.NodeTree.Node;
-import Backend.Objects.NodeTree.TreeActioner;
+import Utilities.Tree.Node;
+import Utilities.Tree.DerivationTree;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,16 +14,17 @@ public class ProjectDataSaver {
     private int variablesCounter;
     private int methodsCounter;
     private int classesCounter;
-    private TreeActioner tree;
+    private DerivationTree<JavaData> tree;
     private ArrayList<String> comments;
     private HashMap<String, Integer> variablesTable;
 
+    // CONSTRUCTORS
     public ProjectDataSaver(String name) {
-        this(0, 0, 0, new TreeActioner(), new ArrayList<String>(), name);
+        this(0, 0, 0, new DerivationTree(), new ArrayList<String>(), name);
     }
 
     public ProjectDataSaver(int variablesCounter, int methodsCounter, int classesCounter,
-            TreeActioner tree, ArrayList<String> comments, String name) {
+            DerivationTree tree, ArrayList<String> comments, String name) {
         this.variablesCounter = variablesCounter;
         this.methodsCounter = methodsCounter;
         this.classesCounter = classesCounter;
@@ -32,11 +33,17 @@ public class ProjectDataSaver {
         this.commentsCounter = comments == null ? 0 : comments.size();
         this.variablesTable = new HashMap<>();
         // check tree is not empty
-        this.tree.setRoot(this.tree.createNode("MASTER", name));
+        this.tree.setRoot(this.tree.createNode(new JavaData("MASTER", name)));
     }
 
-    public void addChildren(Node... children) {
-        ArrayList<Node> nodes = new ArrayList<>();
+    /**
+     * Add a tree son to master tree, the added tree (new child) is a tree that
+     * belongs to a java file
+     *
+     * @param children
+     */
+    public void addChildren(Node<JavaData>... children) {
+        ArrayList<Node<JavaData>> nodes = new ArrayList<>();
         nodes.addAll(Arrays.asList(children));
         if (this.tree.getRoot().getChildren() == null) {
             this.tree.getRoot().setChildren(nodes);
@@ -48,6 +55,11 @@ public class ProjectDataSaver {
 
     }
 
+    /**
+     * Add the number of times a variable is declared
+     *
+     * @param variables
+     */
     public void addVariablesDeclaredCounter(HashMap<String, Integer> variables) {
         // check is not null
         if (variables != null) {
@@ -61,6 +73,21 @@ public class ProjectDataSaver {
         }
     }
 
+    /**
+     * Save a comment to the list and remove possible nulls or empty comments
+     *
+     * @param comments
+     */
+    public void addComments(ArrayList<String> comments) {
+        // check null
+        if (comments != null) {
+            comments.removeAll(Collections.singleton(null)); // delete nulls
+            this.comments.addAll(comments);
+            this.commentsCounter = this.comments.size();
+        }
+    }
+
+    // GETTERS AND SETTERS
     public void addMethodsCounter(int n) {
         this.methodsCounter += n;
     }
@@ -73,16 +100,7 @@ public class ProjectDataSaver {
         this.variablesCounter += n;
     }
 
-    public void addComments(ArrayList<String> comments) {
-        // check null
-        if (comments != null) {
-            comments.removeAll(Collections.singleton(null)); // delete nulls
-            this.comments.addAll(comments);
-            this.commentsCounter = this.comments.size();
-        }
-    }
-
-    public TreeActioner getTree() {
+    public DerivationTree getTree() {
         return tree;
     }
 

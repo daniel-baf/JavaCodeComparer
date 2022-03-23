@@ -15,30 +15,30 @@ import java.io.Serializable;
  */
 public class AnalizeData implements Serializable {
 
-    private Project project1;
-    private Project project2;
+    private JavaProject project1;
+    private JavaProject project2;
 
     public AnalizeData() {
     }
 
-    public AnalizeData(Project project1, Project project2) {
+    public AnalizeData(JavaProject project1, JavaProject project2) {
         this.project1 = project1;
         this.project2 = project2;
     }
 
-    public Project getProject1() {
+    public JavaProject getProject1() {
         return project1;
     }
 
-    public void setProject1(Project project1) {
+    public void setProject1(JavaProject project1) {
         this.project1 = project1;
     }
 
-    public Project getProject2() {
+    public JavaProject getProject2() {
         return project2;
     }
 
-    public void setProject2(Project project2) {
+    public void setProject2(JavaProject project2) {
         this.project2 = project2;
     }
 

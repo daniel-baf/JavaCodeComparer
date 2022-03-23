@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package BackEnd;
+package Backend;
 
 import Backend.Objects.JavaPjcts.AnalizeData;
 import Backend.Objects.Message;
@@ -33,7 +33,6 @@ public class ServerThread extends Thread {
             Message<AnalizeData> message = (Message<AnalizeData>) input.readObject();
             // execute actions
             execAction(message, output);
-
         } catch (EOFException e) {
             // this is ok, expected error
         } catch (Exception ex) {

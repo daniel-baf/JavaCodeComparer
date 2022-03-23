@@ -1,8 +1,10 @@
 package Backend.Objects.Parsers;
 
+import Backend.Objects.JavaPjcts.JavaData;
+import Utilities.Tree.Node;
+import Utilities.Tree.DerivationTree;
 import java.util.ArrayList;
 
-import Backend.Objects.NodeTree.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,14 +17,14 @@ import java.util.HashMap;
  */
 public class ParserActioner {
 
-    private TreeActioner tree;
+    private final DerivationTree<JavaData> tree;
     private int varsDeclared;
     private int classDeclared;
     private int methodsDeclared;
-    private HashMap<String, Integer> varsTable;
+    private final HashMap<String, Integer> varsTable;
 
     public ParserActioner() {
-        this.tree = new TreeActioner();
+        this.tree = new DerivationTree();
         this.varsTable = new HashMap<>();
         this.varsTable.put("classVal1", 1);
     }
@@ -34,7 +36,7 @@ public class ParserActioner {
      */
     public void saveRoot(Object children) {
         try {
-            Node parent = new Node("ROOT", "FILE");
+            Node<JavaData> parent = new Node<JavaData>(new JavaData("ROOT", "FILE"));
             saveParent(parent, children);
             tree.setRoot(parent);
         } catch (Exception e) {
@@ -50,8 +52,8 @@ public class ParserActioner {
      */
     public void saveParent(Object parent, Object children) {
         try {
-            Node parentNode = (Node) parent;
-            ArrayList<Node> childrenNode = children != null ? (ArrayList<Node>) children : null;
+            Node<JavaData> parentNode = (Node<JavaData>) parent;
+            ArrayList<Node<JavaData>> childrenNode = children != null ? (ArrayList<Node<JavaData>>) children : null;
             parentNode.setChildren(childrenNode);
             tree.setParents(parentNode, childrenNode);
         } catch (Exception e) {
@@ -65,11 +67,11 @@ public class ParserActioner {
      * @param object the object to cast
      * @return
      */
-    public ArrayList<Node> getItemAsArray(Object object) {
+    public ArrayList<Node<JavaData>> getItemAsArray(Object object) {
         try {
             if (object != null) {
-                ArrayList<Node> array = new ArrayList<>();
-                array.add((Node) object);
+                ArrayList<Node<JavaData>> array = new ArrayList<>();
+                array.add((Node<JavaData>) object);
                 return array;
             }
         } catch (Exception e) {
@@ -86,11 +88,11 @@ public class ParserActioner {
      * @param array2
      * @return
      */
-    public ArrayList<Node> getArray(Object array1, Object array2) {
+    public ArrayList<Node<JavaData>> getArray(Object array1, Object array2) {
         try {
-            ArrayList<Node> array = array1 != null ? (ArrayList<Node>) array1 : new ArrayList<>();
+            ArrayList<Node<JavaData>> array = array1 != null ? (ArrayList<Node<JavaData>>) array1 : new ArrayList<>();
             if (array2 != null) {
-                array.addAll((Collection<? extends Node>) array2);
+                array.addAll((Collection<? extends Node<JavaData>>) array2);
             }
             array.removeAll(Collections.singleton(null));
             return array;
@@ -104,15 +106,15 @@ public class ParserActioner {
      * Return an object Object with a Node element, but first adds an attribute
      * to the Object
      *
-     * @param object    The Object to save
+     * @param object The Object to save
      * @param attribute The attribute to add to object
      * @return the same object with new attributes
      */
     public Object addAttrNode(Object object, String... attribute) {
         try {
             if (object != null) {
-                Node node = (Node) object;
-                node.addAttributes(attribute);
+                Node<JavaData> node = (Node<JavaData>) object;
+                node.getData().addAttributes(attribute);
                 return node;
             }
         } catch (Exception e) {
@@ -124,13 +126,13 @@ public class ParserActioner {
     /**
      * Create a new Node and cast to Object, send this new object to parser
      *
-     * @param type     node type
+     * @param type node type
      * @param variable node variable
      * @return new node
      */
     public Object getNode(String type, String variable) {
         try {
-            return this.tree.createNode(type, variable);
+            return new Node<JavaData>(new JavaData(variable, type));
         } catch (Exception e) {
             System.out.println("ERROR CREATING NODE: " + e.getMessage());
             return null;
@@ -140,7 +142,7 @@ public class ParserActioner {
 
     /**
      * Save a list with number of declarations of variables
-     * 
+     *
      * @param variable
      */
     public void addVarToVarsTable(String variable) {
@@ -157,10 +159,6 @@ public class ParserActioner {
     }
 
     // GETTERS
-    public TreeActioner getTree() {
-        return this.tree;
-    }
-
     public void increaseVarsDeclared(String variable) {
         this.varsDeclared++;
         addVarToVarsTable(variable);
@@ -174,16 +172,20 @@ public class ParserActioner {
         this.methodsDeclared++;
     }
 
+    public DerivationTree<JavaData> getTree() {
+        return tree;
+    }
+
     public int getVarsDeclared() {
-        return this.varsDeclared;
+        return varsDeclared;
     }
 
     public int getClassDeclared() {
-        return this.classDeclared;
+        return classDeclared;
     }
 
     public int getMethodsDeclared() {
-        return this.methodsDeclared;
+        return methodsDeclared;
     }
 
     public HashMap<String, Integer> getVarsTable() {

@@ -1,4 +1,4 @@
-public class p2t1 {
+public class MyClass {
     int myInt;
 
     public p2t1() {

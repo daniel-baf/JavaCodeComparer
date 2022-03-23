@@ -1,8 +1,9 @@
-package BackEnd;
+package Backend;
 
-import Backend.Objects.JavaPjcts.Project;
+import Backend.Objects.JavaPjcts.JavaProject;
 import Backend.Objects.JavaPjcts.ProjectAnalizer;
-import Backend.Objects.JavaPjcts.ProjectCopyCalcultator;
+import Backend.Objects.JavaPjcts.ProjectScoreCalculator;
+import Utilities.JSONCreator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,18 +12,19 @@ public class Test {
 
     public static void main(String[] args) {
         // project analyze
-        ProjectAnalizer pa = new ProjectAnalizer(createProject("src/main/Resources/Txt/P1"), createProject("src/main/Resources/Txt/P2"));
+        ProjectAnalizer pa = new ProjectAnalizer(createProject("src/main/Resources/Txt/P1k"), createProject("src/main/Resources/Txt/P2k"));
         // run analyzis
         pa.execAnalyzis();
         // calc results
-        ProjectCopyCalcultator pcc = new ProjectCopyCalcultator(pa.getProject1(), pa.getProject2());
-        pcc.printTreeProjects();
+        ProjectScoreCalculator pcc = new ProjectScoreCalculator(pa.getProject1(), pa.getProject2());
         pcc.searchCommonNodes();
-        pcc.printCommonNodes();
+        // create JSON
+        JSONCreator jsonC = new JSONCreator();
+        jsonC.generateJSON(pcc);
     }
 
-    public static Project createProject(String path) {
-        Project tmp = new Project();
+    public static JavaProject createProject(String path) {
+        JavaProject tmp = new JavaProject();
         tmp.setFileNames(getFiles(path));
         tmp.setFilesCuantity(tmp.getFiles().size());
         return tmp;
