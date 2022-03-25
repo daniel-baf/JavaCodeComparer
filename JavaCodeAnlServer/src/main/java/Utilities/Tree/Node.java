@@ -2,7 +2,6 @@ package Utilities.Tree;
 
 import java.util.ArrayList;
 
-
 /**
  * This class represents a derivation tree node, save the variable, the type,
  * the parent, the attributes and children
@@ -24,7 +23,7 @@ public class Node<T> {
         this(data, null);
     }
 
-    public Node(T data, Node parent) {
+    public Node(T data, Node<T> parent) {
         this.parent = parent;
         this.data = data;
         this.children = null;
@@ -55,6 +54,7 @@ public class Node<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String toString() {
         int childrens = this.children == null ? 0 : this.children.size();
         String datak = this.data == null ? null : this.data.toString();

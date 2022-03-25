@@ -8,7 +8,7 @@ package Utilities;
 import Utilities.Tree.JavaData;
 import Backend.Objects.JavaPjcts.ProjectScoreCalculator;
 import Utilities.Tree.CommonData;
-import Utilities.Tree.Node;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -20,9 +20,11 @@ public class JSONCreator {
     public JSONCreator() {
     }
 
-    public void generateJSON(ProjectScoreCalculator pcc) {
-        ArrayList<String> lines = getJSON(pcc);
-        new FileActioner().writeFile("JSON", "copy.json", lines);
+    public File createJSON(ProjectScoreCalculator pcc) {
+        ArrayList<String> lines = generateJSON(pcc);
+        FileActioner fileActioner = new FileActioner();
+        fileActioner.writeFile("JSON", "copy.json", lines);
+        return fileActioner.getWrittenFile();
     }
 
     /**
@@ -31,7 +33,7 @@ public class JSONCreator {
      * @param pcc
      * @return
      */
-    private ArrayList<String> getJSON(ProjectScoreCalculator pcc) {
+    private ArrayList<String> generateJSON(ProjectScoreCalculator pcc) {
         ArrayList<String> lines = new ArrayList<>();
         // start JSON
         lines.add(startJSON());
@@ -42,11 +44,6 @@ public class JSONCreator {
         // close JSON
         lines.add(closeJSON());
 
-        // print lines
-        System.out.println("\n");
-        lines.forEach(line -> {
-            System.out.println(line);
-        });
         return lines;
     }
 
@@ -120,10 +117,10 @@ public class JSONCreator {
         lines.add("\tVariables:[");
 
         variables.forEach(_item -> {
-            String prev = "CLASS".equals(_item.getParent().getData().getType()) ? "Clase " + _item.getParent().getData().getVariable() : "Metodo " + _item.getParent().getData().getVariable() + ", ";
+            String prev = "CLASS".equals(_item.getParent().getData().getType()) ? "Clase " + _item.getParent().getData().getVariable() : "Metodo " + _item.getParent().getData().getVariable();
             String foundNodes = "";
             String withComma = variables.get(variables.size() - 1).getData() == _item.getData() ? "" : ", ";
-            foundNodes = _item.getMatchedNodes().stream().map(matchedNode -> "CLASS".equals(matchedNode.getParent().getData().getType()) ? ", Clase: " + matchedNode.getParent().getData().getVariable() : ", Metodo" + matchedNode.getParent().getData().getVariable()).reduce(foundNodes, String::concat);
+            foundNodes = _item.getMatchedNodes().stream().map(matchedNode -> "CLASS".equals(matchedNode.getParent().getData().getType()) ? ", Clase " + matchedNode.getParent().getData().getVariable() : ", Metodo " + matchedNode.getParent().getData().getVariable()).reduce(foundNodes, String::concat);
             lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo:\"%2$s\", Funcion: \"%3$s\"}%4$s", _item.getData().getVariable(), _item.getData().getType(), prev + foundNodes, withComma));
         });
         lines.add("\t],");
@@ -131,7 +128,7 @@ public class JSONCreator {
         lines.add("\tMetodos:[");
         methods.forEach(_item -> {
             String withComma = methods.get(methods.size() - 1).getData() == _item.getData() ? "" : ", ";
-            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo: \"%2$s\", Parametros: %3$x}%4$s", _item.getData().getVariable(), _item.getData().getType(), _item.getData().getParametersSize(), withComma)); // TODO check this
+            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo: \"%2$s\", Parametros: %3$x}%4$s", _item.getData().getVariable(), _item.getData().getType(), _item.getData().getParametersSize(), withComma));
         });
         lines.add("\t],");
         // save comments
@@ -154,21 +151,4 @@ public class JSONCreator {
     public String setScore(Double score) {
         return "\tScore: \"" + score + "\",";
     }
-
-    public int getChildrenParams(Node<JavaData> node) {
-        int params = 0;
-        if (node.getChildren() != null && node.getChildren().size() > 0) {
-            params = node.getChildren().stream().filter(node1 -> (node1.getData().getAttributes().contains("PARAMETER"))).map(_item -> 1).reduce(params, Integer::sum);
-        }
-        return params;
-    }
-
-    public String getType(Node<JavaData> node) {
-        try {
-            return node.getData().getAttributes().get(0);
-        } catch (Exception e) {
-            return "PUBLIC";
-        }
-    }
-
 }

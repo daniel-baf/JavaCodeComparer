@@ -1,11 +1,11 @@
 package Backend.Objects.JavaPjcts;
 
+import Backend.Objects.AnalysisError;
 import Utilities.Tree.JavaData;
 import java.util.ArrayList;
 
 import Utilities.Tree.Node;
 import Utilities.Tree.DerivationTree;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -15,20 +15,22 @@ public class ProjectDataSaver {
     private int variablesCounter;
     private int methodsCounter;
     private int classesCounter;
+    private String name;
     private DerivationTree<JavaData> tree;
     private ArrayList<String> comments;
     private HashMap<String, Integer> classesTable;
     private HashMap<String, Integer> variablesTable;
     private HashMap<String, Integer> methodTable;
     private HashMap<String, Integer> commentsTable;
+    private ArrayList<AnalysisError> errors;
 
     // CONSTRUCTORS
     public ProjectDataSaver(String name) {
-        this(0, 0, 0, new DerivationTree(), new ArrayList<String>(), name);
+        this(0, 0, 0, new DerivationTree<JavaData>(), new ArrayList<String>(), name);
     }
 
     public ProjectDataSaver(int variablesCounter, int methodsCounter, int classesCounter,
-            DerivationTree tree, ArrayList<String> comments, String name) {
+            DerivationTree<JavaData> tree, ArrayList<String> comments, String name) {
         this.variablesCounter = variablesCounter;
         this.methodsCounter = methodsCounter;
         this.classesCounter = classesCounter;
@@ -36,7 +38,9 @@ public class ProjectDataSaver {
         this.comments = comments;
         this.commentsCounter = comments == null ? 0 : comments.size();
         this.variablesTable = this.classesTable = this.methodTable = this.commentsTable = new HashMap<>();
+        this.errors = new ArrayList<>();
         // check tree is not empty
+        this.name = name;
         this.tree.setRoot(this.tree.createNode(new JavaData("MASTER", name)));
     }
 
@@ -46,9 +50,9 @@ public class ProjectDataSaver {
      *
      * @param children
      */
-    public void addChildren(Node<JavaData>... children) {
+    public void addChild(Node<JavaData> child) {
         ArrayList<Node<JavaData>> nodes = new ArrayList<>();
-        nodes.addAll(Arrays.asList(children));
+        nodes.add(child);
         if (this.tree.getRoot().getChildren() == null) {
             this.tree.getRoot().setChildren(nodes);
             this.tree.setParents(this.tree.getRoot(), nodes);
@@ -123,7 +127,7 @@ public class ProjectDataSaver {
         this.variablesCounter += n;
     }
 
-    public DerivationTree getTree() {
+    public DerivationTree<JavaData> getTree() {
         return tree;
     }
 
@@ -169,6 +173,18 @@ public class ProjectDataSaver {
 
     public ArrayList<String> getComments() {
         return this.comments;
+    }
+
+    public ArrayList<AnalysisError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(ArrayList<AnalysisError> errors) {
+        this.errors = errors;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

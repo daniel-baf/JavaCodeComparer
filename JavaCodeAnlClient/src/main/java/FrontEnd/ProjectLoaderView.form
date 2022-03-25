@@ -77,7 +77,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jpanelProject1Title" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jPanelP1Buttons" min="-2" pref="190" max="-2" attributes="0"/>
+                          <Component id="jPanelProject1Section" min="-2" pref="190" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -87,7 +87,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jpanelProject1Title" min="-2" pref="47" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanelP1Buttons" min="-2" pref="52" max="-2" attributes="0"/>
+                          <Component id="jPanelProject1Section" min="-2" pref="52" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -110,7 +110,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanelP1Buttons">
+                <Container class="javax.swing.JPanel" name="jPanelProject1Section">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
                   <SubComponents>
@@ -143,7 +143,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jPanelP1Buttons2" min="-2" pref="215" max="-2" attributes="0"/>
+                          <Component id="jPanelProject2Section" min="-2" pref="215" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -152,7 +152,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanelP1Buttons2" pref="55" max="32767" attributes="0"/>
+                          <Component id="jPanelProject2Section" pref="55" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -182,7 +182,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanelP1Buttons2">
+                <Container class="javax.swing.JPanel" name="jPanelProject2Section">
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
                   <SubComponents>

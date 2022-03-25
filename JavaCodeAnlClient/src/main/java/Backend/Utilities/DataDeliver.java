@@ -42,7 +42,13 @@ public class DataDeliver<T> {
         }
     }
 
-    public boolean isServerConnected() {
-        return this.socket != null && !this.socket.isClosed() && this.socket.isConnected();
+    public Message<T> getData() {
+        try {
+            Message<T> response = (Message<T>) this.input.readObject();
+            return response;
+        } catch (Exception e) {
+            System.out.println("Error receiving data " + e);
+            return null;
+        }
     }
 }

@@ -42,6 +42,7 @@ public class ProjectScoreCalculator {
         // repeated = 0 until analyzis executed
         this.repeatedClasses = this.repeatedComments = this.repeatedMethods = this.repeatedVariables = 0;
         this.commonComments = new ArrayList<>();
+        this.commonComments = new ArrayList<>();
         this.score = 0.0000;
     }
 
@@ -69,7 +70,9 @@ public class ProjectScoreCalculator {
                     case "CLASS" -> {
                         addToHash("CLASS: " + commonData.getData().getVariable());
                         if (getFromHash("CLASS: " + commonData.getData().getVariable()) <= 1) {
-                            this.repeatedClasses += this.project1.getTimesClassDeclared(commonData.getData().getVariable()) + this.project2.getTimesClassDeclared(commonData.getData().getVariable());
+                            this.repeatedClasses += this.project1
+                                    .getTimesClassDeclared(commonData.getData().getVariable())
+                                    + this.project2.getTimesClassDeclared(commonData.getData().getVariable());
                         }
                     }
                     default ->
@@ -84,9 +87,11 @@ public class ProjectScoreCalculator {
         addToHash(item);
         if (getFromHash(item) <= 1) {
             if (par.isIsMethod()) {
-                this.repeatedMethods += this.project1.getTimesMethodDeclared(par.getVariable()) + this.project2.getTimesMethodDeclared(par.getVariable());
+                this.repeatedMethods += this.project1.getTimesMethodDeclared(par.getVariable())
+                        + this.project2.getTimesMethodDeclared(par.getVariable());
             } else {
-                this.repeatedVariables += this.project1.getTimesVarDeclared(par.getVariable()) + this.project2.getTimesVarDeclared(par.getVariable());
+                this.repeatedVariables += this.project1.getTimesVarDeclared(par.getVariable())
+                        + this.project2.getTimesVarDeclared(par.getVariable());
             }
         }
     }
@@ -101,7 +106,8 @@ public class ProjectScoreCalculator {
             // check times delcared the comment with hashmap
             if (this.project2.getTimesCommentDeclared(comment) > 0) {
                 this.commonComments.add(comment);
-                this.repeatedComments += this.project1.getTimesCommentDeclared(comment) + this.project2.getTimesCommentDeclared(comment);
+                this.repeatedComments += this.project1.getTimesCommentDeclared(comment)
+                        + this.project2.getTimesCommentDeclared(comment);
             }
         });
     }
@@ -116,21 +122,15 @@ public class ProjectScoreCalculator {
      * ITEM = class, method, comment, variable
      */
     public void calcPoints() {
-        // totalRepeated / ( SUM decls p1 & p2 ) * 0.25 -> comments, variables, methods, classes
+        // totalRepeated / ( SUM decls p1 & p2 ) * 0.25 -> comments, variables, methods,
+        // classes
         double valsDiv = this.totalVariablesDeclared == 0 ? 1.0 : this.totalVariablesDeclared;
         double commDiv = this.totalCommentsDeclared == 0 ? 1.0 : this.totalCommentsDeclared;
         double methDiv = this.totalMethodsDeclared == 0 ? 1.0 : this.totalMethodsDeclared;
         double classDiv = this.totalClassDeclared == 0 ? 1.0 : this.totalClassDeclared;
-        this.score = (((this.repeatedVariables / valsDiv) + (this.repeatedComments / commDiv) + (this.repeatedMethods / methDiv) + (this.repeatedClasses / classDiv)) * 0.25);
+        this.score = (((this.repeatedVariables / valsDiv) + (this.repeatedComments / commDiv)
+                + (this.repeatedMethods / methDiv) + (this.repeatedClasses / classDiv)) * 0.25);
         this.score = Math.round(this.score * 100.00) / 100.00;
-
-        System.out.println("DATA: ");
-        System.out.println("COMMENTS: D:" + this.totalCommentsDeclared + " R:" + this.repeatedComments);
-        System.out.println("CLASSES: D:" + this.totalClassDeclared + " R:" + this.repeatedClasses);
-        System.out.println("METHODS: D:" + this.totalMethodsDeclared + " R:" + this.repeatedMethods);
-        System.out.println("VARIAB: D:" + this.totalVariablesDeclared + " R:" + this.repeatedVariables);
-        System.out.println("SCORE: " + this.score);
-
     }
 
     public void addToHash(String key) {
@@ -160,5 +160,14 @@ public class ProjectScoreCalculator {
 
     public ArrayList<CommonData<JavaData>> getCommonNodes() {
         return commonNodes;
+    }
+
+    public boolean calcResults() {
+        if (this.project1.getErrors().size() > 0 || this.project2.getErrors().size() > 0) {
+            return false;
+        } else {
+            searchCommonNodes();
+            return true;
+        }
     }
 }

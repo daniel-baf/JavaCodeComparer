@@ -18,6 +18,8 @@ import java.util.ArrayList;
  */
 public class JavaProject implements Serializable {
 
+    private static final long serialVersionUID = -1885271120192771039L;
+
     private int filesCuantity;
     private ArrayList<File> files;
 

@@ -5,6 +5,7 @@
  */
 package Backend;
 
+import Frontend.ServerConsole;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,16 +15,17 @@ import java.net.Socket;
  *
  * @author jefemayoneso
  */
-public class JavaCodeServer {
+public class ServerL {
 
     static final int PORT = 5000;
 
-    public void main(String[] args) {
+    public void open(ServerConsole console) {
+        System.out.println("Setting-up server");
+        // show console
 
-        System.out.println("Seting-up server");
         try ( ServerSocket serverSocket = new ServerSocket(PORT)) {
             Socket socket = null;
-            System.out.println("listening to port 5000");
+            System.out.println("now listening port " + PORT);
             while (true) {
                 try {
                     socket = serverSocket.accept();
@@ -31,13 +33,11 @@ public class JavaCodeServer {
                 } catch (IOException e) {
                     System.out.println("I/O error: " + e);
                 }
-                new ServerThread(socket).start();
+                System.out.println("CREATE AND RUN THREAD");
+                new ServerThreadL(socket, console).start();
             }
         } catch (IOException e) {
             System.out.println("ERROR on server socket: " + e);
-
         }
-
     }
-
 }

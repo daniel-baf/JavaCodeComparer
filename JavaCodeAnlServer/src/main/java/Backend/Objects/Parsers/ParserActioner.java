@@ -1,5 +1,6 @@
 package Backend.Objects.Parsers;
 
+import Backend.Objects.AnalysisError;
 import Utilities.Tree.JavaData;
 import Utilities.Tree.Node;
 import Utilities.Tree.DerivationTree;
@@ -17,19 +18,21 @@ import java.util.HashMap;
  */
 public class ParserActioner {
 
-    private final DerivationTree<JavaData> tree;
     private int varsDeclared;
     private int classDeclared;
     private int methodsDeclared;
+    private final ArrayList<AnalysisError> errors;
+    private final DerivationTree<JavaData> tree;
     private final HashMap<String, Integer> varsTable;
     private final HashMap<String, Integer> classTable;
     private final HashMap<String, Integer> methodTable;
 
     public ParserActioner() {
-        this.tree = new DerivationTree();
+        this.tree = new DerivationTree<JavaData>();
         this.varsTable = new HashMap<>();
         this.classTable = new HashMap<>();
         this.methodTable = new HashMap<>();
+        this.errors = new ArrayList<>();
     }
 
     /**
@@ -53,6 +56,7 @@ public class ParserActioner {
      * @param parent
      * @param children
      */
+    @SuppressWarnings("unchecked")
     public void saveParent(Object parent, Object children) {
         try {
             Node<JavaData> parentNode = (Node<JavaData>) parent;
@@ -70,6 +74,7 @@ public class ParserActioner {
      * @param object the object to cast
      * @return
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<Node<JavaData>> getItemAsArray(Object object) {
         try {
             if (object != null) {
@@ -91,6 +96,7 @@ public class ParserActioner {
      * @param array2
      * @return
      */
+    @SuppressWarnings("unchecked")
     public ArrayList<Node<JavaData>> getArray(Object array1, Object array2) {
         try {
             ArrayList<Node<JavaData>> array = array1 != null ? (ArrayList<Node<JavaData>>) array1 : new ArrayList<>();
@@ -109,10 +115,11 @@ public class ParserActioner {
      * Return an object Object with a Node element, but first adds an attribute
      * to the Object
      *
-     * @param object The Object to save
+     * @param object    The Object to save
      * @param attribute The attribute to add to object
      * @return the same object with new attributes
      */
+    @SuppressWarnings("unchecked")
     public Object addAttrNode(Object object, String... attribute) {
         try {
             if (object != null) {
@@ -129,7 +136,7 @@ public class ParserActioner {
     /**
      * Create a new Node and cast to Object, send this new object to parser
      *
-     * @param type node type
+     * @param type     node type
      * @param variable node variable
      * @return new node
      */
@@ -204,6 +211,15 @@ public class ParserActioner {
 
     public HashMap<String, Integer> getMethodTable() {
         return methodTable;
+    }
+
+    public void addError(int line, int column, String value, String filename, String project,
+            ArrayList<String> expectedTokens) {
+        this.errors.add(new AnalysisError(line, column, value, filename, project, expectedTokens));
+    }
+
+    public ArrayList<AnalysisError> getErrors() {
+        return errors;
     }
 
 }

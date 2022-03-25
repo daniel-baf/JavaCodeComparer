@@ -37,13 +37,13 @@ public class ProjectLoaderView extends javax.swing.JFrame {
         jPanelProj1 = new javax.swing.JPanel();
         jpanelProject1Title = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jPanelP1Buttons = new javax.swing.JPanel();
+        jPanelProject1Section = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jButtonChooseDir1 = new javax.swing.JButton();
         jPanelProj2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jPanelP1Buttons2 = new javax.swing.JPanel();
+        jPanelProject2Section = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jButtonChooseDir2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
@@ -62,7 +62,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
         jpanelProject1Title.add(jLabel1, "card2");
 
         jLabel2.setText("Elegir");
-        jPanelP1Buttons.add(jLabel2);
+        jPanelProject1Section.add(jLabel2);
 
         jButtonChooseDir1.setText("Carpeta");
         jButtonChooseDir1.addActionListener(new java.awt.event.ActionListener() {
@@ -70,7 +70,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
                 jButtonChooseDir1ActionPerformed(evt);
             }
         });
-        jPanelP1Buttons.add(jButtonChooseDir1);
+        jPanelProject1Section.add(jButtonChooseDir1);
 
         javax.swing.GroupLayout jPanelProj1Layout = new javax.swing.GroupLayout(jPanelProj1);
         jPanelProj1.setLayout(jPanelProj1Layout);
@@ -78,7 +78,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
             jPanelProj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jpanelProject1Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelProj1Layout.createSequentialGroup()
-                .addComponent(jPanelP1Buttons, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanelProj1Layout.setVerticalGroup(
@@ -86,7 +86,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
             .addGroup(jPanelProj1Layout.createSequentialGroup()
                 .addComponent(jpanelProject1Title, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelP1Buttons, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanelBtnsProjects.add(jPanelProj1);
@@ -106,7 +106,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
         );
 
         jLabel6.setText("Elegir");
-        jPanelP1Buttons2.add(jLabel6);
+        jPanelProject2Section.add(jLabel6);
 
         jButtonChooseDir2.setText("Carpeta");
         jButtonChooseDir2.addActionListener(new java.awt.event.ActionListener() {
@@ -114,7 +114,7 @@ public class ProjectLoaderView extends javax.swing.JFrame {
                 jButtonChooseDir2ActionPerformed(evt);
             }
         });
-        jPanelP1Buttons2.add(jButtonChooseDir2);
+        jPanelProject2Section.add(jButtonChooseDir2);
 
         javax.swing.GroupLayout jPanelProj2Layout = new javax.swing.GroupLayout(jPanelProj2);
         jPanelProj2.setLayout(jPanelProj2Layout);
@@ -126,14 +126,14 @@ public class ProjectLoaderView extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProj2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanelP1Buttons2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanelProj2Layout.setVerticalGroup(
             jPanelProj2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelProj2Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelP1Buttons2, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -186,10 +186,12 @@ public class ProjectLoaderView extends javax.swing.JFrame {
 
     private void jButtonChooseDir1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChooseDir1ActionPerformed
         this.controller.savePath1();
+        this.jButtonChooseDir1.setToolTipText(this.controller.getPath1());
     }//GEN-LAST:event_jButtonChooseDir1ActionPerformed
 
     private void jButtonChooseDir2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonChooseDir2ActionPerformed
         this.controller.savePath2();
+        this.jButtonChooseDir2.setToolTipText(this.controller.getPath2());
     }//GEN-LAST:event_jButtonChooseDir2ActionPerformed
 
     private void jButtonAnalyzePjctsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAnalyzePjctsActionPerformed
@@ -210,10 +212,10 @@ public class ProjectLoaderView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelBtnsProjects;
     private javax.swing.JPanel jPanelContainer;
-    private javax.swing.JPanel jPanelP1Buttons;
-    private javax.swing.JPanel jPanelP1Buttons2;
     private javax.swing.JPanel jPanelProj1;
     private javax.swing.JPanel jPanelProj2;
+    private javax.swing.JPanel jPanelProject1Section;
+    private javax.swing.JPanel jPanelProject2Section;
     private javax.swing.JPanel jpanelProject1Title;
     // End of variables declaration//GEN-END:variables
 

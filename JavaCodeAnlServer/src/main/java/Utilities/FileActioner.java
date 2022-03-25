@@ -18,6 +18,12 @@ import java.util.Scanner;
  */
 public class FileActioner {
 
+    private String savedPath;
+
+    public FileActioner() {
+        this.savedPath = null;
+    }
+
     /**
      * Get the data of a file
      *
@@ -50,8 +56,8 @@ public class FileActioner {
             dir.mkdirs();
             File file = new File(dir, filename);
             file.createNewFile();
+            this.savedPath = dir.getPath() + file.getName();
             try ( PrintWriter pw = new PrintWriter(file, "UTF-8")) {
-
                 lines.forEach(_line -> {
                     pw.println(_line);
                 });
@@ -61,6 +67,14 @@ public class FileActioner {
             }
         } catch (IOException ex) {
             return false;
+        }
+    }
+
+    public File getWrittenFile() {
+        try {
+            return new File(this.savedPath);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

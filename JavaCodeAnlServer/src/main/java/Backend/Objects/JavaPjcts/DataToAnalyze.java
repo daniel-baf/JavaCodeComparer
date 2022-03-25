@@ -13,15 +13,17 @@ import java.io.Serializable;
  *
  * @author jefemayoneso
  */
-public class AnalizeData implements Serializable {
+public class DataToAnalyze implements Serializable {
 
+    // generate serial version
+    private static final long serialVersionUID = -1303459122394012939L;
     private JavaProject project1;
     private JavaProject project2;
 
-    public AnalizeData() {
+    public DataToAnalyze() {
     }
 
-    public AnalizeData(JavaProject project1, JavaProject project2) {
+    public DataToAnalyze(JavaProject project1, JavaProject project2) {
         this.project1 = project1;
         this.project2 = project2;
     }

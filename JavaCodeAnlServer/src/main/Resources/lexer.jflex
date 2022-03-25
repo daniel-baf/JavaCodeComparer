@@ -1,9 +1,12 @@
 /* SECTION 1: USER CODE */
 package Backend.Objects.Lexers;
+
+
 import java_cup.runtime.*;
-import Backend.Objects.Parsers.sym;
 import java.util.ArrayList;
 import java.util.HashMap;
+import Backend.Objects.Parsers.sym;
+import Backend.Objects.AnalysisError;
 
 /* SECTION 2: CONFIG */
 %%
@@ -35,6 +38,8 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
     private final ArrayList<String> comments = new ArrayList<>();
     private int commentsCounter = 0;
     private final HashMap<String, Integer> commentsDeclTimes = new HashMap<>();
+    private final ArrayList<AnalysisError> errors = new ArrayList<>();
+    private String filename = "";
 
     public void saveComment(String comment, boolean isLong) {
         if(isLong) {
@@ -54,10 +59,13 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
     }
 
     private void incCommentsCounter() {this.commentsCounter++;}
+    public void setFilename(String filename){ this.filename = filename; }
 
     public ArrayList<String> getComments () { return this.comments; }
+    public ArrayList<AnalysisError> getErrors() { return this.errors; }
     public int getCommentsCounter() { return this.commentsCounter; }
     public HashMap<String, Integer> getHashComments() { return this.commentsDeclTimes; }
+    public void addError() { /*errors.add(new AnalysisError(yyline + 1, yycolumn + 1, yytext(), this.filename)); */}
 %}
 
 
@@ -148,4 +156,4 @@ ID=({LETT}({LETT}|{NUM}|"_")*)
 {ID}                {return new Symbol(sym.ID, yyline+1,yycolumn+1,yytext());}
 
 // UNKNOWN
-[^]                 {/* unknown */ return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }
+[^]                 {/* unknown */ addError(); return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }

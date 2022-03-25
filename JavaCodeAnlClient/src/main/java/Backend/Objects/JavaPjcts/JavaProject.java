@@ -10,18 +10,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
+ * This class is used to save al project's files to analyze and give a copy
+ * score, this class implements serializable 'cause we send this data with
+ * sockets connection
  *
  * @author jefemayoneso
  */
-public class Project implements Serializable {
+public class JavaProject implements Serializable {
+
+    private static final long serialVersionUID = -1885271120192771039L;
 
     private int filesCuantity;
     private ArrayList<File> files;
 
-    public Project() {
+    public JavaProject() {
     }
 
-    public Project(int filesCuantity, ArrayList<File> files) {
+    public JavaProject(int filesCuantity, ArrayList<File> files) {
         this.filesCuantity = filesCuantity;
         this.files = files;
     }

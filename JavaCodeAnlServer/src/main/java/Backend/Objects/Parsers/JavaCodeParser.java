@@ -5,8 +5,8 @@
 
 package Backend.Objects.Parsers;
 
-import java_cup.runtime.*;
 import Backend.Objects.Lexers.JavaCodeLexer;
+import java_cup.runtime.*;
 import Utilities.Tree.JavaData;
 import java.util.ArrayList;
 import Utilities.Tree.Node;
@@ -559,12 +559,14 @@ public class JavaCodeParser extends java_cup.runtime.lr_parser {
 
   private ParserActioner actioner;
   private String fileName;
+  private String project;
 
   // constructor
-  public JavaCodeParser(JavaCodeLexer lexer, String fileName) {
+  public JavaCodeParser(JavaCodeLexer lexer, String fileName, String project) {
     super(lexer);
     actioner = new ParserActioner();
     this.fileName = fileName;
+    this.project = project;
   }
 
   /* ERRORS METHOD */
@@ -577,11 +579,16 @@ public class JavaCodeParser extends java_cup.runtime.lr_parser {
   }
 
   public void syntax_error(Symbol cur_token) {
-      System.out.println("Error sym: " + sym.terminalNames[cur_token.sym] + " L:" + cur_token.left + " C:" +  cur_token.right + " file: " + this.fileName);
+        ArrayList<String> expectedTkns = new ArrayList<>();
+        expected_token_ids().forEach(token -> {
+            expectedTkns.add(sym.terminalNames[(int) token]);
+        });
+        actioner.addError(cur_token.left, cur_token.right, cur_token.value.toString(), this.fileName, this.project, expectedTkns);
   }
 
   public void unrecovered_syntax_error(Symbol cur_token) {
-      System.out.println("UNrecovered syntax error");
+      System.out.println("Unrecovered syntax error");
+      syntax_error(cur_token);
   }
 
   public ParserActioner getActioner() {

@@ -11,7 +11,9 @@ package Utilities;
  */
 public enum ReqRes {
     END_CONNECTION("END_CONNECTION"),
-    ANALYZE_FILES("ANALIZE_FILES");
+    ANALYZE_FILES("ANALIZE_FILES"),
+    ERROR_AT_ANALYSIS("ERROR_AT_ANALIZE"),
+    JSON_OK("JSON_OK");
 
     private final String text;
 
@@ -22,4 +24,5 @@ public enum ReqRes {
     private ReqRes(String text) {
         this.text = text;
     }
+
 }

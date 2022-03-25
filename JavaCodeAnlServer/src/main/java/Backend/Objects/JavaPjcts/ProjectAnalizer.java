@@ -65,7 +65,8 @@ public class ProjectAnalizer {
     private void startAnalyzing(File file, ProjectDataSaver project) {
         try {
             this.lexer = new JavaCodeLexer(new StringReader(this.reader.readFile(file)));
-            this.parser = new JavaCodeParser(this.lexer, file.getName());
+            this.lexer.setFilename(file.getName());
+            this.parser = new JavaCodeParser(this.lexer, file.getName(), project.getName());
             // sintactical analysis
             this.parser.parse();
             // create root file and add it to slice tree
@@ -86,14 +87,17 @@ public class ProjectAnalizer {
      */
     private void saveDataToMasterTree(ProjectDataSaver project) {
         project.addComments(this.lexer.getComments()); // add comments
-        project.addChildren(this.parser.getActioner().getTree().getRoot());// add children
+        project.addChild(this.parser.getActioner().getTree().getRoot());// add children
         project.addVariablesCounter(this.parser.getActioner().getVarsDeclared()); // add variables counter
         project.addMethodsCounter(this.parser.getActioner().getMethodsDeclared()); // add methods counter
         project.addClassesCounter(this.parser.getActioner().getClassDeclared()); // add classes counter
         project.addTableHash(this.parser.getActioner().getVarsTable(), 1); // add variables counter table       
         project.addTableHash(this.parser.getActioner().getClassTable(), 2); // add variables counter table
         project.addTableHash(this.parser.getActioner().getMethodTable(), 3); // add variables counter table
-        project.addTableHash(this.lexer.getHashComments(), 4);
+        project.addTableHash(this.lexer.getHashComments(), 4); // add comments variable counter
+        // add errors
+        project.getErrors().addAll(this.lexer.getErrors());
+        project.getErrors().addAll(this.parser.getActioner().getErrors());
     }
 
     // GETTRES AND SETTERS
