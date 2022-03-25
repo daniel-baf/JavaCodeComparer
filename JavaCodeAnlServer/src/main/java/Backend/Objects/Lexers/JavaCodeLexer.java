@@ -390,7 +390,7 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
     private int commentsCounter = 0;
     private final HashMap<String, Integer> commentsDeclTimes = new HashMap<>();
     private final ArrayList<AnalysisError> errors = new ArrayList<>();
-    private String filename = "";
+    private String filename,  project;
 
     public void saveComment(String comment, boolean isLong) {
         if(isLong) {
@@ -410,13 +410,13 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
     }
 
     private void incCommentsCounter() {this.commentsCounter++;}
-    public void setFilename(String filename){ this.filename = filename; }
+    public void setFilename(String filename, String project){ this.filename = filename; this.project = project;}
 
     public ArrayList<String> getComments () { return this.comments; }
     public ArrayList<AnalysisError> getErrors() { return this.errors; }
     public int getCommentsCounter() { return this.commentsCounter; }
     public HashMap<String, Integer> getHashComments() { return this.commentsDeclTimes; }
-    public void addError() { /*errors.add(new AnalysisError(yyline + 1, yycolumn + 1, yytext(), this.filename)); */}
+    public void addError() { errors.add(new AnalysisError(yyline + 1, yycolumn + 1, yytext(), this.filename, this.project)); }
 
 
   /**

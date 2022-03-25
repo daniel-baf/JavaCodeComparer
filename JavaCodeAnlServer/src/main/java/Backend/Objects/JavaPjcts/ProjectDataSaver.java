@@ -75,11 +75,11 @@ public class ProjectDataSaver {
             newHash.putAll(table);
         }
         if (data != null) {
-            data.keySet().forEach(name -> {
-                if (newHash.containsKey(name)) {
-                    newHash.put(name, data.get(name) + newHash.get(name));
+            data.keySet().forEach(_name -> {
+                if (newHash.containsKey(_name)) {
+                    newHash.put(_name, data.get(_name) + newHash.get(_name));
                 } else {
-                    newHash.put(name, data.get(name));
+                    newHash.put(_name, data.get(_name));
                 }
             });
         }

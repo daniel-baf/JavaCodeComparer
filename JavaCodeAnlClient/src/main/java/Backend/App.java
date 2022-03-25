@@ -9,13 +9,14 @@ import FrontEnd.ProjectLoaderView;
 import javax.swing.JFrame;
 
 /**
+ * Main class, show a GUI
  *
  * @author jefemayoneso
  */
 public class App {
 
     public static void main(String[] args) {
-        ProjectLoaderView view1 = new ProjectLoaderView();
+        ProjectLoaderView view1 = new ProjectLoaderView<>();
         view1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         view1.setLocationRelativeTo(null);
         view1.setResizable(false);

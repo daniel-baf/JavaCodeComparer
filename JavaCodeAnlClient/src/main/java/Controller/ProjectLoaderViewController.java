@@ -9,10 +9,10 @@ import Backend.Objects.JavaPjcts.DataToAnalyze;
 import Backend.Objects.JavaPjcts.JavaProject;
 import Backend.Objects.Message;
 import Utilities.ReqRes;
-import Backend.Utilities.DataDeliver;
-import Backend.Utilities.FileChooser;
-import Utilities.FileActioner;
+import Utilities.Delivers.DataDeliver;
+import Utilities.Files.FileSelector;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -23,36 +23,41 @@ public class ProjectLoaderViewController<T> {
 
     private String path1;
     private String path2;
-    private final FileChooser fChooser;
-    private DataDeliver<T> dd;
+    private final FileSelector fChooser;
+    private DataDeliver<T> dataDeliver;
 
     public ProjectLoaderViewController() {
-        this.path1 = "/home/jefemayoneso/Desktop/JavaCodeTestProjects/PROJECTSOK/easy/P1";
-        this.path2 = "/home/jefemayoneso/Desktop/JavaCodeTestProjects/PROJECTSOK/easy/P2";
-        this.fChooser = new FileChooser();
-        this.dd = new DataDeliver<>();
+        this.path1 = "/home/jefemayoneso/Desktop/TEST/PROJECTSOK/easy/P1";
+        this.path2 = "/home/jefemayoneso/Desktop/TEST/PROJECTSOK/easy/P2";
+        this.fChooser = new FileSelector();
+        this.dataDeliver = null;
     }
 
-    public void savePath1() {
-        this.path1 = this.fChooser.getPath();
-    }
-
-    public void savePath2() {
-        this.path2 = this.fChooser.getPath();
-    }
-
+    /**
+     * Execute an analysis from java files, send files to server and receive a
+     * JSON with the score in case of success, or an error Object in case of
+     * error
+     */
+    @SuppressWarnings("unchecked")
     public void analyzeFiles() {
+        this.dataDeliver = new DataDeliver<>();
         // send message with data of projects
         if (path1 != null && path2 != null) {
             try {
                 // send data
-                this.dd.sendData(getData());
-                // receive response
-                Message<T> response = this.dd.getData();
-                System.out.println("Response: " + response.getAction());
+                Message<DataToAnalyze> dataBackup = (Message<DataToAnalyze>) getFilesToAnalize();
+                this.dataDeliver.sendData((Message<T>) dataBackup);
+                sendFiles(dataBackup.getData().getProject1().getFiles());
+                sendFiles(dataBackup.getData().getProject2().getFiles());
+                Message<T> response = this.dataDeliver.getData();
                 if (response.getAction() == ReqRes.JSON_OK) {
-                    Message<File> responseFile = (Message<File>) response;
-                    System.out.println(new FileActioner().readFile(responseFile.getData()));
+                    // get path to save data
+                    JOptionPane.showMessageDialog(null, "Selecciona la ruta \ndonde guardar los archivos generados");
+                    String path = this.fChooser.getPath();
+                    this.dataDeliver.getFile("result.json", path);
+                    System.out.println("GOT JSON: " + response.getMessage());
+                } else {
+                    // TODO show errors
                 }
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
@@ -62,7 +67,25 @@ public class ProjectLoaderViewController<T> {
         }
     }
 
-    public Message<T> getData() {
+    /**
+     * Send a file to server
+     *
+     * @param files an array with the Files, used to get the names in server
+     */
+    public void sendFiles(ArrayList<File> files) {
+        files.forEach(file -> {
+            this.dataDeliver.sendFile(file);
+        });
+    }
+
+    /**
+     * Generate an object type Message<T> wich contains all file names, the
+     * server uses the files list to save a copy temporally at server side
+     *
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Message<T> getFilesToAnalize() {
         Message<T> filesMsg = new Message<>(ReqRes.ANALYZE_FILES, "", null);
         DataToAnalyze ftad = new DataToAnalyze(); // create object, get data
         JavaProject project = new JavaProject();
@@ -80,12 +103,21 @@ public class ProjectLoaderViewController<T> {
         return filesMsg;
     }
 
+    //GETTER AND SETTER
     public String getPath1() {
         return path1;
     }
 
     public String getPath2() {
         return path2;
+    }
+
+    public void savePath1() {
+        this.path1 = this.fChooser.getPath();
+    }
+
+    public void savePath2() {
+        this.path2 = this.fChooser.getPath();
     }
 
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
+ * This class is used to save a node when it is repeated, and save all matches
+ * nodes where same node was detected
  *
  * @author jefemayoneso
  */

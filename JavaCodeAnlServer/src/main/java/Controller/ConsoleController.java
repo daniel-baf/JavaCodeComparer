@@ -9,7 +9,7 @@ import Backend.Objects.AnalysisError;
 import Backend.Objects.JavaPjcts.DataToAnalyze;
 import Backend.Objects.JavaPjcts.ProjectAnalizer;
 import Backend.Objects.JavaPjcts.ProjectScoreCalculator;
-import Utilities.JSONCreator;
+import Utilities.Files.JSONCreator;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -29,13 +29,19 @@ public class ConsoleController {
         this.JSON = null;
     }
 
+    /**
+     * Search for lexical or syntactical errors into files given by client app,
+     * if no errors found, generates a JSON file and send the JSON to client
+     *
+     * @param data
+     * @return
+     */
     public boolean analyzeJava(DataToAnalyze data) {
-        this.projectAnalizer = new ProjectAnalizer(data.getProject1(), data.getProject2());
-        this.scoreCalculator = new ProjectScoreCalculator(this.projectAnalizer.getProject1(), this.projectAnalizer.getProject2());
         // run analyzis
+        this.projectAnalizer = new ProjectAnalizer(data.getProject1(), data.getProject2());
         this.projectAnalizer.execAnalyzis();
-        // calc results
-        //pcc.printTreeProjects();
+        // calc score
+        this.scoreCalculator = new ProjectScoreCalculator(this.projectAnalizer.getProject1(), this.projectAnalizer.getProject2());
         if (this.scoreCalculator.calcResults()) {
             // create JSON
             JSONCreator jsonC = new JSONCreator();
@@ -48,6 +54,7 @@ public class ConsoleController {
         }
     }
 
+    // GETTERS AND SETTERS
     public ArrayList<AnalysisError> getErrors() {
         return errors;
     }

@@ -42,8 +42,8 @@ public class ProjectScoreCalculator {
         // repeated = 0 until analyzis executed
         this.repeatedClasses = this.repeatedComments = this.repeatedMethods = this.repeatedVariables = 0;
         this.commonComments = new ArrayList<>();
-        this.commonComments = new ArrayList<>();
         this.score = 0.0000;
+        System.out.println("Val: " + this.project1.getVarsDeclared());
     }
 
     /**
@@ -170,4 +170,9 @@ public class ProjectScoreCalculator {
             return true;
         }
     }
+
+    public int getTotalVariablesDeclared() {
+        return totalVariablesDeclared;
+    }
+
 }

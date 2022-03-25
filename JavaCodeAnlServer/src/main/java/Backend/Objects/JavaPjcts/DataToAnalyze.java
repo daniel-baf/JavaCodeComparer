@@ -29,7 +29,7 @@ public class DataToAnalyze implements Serializable {
     }
 
     public JavaProject getProject1() {
-        return project1;
+        return this.project1;
     }
 
     public void setProject1(JavaProject project1) {
@@ -37,7 +37,7 @@ public class DataToAnalyze implements Serializable {
     }
 
     public JavaProject getProject2() {
-        return project2;
+        return this.project2;
     }
 
     public void setProject2(JavaProject project2) {

@@ -10,6 +10,14 @@ public class DerivationTree<T> {
         this.root = null;
     }
 
+    public void print() {
+        print(this.root, "");
+    }
+
+    private void print(Node<T> node, String tab) {
+        
+    }
+
     /**
      * Check common nodes into other tree
      *
@@ -28,7 +36,7 @@ public class DerivationTree<T> {
      * Search common nodes between actual tree and other tree root
      *
      * @param otherRoot the other tree to compare with
-     * @param common    an array to save common nodes
+     * @param common an array to save common nodes
      */
     private void searchCommonsK(Node<T> currentNode, ArrayList<CommonData<T>> common, Node<T> externalTreeSlice) {
         // start search
@@ -51,9 +59,9 @@ public class DerivationTree<T> {
     /**
      * Check if a node exists into the actual tree
      *
-     * @param search  the node to search
+     * @param search the node to search
      * @param current the node we are looking
-     * @param common  an array to save common nodes
+     * @param common an array to save common nodes
      */
     private CommonData<T> searchNode(T search, Node<T> externalTreeSlice, ArrayList<CommonData<T>> common) {
         CommonData<T> commonData = isDataPreviousFound(common, search); // check previous data found
@@ -97,7 +105,7 @@ public class DerivationTree<T> {
     /**
      * Update all children nodes and set a new parent
      *
-     * @param parent   the master node
+     * @param parent the master node
      * @param children the master node children
      */
     public void setParents(Node<T> parent, ArrayList<Node<T>> children) {

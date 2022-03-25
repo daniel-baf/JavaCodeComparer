@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Backend.Utilities;
+package Utilities.Files;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import javax.swing.JFileChooser;
  *
  * @author jefemayoneso
  */
-public class FileChooser {
+public class FileSelector {
 
     /**
      * Return the selected path
@@ -46,21 +46,6 @@ public class FileChooser {
     }
 
     /**
-     * get the name of a list of files
-     *
-     * @param path the directory path
-     * @return
-     */
-    public ArrayList<String> getFilesName(String path) {
-        ArrayList<File> files = getFiles(path);
-        ArrayList<String> names = new ArrayList<>();
-        files.forEach(file -> {
-            names.add(file.getName());
-        });
-        return names;
-    }
-
-    /**
      * add files to a list
      *
      * @param files
@@ -89,4 +74,5 @@ public class FileChooser {
     public boolean endsWith(String extension, String string) {
         return string.endsWith(extension);
     }
+
 }

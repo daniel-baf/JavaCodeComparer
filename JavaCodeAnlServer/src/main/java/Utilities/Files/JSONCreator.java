@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Utilities;
+package Utilities.Files;
 
 import Utilities.Tree.JavaData;
 import Backend.Objects.JavaPjcts.ProjectScoreCalculator;
@@ -20,11 +20,18 @@ public class JSONCreator {
     public JSONCreator() {
     }
 
+    /**
+     * Generate a file JSON and save it temporally into server folder
+     *
+     * @param pcc a project score calculator that contains all info used for
+     * JSON
+     * @return the generated File
+     */
     public File createJSON(ProjectScoreCalculator pcc) {
         ArrayList<String> lines = generateJSON(pcc);
         FileActioner fileActioner = new FileActioner();
-        fileActioner.writeFile("JSON", "copy.json", lines);
-        return fileActioner.getWrittenFile();
+        fileActioner.writeFile("", "copy.json", lines, true);
+        return fileActioner.getWrittenFile(fileActioner.getJSON_DIRS() + "/copy.json");
     }
 
     /**
@@ -74,7 +81,8 @@ public class JSONCreator {
      * @param methods
      * @param variables
      */
-    private void splitData(ArrayList<CommonData<JavaData>> nodes, ArrayList<CommonData<JavaData>> classes, ArrayList<CommonData<JavaData>> methods, ArrayList<CommonData<JavaData>> variables) {
+    private void splitData(ArrayList<CommonData<JavaData>> nodes, ArrayList<CommonData<JavaData>> classes,
+            ArrayList<CommonData<JavaData>> methods, ArrayList<CommonData<JavaData>> variables) {
         // split data
         if (nodes != null) {
             nodes.forEach(variable -> {
@@ -104,31 +112,44 @@ public class JSONCreator {
      * @param variables the list of variables repeated
      * @param comments the list of comments repeated
      */
-    private void addLinesWithData(ArrayList<String> lines, ArrayList<CommonData<JavaData>> classes, ArrayList<CommonData<JavaData>> methods, ArrayList<CommonData<JavaData>> variables, ArrayList<String> comments) {
+    private void addLinesWithData(ArrayList<String> lines, ArrayList<CommonData<JavaData>> classes,
+            ArrayList<CommonData<JavaData>> methods, ArrayList<CommonData<JavaData>> variables,
+            ArrayList<String> comments) {
         // LINES
         String line = "";
         // save info of class
         lines.add("\tClases:[");
-        line = String.format("\t\t%1$s", classes.stream().map(node -> String.format("{Nombre: \"%1$s\"},", node.getData().getVariable())).reduce(line, String::concat));
-        line = line.substring(0, line.length() - 1); // remove last , 
+        line = String.format("\t\t%1$s",
+                classes.stream().map(node -> String.format("{Nombre: \"%1$s\"},", node.getData().getVariable()))
+                        .reduce(line, String::concat));
+        line = line.substring(0, line.length() - 1); // remove last ,
         lines.add(line);
         lines.add("\t],");
         // save info of variables
         lines.add("\tVariables:[");
 
         variables.forEach(_item -> {
-            String prev = "CLASS".equals(_item.getParent().getData().getType()) ? "Clase " + _item.getParent().getData().getVariable() : "Metodo " + _item.getParent().getData().getVariable();
+            String prev = "CLASS".equals(_item.getParent().getData().getType())
+                    ? "Clase " + _item.getParent().getData().getVariable()
+                    : "Metodo " + _item.getParent().getData().getVariable();
             String foundNodes = "";
             String withComma = variables.get(variables.size() - 1).getData() == _item.getData() ? "" : ", ";
-            foundNodes = _item.getMatchedNodes().stream().map(matchedNode -> "CLASS".equals(matchedNode.getParent().getData().getType()) ? ", Clase " + matchedNode.getParent().getData().getVariable() : ", Metodo " + matchedNode.getParent().getData().getVariable()).reduce(foundNodes, String::concat);
-            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo:\"%2$s\", Funcion: \"%3$s\"}%4$s", _item.getData().getVariable(), _item.getData().getType(), prev + foundNodes, withComma));
+            foundNodes = _item.getMatchedNodes().stream()
+                    .map(matchedNode -> "CLASS".equals(matchedNode.getParent().getData().getType())
+                    ? ", Clase " + matchedNode.getParent().getData().getVariable()
+                    : ", Metodo " + matchedNode.getParent().getData().getVariable())
+                    .reduce(foundNodes, String::concat);
+            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo:\"%2$s\", Funcion: \"%3$s\"}%4$s",
+                    _item.getData().getVariable(), _item.getData().getType(), prev + foundNodes, withComma));
         });
         lines.add("\t],");
         // save info methods
         lines.add("\tMetodos:[");
         methods.forEach(_item -> {
             String withComma = methods.get(methods.size() - 1).getData() == _item.getData() ? "" : ", ";
-            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo: \"%2$s\", Parametros: %3$x}%4$s", _item.getData().getVariable(), _item.getData().getType(), _item.getData().getParametersSize(), withComma));
+            lines.add(String.format("\t\t{Nombre: \"%1$s\", Tipo: \"%2$s\", Parametros: %3$x}%4$s",
+                    _item.getData().getVariable(), _item.getData().getType(), _item.getData().getParametersSize(),
+                    withComma));
         });
         lines.add("\t],");
         // save comments
