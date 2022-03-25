@@ -6,6 +6,9 @@
 package Backend.Objects.Parsers;
 import java_cup.runtime.*;
 import Backend.Objects.Lexers.JavaCodeLexer;
+import Utilities.Tree.JavaData;
+import java.util.ArrayList;
+import Utilities.Tree.Node;
 
 /* Preliminaries to set up and use the scanner.  */
 parser code {:
@@ -153,20 +156,37 @@ method_structure_sub::=
 ;
 
 non_constructor_structure::=
-    FUNC_TYPE:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
-  | var_type0:type constructor_structure:nodeMethod    {: RESULT=actioner.addAttrNode(nodeMethod, type.toString().toUpperCase()); :}
+    FUNC_TYPE:type constructor_structure:nodeMethod    
+      {:
+        Node<JavaData> node = (Node<JavaData>) nodeMethod;;
+        node.getData().setType(type.toString());
+        RESULT= node; 
+      :}
+  | var_type0:type constructor_structure:nodeMethod
+      {:
+        Node<JavaData> node = (Node<JavaData>) nodeMethod;;
+        node.getData().setType(type.toString());
+        RESULT= node; 
+      :}
 ;
 
 constructor_structure::=
     ID:variable par_receive_vals:valsGet function_content:children  
         {: 
-            RESULT = actioner.getNode("METHOD",variable.toString());
+            Node<JavaData> node = (Node<JavaData>) actioner.getNode("METHOD",variable.toString());
+            // add parameters when method
+            node.getData().setParameters((ArrayList<Node<JavaData>>) valsGet);
+            node.getData().setIsMethod(true);
+            RESULT = node;
             actioner.saveParent(RESULT, actioner.getArray( children, valsGet));
             actioner.increaseMethodDeclared(variable.toString());
         :}
   | error function_content:children
         {: 
-            RESULT = actioner.getNode("ERROR", "error");
+            Node<JavaData> node = (Node<JavaData>) actioner.getNode("METHOD","ERROR");
+            // add parameters when method
+            node.getData().setIsMethod(true);
+            RESULT = node;
             actioner.saveParent(RESULT, children);
             actioner.increaseMethodDeclared("error");
         :}
@@ -287,7 +307,7 @@ var_assign::=
 ;
 
 var_assign_act::=
-    ASSIGN val_declaration_asgn               
+    ASSIGN val_declaration_asgn
   | sym_inc_asgn arithm_expr                  
   | sym_inc_step                            
 ;
@@ -297,6 +317,7 @@ output_sentence::=
   | RETURN SEMICOLON               
   | RETURN output_actions SEMICOLON
   | RETURN method_call_structure_sub SEMICOLON
+  | RETURN new_object_asgn SEMICOLON
 ;
 
 output_actions::=
@@ -325,14 +346,14 @@ vals_receive::=
 ;
 
 val_declaration_asgn::=
-    arithm_expr
+    bool_compare
   | new_object_asgn
   | method_call_structure_sub
 ;
 
 new_object_asgn::=
-    NEW ID PAR_OPEN PAR_CLOSE
-  | NEW ID PAR_OPEN vals_send PAR_CLOSE
+    NEW ID:idVal PAR_OPEN PAR_CLOSE             {: RESULT=idVal.toString(); :}
+  | NEW ID:idVal PAR_OPEN vals_send PAR_CLOSE   {: RESULT=idVal.toString(); :}
 ;
 
 var_with_type::= 
@@ -355,7 +376,7 @@ element::=
   | id_item     
 ;
 
-id_item::= // catch multiple ids as k or k.a or k.b.c...
+id_item::= // catch multiple ids as k or k.a or k.b.c... k.getA()...
     ID:idVal                    {: RESULT =  idVal.toString(); :}
   | id_item:lastID DOT ID:idVal {: RESULT = lastID.toString() + "." + idVal.toString(); :}
 ;

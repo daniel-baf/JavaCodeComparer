@@ -2,7 +2,6 @@ package Utilities.Tree;
 
 import java.util.ArrayList;
 
-import Backend.Objects.JavaPjcts.JavaData;
 
 /**
  * This class represents a derivation tree node, save the variable, the type,

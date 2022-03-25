@@ -10,31 +10,18 @@ public class DerivationTree<T> {
         this.root = null;
     }
 
-    public void print() {
-        print(this.root, "");
-    }
-
-    private void print(Node<T> current, String tab) {
-        if (current != null) {
-            System.out.println(tab + current.toString());
-            if (current.getChildren() != null && current.getChildren().size() > 0) {
-                current.getChildren().forEach(node -> {
-                    print(node, tab + "\t");
-                });
-            }
-        }
-    }
-
     /**
      * Check common nodes into other tree
      *
      * @param otherRoot the other tree root
      * @return an array with common nodes, null if doesn't exist
      */
-    public ArrayList<Node<T>[]> searchCommons(Node<T> otherRoot) {
-        ArrayList<Node<T>[]> common = new ArrayList<>(); // reset array each time to avoid duplicates
-        searchCommons(otherRoot, common);
-        return common.size() > 0 ? common : null;
+    public ArrayList<CommonData<T>> searchCommons(Node<T> otherRoot) {
+        ArrayList<CommonData<T>> commonNodes = new ArrayList<>();
+        searchCommonsK(this.root, commonNodes, otherRoot);
+
+//        searchCommons(otherRoot, common);
+        return commonNodes.size() > 0 ? commonNodes : null;
     }
 
     /**
@@ -43,23 +30,22 @@ public class DerivationTree<T> {
      * @param otherRoot the other tree to compare with
      * @param common an array to save common nodes
      */
-    private void searchCommons(Node<T> otherRoot, ArrayList<Node<T>[]> common) {
-        // start searching
-        if (otherRoot != null && this.root != null) {
-            existInTree(otherRoot, this.root, common);
-            if (otherRoot.getChildren() != null && otherRoot.getChildren().size() > 0) {
-                otherRoot.getChildren().forEach(child -> {
-                    searchCommons(child, common);
+    private void searchCommonsK(Node<T> currentNode, ArrayList<CommonData<T>> common, Node<T> externalTreeSlice) {
+        // start search
+        if (currentNode != null && this.root != null) {
+            // check data
+            CommonData<T> newNode = searchNode(currentNode.getData(), externalTreeSlice, common);
+            if (newNode != null) { // save data if there is at least 1 node matched
+                newNode.setParent(currentNode.getParent());
+                common.add(newNode);
+            }
+            if (currentNode.getChildren() != null && currentNode.getChildren().size() > 0) {
+                // recursive call
+                currentNode.getChildren().forEach(child -> {
+                    searchCommonsK(child, common, externalTreeSlice);
                 });
             }
         }
-    }
-
-    private boolean isNodeReaded(ArrayList<Node<T>[]> common, Node<T> nodeSearch) {
-        if (common != null) {
-            return common.stream().anyMatch(nodes -> (nodes[0].getData().equals(nodeSearch.getData()) || nodes[1].getData().equals(nodeSearch.getData())));
-        }
-        return false;
     }
 
     /**
@@ -69,16 +55,43 @@ public class DerivationTree<T> {
      * @param current the node we are looking
      * @param common an array to save common nodes
      */
-    private void existInTree(Node<T> search, Node<T> current, ArrayList<Node<T>[]> common) {
-        if (search.getData().equals(current.getData())) {
-            if (!isNodeReaded(common, search)) {
-                common.add(new Node[]{search, current});
+    private CommonData<T> searchNode(T search, Node<T> externalTreeSlice, ArrayList<CommonData<T>> common) {
+        CommonData commonData = isDataPreviousFound(common, search); // check previous data found
+        if (commonData != null) { // previously found
+            return new CommonData<>(search, commonData.getMatchedNodes());
+        } else {
+            // find nodes
+            ArrayList<Node<T>> matchedNodes = new ArrayList<>();
+            findMatchedNodes(matchedNodes, externalTreeSlice, search);
+            if (matchedNodes.size() > 0) {
+                return new CommonData<>(search, matchedNodes);
             }
-        } else if (current.getChildren() != null && current.getChildren().size() > 0) {
-            current.getChildren().forEach(_item -> {
-                existInTree(search, _item, common);
-            });
         }
+        return null;
+    }
+
+    private void findMatchedNodes(ArrayList<Node<T>> matchedNodes, Node<T> currentNode, T data) {
+        if (currentNode != null) {
+            if (currentNode.getData().equals(data)) {
+                matchedNodes.add(currentNode);
+            }
+            if (currentNode.getChildren() != null && currentNode.getChildren().size() > 0) {
+                currentNode.getChildren().forEach(_child -> {
+                    findMatchedNodes(matchedNodes, _child, data);
+                });
+            }
+        }
+    }
+
+    private CommonData<T> isDataPreviousFound(ArrayList<CommonData<T>> common, T toFind) {
+        if (common != null) {
+            for (CommonData<T> commonData : common) {
+                if (toFind.equals(commonData.getData())) {
+                    return commonData;
+                }
+            }
+        }
+        return null;
     }
 
     /**

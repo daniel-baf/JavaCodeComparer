@@ -1,6 +1,6 @@
 package Backend.Objects.Parsers;
 
-import Backend.Objects.JavaPjcts.JavaData;
+import Utilities.Tree.JavaData;
 import Utilities.Tree.Node;
 import Utilities.Tree.DerivationTree;
 import java.util.ArrayList;

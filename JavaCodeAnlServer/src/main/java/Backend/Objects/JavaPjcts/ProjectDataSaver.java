@@ -1,5 +1,6 @@
 package Backend.Objects.JavaPjcts;
 
+import Utilities.Tree.JavaData;
 import java.util.ArrayList;
 
 import Utilities.Tree.Node;
@@ -16,10 +17,10 @@ public class ProjectDataSaver {
     private int classesCounter;
     private DerivationTree<JavaData> tree;
     private ArrayList<String> comments;
-    private final HashMap<String, Integer> classesTable;
-    private final HashMap<String, Integer> variablesTable;
-    private final HashMap<String, Integer> methodTable;
-    private final HashMap<String, Integer> commentsTable;
+    private HashMap<String, Integer> classesTable;
+    private HashMap<String, Integer> variablesTable;
+    private HashMap<String, Integer> methodTable;
+    private HashMap<String, Integer> commentsTable;
 
     // CONSTRUCTORS
     public ProjectDataSaver(String name) {
@@ -63,29 +64,35 @@ public class ProjectDataSaver {
      *
      * @param variables
      */
-    private void addVariablesDeclaredCounter(HashMap<String, Integer> data, HashMap<String, Integer> table) {
+    private HashMap<String, Integer> addDataRowsToHash(HashMap<String, Integer> data, HashMap<String, Integer> table) {
         // check is not null
+        HashMap<String, Integer> newHash = new HashMap<>();
+        if (table != null) {
+            newHash.putAll(table);
+        }
         if (data != null) {
-            data.forEach((key, value) -> {
-                if (table.containsKey(key)) {
-                    table.put(key, table.get(key) + value);
+            data.keySet().forEach(name -> {
+                if (newHash.containsKey(name)) {
+                    newHash.put(name, data.get(name) + newHash.get(name));
                 } else {
-                    table.put(key, value);
+                    newHash.put(name, data.get(name));
                 }
             });
         }
+        return newHash;
+
     }
 
     public void addTableHash(HashMap<String, Integer> hash, int table) {
         switch (table) {
             case 1 ->
-                addVariablesDeclaredCounter(hash, this.variablesTable);
+                this.variablesTable = addDataRowsToHash(hash, this.variablesTable);
             case 2 ->
-                addVariablesDeclaredCounter(hash, this.classesTable);
+                this.classesTable = addDataRowsToHash(hash, this.classesTable);
             case 3 ->
-                addVariablesDeclaredCounter(hash, this.methodTable);
+                this.methodTable = addDataRowsToHash(hash, this.methodTable);
             default ->
-                addVariablesDeclaredCounter(hash, this.commentsTable);
+                this.commentsTable = addDataRowsToHash(hash, this.commentsTable);
         }
     }
 
@@ -137,22 +144,22 @@ public class ProjectDataSaver {
     }
 
     public int getTimesVarDeclared(String key) {
-        return getTimesDeclaredIntTable(this.variablesTable, key);
+        return getTimesDeclaredTable(this.variablesTable, key);
     }
 
     public int getTimesClassDeclared(String key) {
-        return getTimesDeclaredIntTable(this.classesTable, key);
+        return getTimesDeclaredTable(this.classesTable, key);
     }
 
     public int getTimesMethodDeclared(String key) {
-        return getTimesDeclaredIntTable(this.methodTable, key);
+        return getTimesDeclaredTable(this.methodTable, key);
     }
 
     public int getTimesCommentDeclared(String key) {
-        return getTimesDeclaredIntTable(this.commentsTable, key);
+        return getTimesDeclaredTable(this.commentsTable, key);
     }
 
-    private int getTimesDeclaredIntTable(HashMap<String, Integer> hash, String key) {
+    private int getTimesDeclaredTable(HashMap<String, Integer> hash, String key) {
         try {
             return hash.get(key);
         } catch (Exception e) {

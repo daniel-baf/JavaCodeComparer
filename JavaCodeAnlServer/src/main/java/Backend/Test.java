@@ -10,12 +10,14 @@ import java.util.ArrayList;
 public class Test {
 
     public static void main(String[] args) {
-        // project analyze
-        ProjectAnalizer pa = new ProjectAnalizer(createProject("src/main/Resources/Txt/P1k"), createProject("src/main/Resources/Txt/P2k"));
+
+// project analyze
+        ProjectAnalizer pa = new ProjectAnalizer(createProject("/home/jefemayoneso/Desktop/JavaCodeTestProjects/PROJECTSOK/normal/P1"), createProject("/home/jefemayoneso/Desktop/JavaCodeTestProjects/PROJECTSOK/normal/P2"));
         // run analyzis
         pa.execAnalyzis();
         // calc results
         ProjectScoreCalculator pcc = new ProjectScoreCalculator(pa.getProject1(), pa.getProject2());
+        //pcc.printTreeProjects();
         pcc.searchCommonNodes();
         // create JSON
         JSONCreator jsonC = new JSONCreator();
