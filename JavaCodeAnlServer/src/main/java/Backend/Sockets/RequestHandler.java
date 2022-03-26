@@ -63,7 +63,6 @@ public class RequestHandler<T> extends Thread {
         // wait for requests
         while (mainRequest.getAction() != ReqRes.END_CONNECTION) {
             try {
-                System.out.println("DO: " + mainRequest.getAction());
                 ReqRes status = executeActions(mainRequest, output); // call method
                 if (status != ReqRes.END_CONNECTION) {
                     mainRequest = (Message<T>) input.readObject(); // wait for re call

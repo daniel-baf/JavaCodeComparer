@@ -166,7 +166,12 @@ public class ServerConsole extends javax.swing.JFrame {
     public void addErrorsToConsole(ArrayList<AnalysisError> errorsProj) {
         this.jTextAreaConsole.append("\t\tNUEVO ANALISIS\n");
         errorsProj.forEach(_item -> {
-            String lineError = String.format("%1$s: linea %2$d, columna %3$d, valor \"%4$s\", archivo: %5$s. Tokens esperados %6$s\n", _item.getProject(), _item.getLine(), _item.getColumn(), _item.getLexeme(), _item.getFile(), _item.getExpectedSymbols().toString());
+            String expectedTokens = "";
+            try {
+                expectedTokens = _item.toString();
+            } catch (Exception e) {
+            }
+            String lineError = String.format("%1$s: linea %2$d, columna %3$d, valor \"%4$s\", archivo: %5$s, Tipo %6$s, Tokens esperados %7$s\n", _item.getProject(), _item.getLine(), _item.getColumn(), _item.getLexeme(), _item.getFile(), _item.getType(), expectedTokens);
             this.jTextAreaConsole.append(lineError);
         });
     }

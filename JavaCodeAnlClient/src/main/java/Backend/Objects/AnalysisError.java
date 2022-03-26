@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class AnalysisError implements Serializable {
 
     private static final long serialVersionUID = 1234567L;
-    
+
     private int line;
     private int column;
     private String lexeme;

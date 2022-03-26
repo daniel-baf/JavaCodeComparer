@@ -43,7 +43,6 @@ public class ProjectScoreCalculator {
         this.repeatedClasses = this.repeatedComments = this.repeatedMethods = this.repeatedVariables = 0;
         this.commonComments = new ArrayList<>();
         this.score = 0.0000;
-        System.out.println("Val: " + this.project1.getVarsDeclared());
     }
 
     /**

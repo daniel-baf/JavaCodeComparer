@@ -30,7 +30,7 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated
-    // Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanelContainer = new javax.swing.JPanel();
@@ -39,14 +39,14 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         jpanelProject1Title = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanelProject1Section = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jButtonChooseDir1 = new javax.swing.JButton();
+        jLablePath1 = new javax.swing.JLabel();
         jPanelProj2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jPanelProject2Section = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
         jButtonChooseDir2 = new javax.swing.JButton();
+        jLabelPath2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jButtonAnalyzePjcts = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -62,10 +62,7 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         jLabel1.setText("PROYECTO 1");
         jpanelProject1Title.add(jLabel1, "card2");
 
-        jLabel2.setText("Elegir");
-        jPanelProject1Section.add(jLabel2);
-
-        jButtonChooseDir1.setText("Carpeta");
+        jButtonChooseDir1.setText("Elegir");
         jButtonChooseDir1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonChooseDir1ActionPerformed(evt);
@@ -73,24 +70,26 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         });
         jPanelProject1Section.add(jButtonChooseDir1);
 
+        jLablePath1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLablePath1.setText("No hay archivo elegido");
+        jPanelProject1Section.add(jLablePath1);
+
         javax.swing.GroupLayout jPanelProj1Layout = new javax.swing.GroupLayout(jPanelProj1);
         jPanelProj1.setLayout(jPanelProj1Layout);
         jPanelProj1Layout.setHorizontalGroup(
-                jPanelProj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jpanelProject1Title, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanelProj1Layout.createSequentialGroup()
-                                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 190,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)));
+            jPanelProj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jpanelProject1Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanelProj1Layout.createSequentialGroup()
+                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
         jPanelProj1Layout.setVerticalGroup(
-                jPanelProj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelProj1Layout.createSequentialGroup()
-                                .addComponent(jpanelProject1Title, javax.swing.GroupLayout.PREFERRED_SIZE, 47,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 52,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)));
+            jPanelProj1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelProj1Layout.createSequentialGroup()
+                .addComponent(jpanelProject1Title, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelProject1Section, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         jPanelBtnsProjects.add(jPanelProj1);
 
@@ -100,18 +99,15 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 206,
-                                javax.swing.GroupLayout.PREFERRED_SIZE));
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
         jPanel4Layout.setVerticalGroup(
-                jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42,
-                                javax.swing.GroupLayout.PREFERRED_SIZE));
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
-        jLabel6.setText("Elegir");
-        jPanelProject2Section.add(jLabel6);
-
-        jButtonChooseDir2.setText("Carpeta");
+        jButtonChooseDir2.setText("Elegir");
         jButtonChooseDir2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonChooseDir2ActionPerformed(evt);
@@ -119,28 +115,30 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         });
         jPanelProject2Section.add(jButtonChooseDir2);
 
+        jLabelPath2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabelPath2.setText("No hay archivo elegido");
+        jPanelProject2Section.add(jLabelPath2);
+
         javax.swing.GroupLayout jPanelProj2Layout = new javax.swing.GroupLayout(jPanelProj2);
         jPanelProj2.setLayout(jPanelProj2Layout);
         jPanelProj2Layout.setHorizontalGroup(
-                jPanelProj2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelProj2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProj2Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.PREFERRED_SIZE, 215,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)));
+            jPanelProj2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelProj2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProj2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
         jPanelProj2Layout.setVerticalGroup(
-                jPanelProj2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelProj2Layout.createSequentialGroup()
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.DEFAULT_SIZE, 55,
-                                        Short.MAX_VALUE)
-                                .addContainerGap()));
+            jPanelProj2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelProj2Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelProject2Section, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         jPanelBtnsProjects.add(jPanelProj2);
 
@@ -157,19 +155,18 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanelContainerLayout = new javax.swing.GroupLayout(jPanelContainer);
         jPanelContainer.setLayout(jPanelContainerLayout);
         jPanelContainerLayout.setHorizontalGroup(
-                jPanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanelBtnsProjects, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+            jPanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelBtnsProjects, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
         jPanelContainerLayout.setVerticalGroup(
-                jPanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanelContainerLayout.createSequentialGroup()
-                                .addComponent(jPanelBtnsProjects, javax.swing.GroupLayout.PREFERRED_SIZE, 109,
-                                        javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE,
-                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)));
+            jPanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelContainerLayout.createSequentialGroup()
+                .addComponent(jPanelBtnsProjects, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         jMenu1.setText("Archivo");
         jMenuBar1.add(jMenu1);
@@ -179,29 +176,38 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonChooseDir1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonChooseDir1ActionPerformed
         this.controller.savePath1();
-        this.jButtonChooseDir1.setToolTipText(this.controller.getPath1());
+        String show = this.controller.getPath1();
+        show = show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
+        this.jLablePath1.setText(show);
     }// GEN-LAST:event_jButtonChooseDir1ActionPerformed
 
     private void jButtonChooseDir2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonChooseDir2ActionPerformed
         this.controller.savePath2();
-        this.jButtonChooseDir2.setToolTipText(this.controller.getPath2());
+        String show = this.controller.getPath2();
+        show = show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
+        this.jLabelPath2.setText(show);
     }// GEN-LAST:event_jButtonChooseDir2ActionPerformed
 
     private void jButtonAnalyzePjctsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonAnalyzePjctsActionPerformed
-        this.controller.analyzeFiles();
+        if (!this.controller.analyzeFiles()) {
+            ErrorsTable tableErrors = new ErrorsTable(this.controller.getErrors());
+            tableErrors.setVisible(true);
+            tableErrors.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            tableErrors.setLocationRelativeTo(null);
+        }
     }// GEN-LAST:event_jButtonAnalyzePjctsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -209,9 +215,9 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
     private javax.swing.JButton jButtonChooseDir1;
     private javax.swing.JButton jButtonChooseDir2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabelPath2;
+    private javax.swing.JLabel jLablePath1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;

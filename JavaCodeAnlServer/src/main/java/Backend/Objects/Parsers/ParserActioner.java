@@ -215,7 +215,7 @@ public class ParserActioner {
 
     public void addError(int line, int column, String value, String filename, String project,
             ArrayList<String> expectedTokens) {
-        this.errors.add(new AnalysisError(line, column, value, filename, project, expectedTokens));
+        this.errors.add(new AnalysisError(line, column, value, filename, project, "SINTACTICO", expectedTokens));
     }
 
     public ArrayList<AnalysisError> getErrors() {

@@ -416,7 +416,7 @@ public class JavaCodeLexer implements java_cup.runtime.Scanner {
     public ArrayList<AnalysisError> getErrors() { return this.errors; }
     public int getCommentsCounter() { return this.commentsCounter; }
     public HashMap<String, Integer> getHashComments() { return this.commentsDeclTimes; }
-    public void addError() { errors.add(new AnalysisError(yyline + 1, yycolumn + 1, yytext(), this.filename, this.project)); }
+    public void addError() { errors.add(new AnalysisError(yyline + 1, yycolumn + 1, yytext(), this.filename, this.project, "LEXICO" )); }
 
 
   /**

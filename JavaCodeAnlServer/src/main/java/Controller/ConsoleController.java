@@ -40,27 +40,25 @@ public class ConsoleController {
         // run analyzis
         this.projectAnalizer = new ProjectAnalizer(data.getProject1(), data.getProject2());
         this.projectAnalizer.execAnalyzis();
-        // calc score
-        this.scoreCalculator = new ProjectScoreCalculator(this.projectAnalizer.getProject1(), this.projectAnalizer.getProject2());
-        if (this.scoreCalculator.calcResults()) {
-            // create JSON
-            JSONCreator jsonC = new JSONCreator();
-            this.JSON = jsonC.createJSON(this.scoreCalculator);
-            return true;
-        } else {
-            this.errors = this.projectAnalizer.getProject1().getErrors();
-            this.errors.addAll(this.projectAnalizer.getProject2().getErrors());
-            return false;
+        this.errors = this.projectAnalizer.getProject1().getErrors();
+        this.errors.addAll(this.projectAnalizer.getProject2().getErrors());
+
+        if (this.errors != null && this.errors.isEmpty()) {
+            // calc score
+            this.scoreCalculator = new ProjectScoreCalculator(this.projectAnalizer.getProject1(), this.projectAnalizer.getProject2());
+            if (this.scoreCalculator.calcResults()) {
+                // create JSON
+                JSONCreator jsonC = new JSONCreator();
+                this.JSON = jsonC.createJSON(this.scoreCalculator);
+                return true;
+            }
         }
+        return false;
     }
 
     // GETTERS AND SETTERS
     public ArrayList<AnalysisError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(ArrayList<AnalysisError> errors) {
-        this.errors = errors;
+        return this.errors;
     }
 
     public File getJSON() {

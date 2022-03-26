@@ -48,7 +48,6 @@ public class DataDeliver<T> {
     public void sendData(Message<T> message) {
         try {
             this.output.writeObject(message);
-            System.out.println("REQUESTED: " + message.getAction());
         } catch (IOException ex) {
             System.out.println("ERROR sendig request: " + ex);
         }

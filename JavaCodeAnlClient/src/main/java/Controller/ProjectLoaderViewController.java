@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Backend.Objects.AnalysisError;
 import Backend.Objects.JavaPjcts.DataToAnalyze;
 import Backend.Objects.JavaPjcts.JavaProject;
 import Backend.Objects.Message;
@@ -25,10 +26,11 @@ public class ProjectLoaderViewController<T> {
     private String path2;
     private final FileSelector fChooser;
     private DataDeliver<T> dataDeliver;
+    private ArrayList<AnalysisError> errors;
 
     public ProjectLoaderViewController() {
-        this.path1 = "/home/jefemayoneso/Desktop/TEST/PROJECTSOK/easy/P1";
-        this.path2 = "/home/jefemayoneso/Desktop/TEST/PROJECTSOK/easy/P2";
+        this.path1 = "/home/jefemayoneso/Desktop/TEST/ERRORPJCTS/error/P1";
+        this.path2 = "/home/jefemayoneso/Desktop/TEST/ERRORPJCTS/error/P2";
         this.fChooser = new FileSelector();
         this.dataDeliver = null;
     }
@@ -39,7 +41,7 @@ public class ProjectLoaderViewController<T> {
      * error
      */
     @SuppressWarnings("unchecked")
-    public void analyzeFiles() {
+    public boolean analyzeFiles() {
         this.dataDeliver = new DataDeliver<>();
         // send message with data of projects
         if (path1 != null && path2 != null) {
@@ -56,8 +58,12 @@ public class ProjectLoaderViewController<T> {
                     String path = this.fChooser.getPath();
                     this.dataDeliver.getFile("result.json", path);
                     System.out.println("GOT JSON: " + response.getMessage());
+                    return true;
                 } else {
                     // TODO show errors
+                    // get errors
+                    Message<ArrayList<AnalysisError>> errorsRec = (Message<ArrayList<AnalysisError>>) response;
+                    this.errors = errorsRec.getData();
                 }
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
@@ -65,6 +71,7 @@ public class ProjectLoaderViewController<T> {
         } else {
             JOptionPane.showMessageDialog(null, "Una de las rutas no es valida", "RUTAS", JOptionPane.WARNING_MESSAGE);
         }
+        return false;
     }
 
     /**
@@ -118,6 +125,10 @@ public class ProjectLoaderViewController<T> {
 
     public void savePath2() {
         this.path2 = this.fChooser.getPath();
+    }
+
+    public ArrayList<AnalysisError> getErrors() {
+        return this.errors;
     }
 
 }

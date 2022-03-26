@@ -51,7 +51,6 @@ public class ThreadActioner<T> {
             DataToAnalyze data = new DataGenerator().getFilesToAnalize();
             if (!this.console.execAnalysis(data)) {
                 sendErrorData(output, this.console.getController().getErrors());
-
             } else {
                 sendAnalyzedData(output, (T) this.console.getController().getJSON(),
                         "Se ha generado el JSON con los resultados", ReqRes.JSON_OK);
