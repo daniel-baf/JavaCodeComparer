@@ -6,6 +6,7 @@
 package Utilities.Delivers;
 
 import Backend.Objects.Message;
+import Utilities.Files.FileActioner;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -82,8 +83,17 @@ public class DataDeliver<T> {
         this.fileDeliver.sendFile(file);
     }
 
-    public void getFile(String filename, String path) {
+    public boolean createNewProjectFromServer(String filename, String path) {
+        FileActioner actioner = new FileActioner();
+        // save json
         this.fileDeliver.receiveFile(filename, path);
+        // create .def
+        if (actioner.createFile("report.def", path)) {
+            if (actioner.createFile("report.html", path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

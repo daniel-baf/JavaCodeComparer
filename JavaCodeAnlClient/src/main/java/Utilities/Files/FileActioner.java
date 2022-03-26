@@ -6,6 +6,7 @@
 package Utilities.Files;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -30,5 +31,17 @@ public class FileActioner {
             System.out.println("Error while read file: " + e);
         }
         return text;
+    }
+
+    public boolean createFile(String name, String path) {
+        try {
+            File file = new File(String.format("%1$s%2$s", path, name));
+            file.createNewFile();
+            return true;
+        } catch (IOException ex) {
+            System.out.println("ex: " + ex.getMessage());
+            return false;
+        }
+
     }
 }

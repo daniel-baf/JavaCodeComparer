@@ -29,8 +29,8 @@ public class ProjectLoaderViewController<T> {
     private ArrayList<AnalysisError> errors;
 
     public ProjectLoaderViewController() {
-        this.path1 = "/home/jefemayoneso/Desktop/TEST/ERRORPJCTS/error/P1";
-        this.path2 = "/home/jefemayoneso/Desktop/TEST/ERRORPJCTS/error/P2";
+        this.path1 = null;
+        this.path2 = null;
         this.fChooser = new FileSelector();
         this.dataDeliver = null;
     }
@@ -56,8 +56,9 @@ public class ProjectLoaderViewController<T> {
                     // get path to save data
                     JOptionPane.showMessageDialog(null, "Selecciona la ruta \ndonde guardar los archivos generados");
                     String path = this.fChooser.getPath();
-                    this.dataDeliver.getFile("result.json", path);
-                    System.out.println("GOT JSON: " + response.getMessage());
+                    if(!this.dataDeliver.createNewProjectFromServer("result.json", path)) {
+                        JOptionPane.showMessageDialog(null, "No se pudo guardar \nel proyecto en la ruta especificada", "RUTAS", JOptionPane.ERROR_MESSAGE);
+                    }
                     return true;
                 } else {
                     // TODO show errors
