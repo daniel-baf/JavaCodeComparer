@@ -1,0 +1,162 @@
+/**************************************************/
+/************** SECTION 1: USER CODE **************/
+/**************************************************/
+
+package Backend.Objects.Parsers;
+
+import Backend.Objects.Lexers.JSONLexer;
+import Backend.Objects.Parsers.JSONData.JSONActioner;
+import java_cup.runtime.*;
+
+/**************************************************/
+/************ SECTION 2: USER METHODS *************/
+/**************************************************/
+
+parser code {:
+
+    public JSONActioner jsonActioner;
+
+    // constructor
+    public JSONParser(JSONLexer lexer) {
+        super(lexer);
+        this.jsonActioner = new JSONActioner();
+    }
+
+    // error methods
+    public void report_error(String message, Object info) {
+        System.out.println("public void report_error");
+    }
+    
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("public void report_fatal_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d", sym.terminalNames[cur_token.sym], cur_token.left, cur_token.right));
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token) {
+        System.out.println("unrecovered sintax error");
+    }   
+
+    public JSONActioner getActioner() {
+        return this.jsonActioner;
+    }
+:}
+
+/**************************************************/
+/********** SECTION 3: SINTACTICAL RULES **********/
+/**************************************************/
+
+// terminal from lexer
+terminal BRACE_O, BRACE_C, BRACKET_O, BRACKET_C, COMMA, COLON, TYPE, TEXT, SCORE, CLASSES, 
+    METHODS, FUNCTION, NAME, VARIABLES, PARAMETER, NUMBER, COMMENTS, UNKNOWN;
+terminal String STRING;
+
+non terminal main, json_content, score_section, classes_section, variables_section, comments_section,
+    methods_section, classes_content, empty_section, classes_declarations, class_declaration, variables_declarations,
+    variable_declaration, variables_content, methods_declarations, method_declaration, method_content, comment_declaration,
+comments_declarations, comments_content;
+
+start with main;
+
+main::= 
+    BRACE_O json_content BRACE_C
+;
+
+json_content::=
+    score_section classes_section variables_section methods_section comments_section
+;
+
+score_section::=
+    SCORE COLON STRING:score COMMA          {: jsonActioner.saveScore(score); :}
+;
+
+classes_section::=
+    CLASSES COLON classes_content COMMA
+;
+
+variables_section::=
+    VARIABLES COLON variables_content COMMA
+;
+
+methods_section::=
+    METHODS COLON method_content COMMA
+;
+
+comments_section::=
+    COMMENTS COLON comments_content
+;
+
+// content
+classes_content::=
+      empty_section
+    | BRACKET_O  classes_declarations BRACKET_C
+    | error BRACKET_C
+;
+
+variables_content::=
+      empty_section
+    | BRACKET_O variables_declarations BRACKET_C
+    | error BRACKET_C
+;
+
+method_content::=
+      empty_section
+    | BRACKET_O methods_declarations BRACKET_C
+    | error BRACKET_C
+;
+
+comments_content::=
+      empty_section
+    | BRACKET_O comments_declarations BRACKET_C
+    | error BRACKET_C
+;
+
+empty_section::=
+    BRACKET_O BRACKET_C
+;
+
+// classes
+classes_declarations::=
+      class_declaration
+    | class_declaration COMMA class_declaration
+;
+
+class_declaration::=
+      BRACE_O NAME COLON STRING:classN  BRACE_C          {: jsonActioner.saveClass(classN); :}
+    | error BRACE_C
+;
+
+// variables
+variables_declarations::=
+      variable_declaration
+    | variables_declarations COMMA variable_declaration
+;
+
+variable_declaration::=
+      BRACE_O NAME COLON STRING:name COMMA TYPE COLON STRING:type COMMA FUNCTION COLON STRING:function BRACE_C      {: jsonActioner.saveVariable(name,type,function); :}
+    | error BRACE_C
+;
+
+// methods
+methods_declarations::=
+      method_declaration
+    | methods_declarations COMMA method_declaration
+;
+
+method_declaration::=
+      BRACE_O NAME COLON STRING:name COMMA TYPE COLON STRING:type COMMA PARAMETER COLON NUMBER:parameters BRACE_C   {: jsonActioner.saveMethod(name,type,parameters.toString()); :}
+    | error BRACE_C
+;
+
+// comments
+comments_declarations::=
+      comment_declaration
+    | comments_declarations COMMA comment_declaration
+;
+
+comment_declaration::=
+      BRACE_O TEXT COLON STRING:comment BRACE_C         {: jsonActioner.saveComment(comment); :}
+    | error BRACE_C
+;

@@ -1,0 +1,275 @@
+/**************************************************/
+/************** SECTION 1: USER CODE **************/
+/**************************************************/
+
+package Backend.Objects.Parsers;
+
+import Backend.Objects.Lexers.ReportLexer;
+import java_cup.runtime.*;
+
+/**************************************************/
+/************ SECTION 2: USER METHODS *************/
+/**************************************************/
+
+parser code {:
+
+    public ReportParser(ReportLexer lexer) {
+        super(lexer);
+    }
+
+    // error methods
+    public void report_error(String message, Object info) {
+        System.out.println("public void report_error");
+    }
+    
+    public void report_fatal_error(String message, Object info) {
+        System.out.println("public void report_fatal_error");
+    }
+
+    public void syntax_error(Symbol cur_token) {
+        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d", sym.terminalNames[cur_token.sym], cur_token.left, cur_token.right));
+    }
+
+    public void unrecovered_syntax_error(Symbol cur_token) {
+        System.out.println("unrecovered sintax error");
+    }   
+
+:}
+
+/**************************************************/
+/************ SECTION 3: LEXICAL RULES ************/
+/**************************************************/
+
+// from lexer
+terminal DOT, BRACK_O, BRACK_C, SEMICOLON, COLON, EQUALS, GT, DOLAR, PLUS, LESS, MULT, DIV, PAR_O, PAR_C, TYPE, SCORE,
+    TEXT, NAME, CLASSES, RESULT, METHODS, FUNCTION, INTEGER, VARIABLES, PARAMETERS, COMMENTS, STRING_TYPE, HTML_O, HTML_C, H1_O, 
+    H1_C, H2_O, H2_C, TABLE_O, TABLE_C, FOR_O, FOR_C, TR_O, TR_C, TH_O, TH_C, TD_O, TD_C, BR, NUMBER, STRING, ID, UNTIL, ITERATOR,
+    UNKNOWN;
+
+
+non terminal main, var_declaration_section, html_section, html_content, html_content_available, h1_declaration, var_declaration, result_data, result_data_children, result_data_classes, 
+    result_data_variables, result_data_variables_children, result_data_methods, result_data_methods_children, result_data_comments, typeOf, arithm_expr, element, sym_arithm, h2_declaration,
+    br_declaration, table_declaration, for_declaration, for_open, element_var, table_content, table_row_delaration, table_row_content, table_row_datas, table_row_headers,table_row_content_data,
+    table_row_content_header, data_content, data_access, data_content_values, data_access_value, html_content_available_common, table_row_declaration_sub, table_row_content_sub;
+
+// precedence
+precedence left PLUS, LESS;
+precedence left MULT, DIV;
+precedence left PAR_O, PAR_C;
+
+start with main;
+
+main::= // var declaration
+      var_declaration_section html_section    {: System.out.println("OK"); :}
+    | html_section                            {: System.out.println("OK"); :}
+;
+
+// HTML
+html_section::=
+    HTML_O html_content HTML_C
+;
+
+html_content::=
+      html_content_available
+    | html_content html_content_available
+;
+
+html_content_available::=
+      html_content_available_common
+    | table_declaration
+    | for_declaration
+    | error
+;
+
+html_content_available_common::=
+      h1_declaration
+    | h2_declaration
+    | br_declaration
+;
+
+h1_declaration::=
+    H1_O H1_C
+  | H1_O data_content H1_C 
+;
+
+h2_declaration::=
+    H2_O H2_C
+  | H2_O data_content H2_C
+;
+
+br_declaration::=BR;
+
+table_declaration::=
+      TABLE_O TABLE_C
+    | TABLE_O table_content TABLE_C
+;
+
+table_content::=
+      table_row_delaration
+    | table_content table_row_delaration
+;
+
+table_row_delaration::=
+      table_row_declaration_sub
+    | for_open table_row_declaration_sub FOR_C
+;
+
+table_row_declaration_sub::=
+      TR_O TR_C
+    | TR_O table_row_content TR_C
+;
+
+table_row_content::=
+      table_row_content_sub
+    | for_open table_row_content_sub FOR_C
+;
+
+table_row_content_sub::=
+      table_row_datas
+    | table_row_headers
+;
+
+table_row_datas::=
+      table_row_content_data
+    | table_row_datas table_row_content_data
+;
+
+table_row_headers::=
+      table_row_content_header
+    | table_row_headers table_row_content_header
+;
+
+
+table_row_content_data::=
+      TD_O TD_C
+    | TD_O data_content TD_C
+;
+
+table_row_content_header::=
+      TH_O TH_C
+    | TH_O data_content TH_C
+;
+
+for_declaration::=
+      for_open FOR_C
+    | for_open html_content FOR_C
+;
+
+for_open::=
+    FOR_O ITERATOR COLON element_var UNTIL COLON element_var SEMICOLON GT
+;
+
+data_content::= // TODO add logic
+      data_content_values
+    | data_content data_content_values
+;
+
+data_content_values::=
+      data_access
+    | ID
+    | UNKNOWN
+    | error
+;
+
+data_access::=
+    DOLAR PAR_O data_access_value PAR_C DOLAR
+;
+
+data_access_value::=
+      result_data
+    | ID
+;
+
+// VARIABLES DECLARATIONS
+var_declaration_section::=
+      var_declaration
+    | var_declaration_section var_declaration
+;
+
+var_declaration::=
+      typeOf ID SEMICOLON
+    | typeOf ID EQUALS arithm_expr SEMICOLON
+    | error
+;
+
+// RESULT GLOBAL VARIABLE
+result_data::=
+      RESULT
+    | RESULT DOT result_data_children
+;
+
+result_data_children::=
+      SCORE
+    | result_data_classes
+    | result_data_variables
+    | result_data_methods
+    | result_data_comments
+;
+
+result_data_classes::=
+      CLASSES
+    | CLASSES BRACK_O NUMBER BRACK_C
+    | CLASSES BRACK_O NUMBER BRACK_C DOT NAME
+;
+
+result_data_variables::=
+      VARIABLES
+    | VARIABLES BRACK_O NUMBER BRACK_C
+    | VARIABLES BRACK_O NUMBER BRACK_C DOT result_data_variables_children
+;
+
+result_data_methods::=
+      METHODS
+    | METHODS BRACK_O NUMBER BRACK_C
+    | METHODS BRACK_O NUMBER BRACK_C DOT result_data_methods_children
+;
+
+result_data_comments::=
+      COMMENTS
+    | COMMENTS BRACK_O NUMBER BRACK_C
+    | COMMENTS BRACK_O NUMBER BRACK_C DOT TEXT
+;
+
+result_data_variables_children::=
+      NAME
+    | TYPE
+    | FUNCTION
+;
+
+result_data_methods_children::=
+      NAME
+    | TYPE
+    | PARAMETERS
+;
+
+// VARIABLES
+arithm_expr::=
+    element
+  | arithm_expr sym_arithm arithm_expr
+  | PAR_O arithm_expr PAR_C
+;
+
+element::=
+    element_var
+  | STRING
+;
+
+element_var::=
+    NUMBER
+  | result_data
+  | ID
+;
+
+// GENERIC
+
+sym_arithm::=
+      PLUS
+    | LESS
+    | MULT
+    | DIV
+;
+
+typeOf::=
+      INTEGER
+    | STRING_TYPE
+;

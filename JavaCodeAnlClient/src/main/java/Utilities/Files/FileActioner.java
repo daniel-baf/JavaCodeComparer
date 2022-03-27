@@ -23,7 +23,7 @@ public class FileActioner {
      */
     public String readFile(File file) {
         String text = "";
-        try ( Scanner reader = new Scanner(file)) {
+        try (Scanner reader = new Scanner(file)) {
             while (reader.hasNextLine()) {
                 text += reader.nextLine() + "\n";
             }

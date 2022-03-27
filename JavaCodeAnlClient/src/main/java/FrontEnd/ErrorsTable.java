@@ -7,11 +7,7 @@ package FrontEnd;
 
 import Backend.Objects.AnalysisError;
 import java.util.ArrayList;
-import java.util.List;
-import javax.swing.RowSorter.SortKey;
-import javax.swing.SortOrder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 /**
  *

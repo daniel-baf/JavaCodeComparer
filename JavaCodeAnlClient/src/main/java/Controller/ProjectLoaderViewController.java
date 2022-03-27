@@ -61,7 +61,6 @@ public class ProjectLoaderViewController<T> {
                     }
                     return true;
                 } else {
-                    // TODO show errors
                     // get errors
                     Message<ArrayList<AnalysisError>> errorsRec = (Message<ArrayList<AnalysisError>>) response;
                     this.errors = errorsRec.getData();
