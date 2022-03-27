@@ -47,6 +47,7 @@ public class App {
             ReportLexer rl = new ReportLexer(new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/report.def"));
             ReportParser rp = new ReportParser(rl);
             rp.parse();
+            System.out.println(" FILE OK");
         } catch (Exception e) {
             System.out.println("Exeption: " + e.getMessage());
         }

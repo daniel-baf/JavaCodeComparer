@@ -41,113 +41,62 @@ parser code {:
 /**************************************************/
 
 // from lexer
-terminal DOT, BRACK_O, BRACK_C, SEMICOLON, COLON, EQUALS, GT, DOLAR, PLUS, LESS, MULT, DIV, PAR_O, PAR_C, TYPE, SCORE,
-    TEXT, NAME, CLASSES, RESULT, METHODS, FUNCTION, INTEGER, VARIABLES, PARAMETERS, COMMENTS, STRING_TYPE, HTML_O, HTML_C, H1_O, 
-    H1_C, H2_O, H2_C, TABLE_O, TABLE_C, FOR_O, FOR_C, TR_O, TR_C, TH_O, TH_C, TD_O, TD_C, BR, NUMBER, STRING, ID, UNTIL, ITERATOR,
-    UNKNOWN;
+terminal HTML_C, HTML_O, H1_C, H1_O, H2_C, H2_O, TABLE_C, TABLE_O, FOR_C, FOR_O, TR_C, TR_O, TD_C, TD_O, TH_C, TH_O,
+  BR, UNKNOWN, ID, DIV, NUMBER, DOT, BRACK_C, BRACK_O, SEMICOLON, COLON, EQUALS, PLUS, LESS, MULT, PAR_C, PAR_O, STRING, 
+  DOLAR, TYPE, SCORE, UNTIL, STRING_TYPE, NAME, CLASSES, RESULT_T, METHODS, FUNCTION, INTEGER, ITERATOR, VARIABLES, PARAMETERS,
+  COMMENTS, TEXT, LT;
 
-
-non terminal main, var_declaration_section, html_section, html_content, html_content_available, h1_declaration, var_declaration, result_data, result_data_children, result_data_classes, 
-    result_data_variables, result_data_variables_children, result_data_methods, result_data_methods_children, result_data_comments, typeOf, arithm_expr, element, sym_arithm, h2_declaration,
-    br_declaration, table_declaration, for_declaration, for_open, element_var, table_content, table_row_delaration, table_row_content, table_row_datas, table_row_headers,table_row_content_data,
-    table_row_content_header, data_content, data_access, data_content_values, data_access_value, html_content_available_common, table_row_declaration_sub, table_row_content_sub;
-
-// precedence
-precedence left PLUS, LESS;
-precedence left MULT, DIV;
-precedence left PAR_O, PAR_C;
-
+// master
+non terminal main, html_section, html_content, html_declarations, html_declarations_global, table_declaration, 
+    for_declaration, h1_declaration, h2_declaration, br_declaration, data_set;
+// extra
+non terminal for_open, element, id_vals;
+// RESULT object
+non terminal result_object, result_object_attrs, result_data_classes, result_data_methods, result_data_variables,
+    result_data_comments, result_data_variables_children, result_data_methods_children;
 start with main;
 
-main::= // var declaration
-      var_declaration_section html_section    {: System.out.println("OK"); :}
-    | html_section                            {: System.out.println("OK"); :}
+main::=
+    html_section
 ;
 
-// HTML
 html_section::=
-    HTML_O html_content HTML_C
+      HTML_O HTML_C
+    | HTML_O html_content HTML_C
 ;
 
 html_content::=
-      html_content_available
-    | html_content html_content_available
+      html_declarations
+    | html_content html_declarations
 ;
 
-html_content_available::=
-      html_content_available_common
+html_declarations::=
+      html_declarations_global
     | table_declaration
     | for_declaration
-    | error
 ;
 
-html_content_available_common::=
+html_declarations_global::=
       h1_declaration
     | h2_declaration
     | br_declaration
 ;
 
 h1_declaration::=
-    H1_O H1_C
-  | H1_O data_content H1_C 
+      H1_O H1_C
+    | H1_O data_set H1_C
 ;
 
 h2_declaration::=
-    H2_O H2_C
-  | H2_O data_content H2_C
+      H2_O H2_C
+    | H2_O data_set H2_C
 ;
 
 br_declaration::=BR;
 
 table_declaration::=
       TABLE_O TABLE_C
-    | TABLE_O table_content TABLE_C
-;
-
-table_content::=
-      table_row_delaration
-    | table_content table_row_delaration
-;
-
-table_row_delaration::=
-      table_row_declaration_sub
-    | for_open table_row_declaration_sub FOR_C
-;
-
-table_row_declaration_sub::=
-      TR_O TR_C
-    | TR_O table_row_content TR_C
-;
-
-table_row_content::=
-      table_row_content_sub
-    | for_open table_row_content_sub FOR_C
-;
-
-table_row_content_sub::=
-      table_row_datas
-    | table_row_headers
-;
-
-table_row_datas::=
-      table_row_content_data
-    | table_row_datas table_row_content_data
-;
-
-table_row_headers::=
-      table_row_content_header
-    | table_row_headers table_row_content_header
-;
-
-
-table_row_content_data::=
-      TD_O TD_C
-    | TD_O data_content TD_C
-;
-
-table_row_content_header::=
-      TH_O TH_C
-    | TH_O data_content TH_C
+    | TABLE_O data_set TABLE_C
 ;
 
 for_declaration::=
@@ -156,49 +105,30 @@ for_declaration::=
 ;
 
 for_open::=
-    FOR_O ITERATOR COLON element_var UNTIL COLON element_var SEMICOLON GT
+    FOR_O ITERATOR COLON id_vals UNTIL COLON element SEMICOLON LT
 ;
 
-data_content::= // TODO add logic
-      data_content_values
-    | data_content data_content_values
+data_set::=
+      DOLAR PAR_O id_vals PAR_C DOLAR
+    | element
 ;
 
-data_content_values::=
-      data_access
-    | ID
-    | UNKNOWN
-    | error
+element::=
+      NUMBER
+    | id_vals
 ;
 
-data_access::=
-    DOLAR PAR_O data_access_value PAR_C DOLAR
+id_vals::=
+      ID
+    | result_object
 ;
 
-data_access_value::=
-      result_data
-    | ID
+result_object::=
+      RESULT_T
+    | RESULT_T DOT result_object_attrs
 ;
 
-// VARIABLES DECLARATIONS
-var_declaration_section::=
-      var_declaration
-    | var_declaration_section var_declaration
-;
-
-var_declaration::=
-      typeOf ID SEMICOLON
-    | typeOf ID EQUALS arithm_expr SEMICOLON
-    | error
-;
-
-// RESULT GLOBAL VARIABLE
-result_data::=
-      RESULT
-    | RESULT DOT result_data_children
-;
-
-result_data_children::=
+result_object_attrs::=
       SCORE
     | result_data_classes
     | result_data_variables
@@ -240,36 +170,4 @@ result_data_methods_children::=
       NAME
     | TYPE
     | PARAMETERS
-;
-
-// VARIABLES
-arithm_expr::=
-    element
-  | arithm_expr sym_arithm arithm_expr
-  | PAR_O arithm_expr PAR_C
-;
-
-element::=
-    element_var
-  | STRING
-;
-
-element_var::=
-    NUMBER
-  | result_data
-  | ID
-;
-
-// GENERIC
-
-sym_arithm::=
-      PLUS
-    | LESS
-    | MULT
-    | DIV
-;
-
-typeOf::=
-      INTEGER
-    | STRING_TYPE
 ;
