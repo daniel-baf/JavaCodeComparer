@@ -127,7 +127,7 @@ NUMBER=[0-9]+
 ("]")           { return new Symbol(repSym.BRACK_C, yyline+1, yycolumn+1); }
 (";")           { return new Symbol(repSym.SEMICOLON, yyline+1, yycolumn+1); }
 (":")           { return new Symbol(repSym.COLON, yyline+1, yycolumn+1); }
-(">")           { return new Symbol(repSym.LT, yyline+1, yycolumn+1); }
+(">")           { return new Symbol(repSym.GT, yyline+1, yycolumn+1); }
 // assign symobls
 ("=")           { return new Symbol(repSym.EQUALS, yyline+1, yycolumn+1); }
 // conj symbols
@@ -149,8 +149,8 @@ NUMBER=[0-9]+
 (\<{ID}\>)      { return calcSym(yytext(), false); }
 (\<\/{ID}\>)    { return calcSym(yytext(), true); }
 // data
-{VAL_COMILLAS}  { return new Symbol(repSym.STRING, yyline+1, yycolumn+1, yytext()); }
 {COMMENT}       { /*IGNORE*/ }
+{VAL_COMILLAS}  { return new Symbol(repSym.STRING, yyline+1, yycolumn+1, yytext()); }
 // custom EOF
 <<EOF>>         { return new Symbol(repSym.EOF, -1, -1); }
 // error

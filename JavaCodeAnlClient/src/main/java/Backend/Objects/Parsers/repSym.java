@@ -9,60 +9,62 @@ package Backend.Objects.Parsers;
 public class repSym {
   /* terminals */
   public static final int FUNCTION = 44;
-  public static final int H1_O = 5;
-  public static final int H2_C = 6;
-  public static final int TABLE_O = 9;
-  public static final int FOR_C = 10;
-  public static final int MULT = 31;
-  public static final int EQUALS = 28;
-  public static final int COMMENTS = 49;
-  public static final int HTML_O = 3;
+  public static final int H1_O = 7;
+  public static final int H2_C = 8;
+  public static final int TABLE_O = 11;
+  public static final int FOR_C = 12;
+  public static final int MULT = 33;
+  public static final int EQUALS = 30;
+  public static final int COMMENTS = 48;
+  public static final int HTML_O = 5;
   public static final int METHODS = 43;
-  public static final int SCORE = 37;
-  public static final int TR_O = 13;
-  public static final int INTEGER = 45;
-  public static final int H1_C = 4;
-  public static final int TABLE_C = 8;
-  public static final int LESS = 30;
-  public static final int HTML_C = 2;
-  public static final int TR_C = 12;
-  public static final int SEMICOLON = 26;
-  public static final int LT = 51;
-  public static final int TH_O = 17;
-  public static final int TYPE = 36;
-  public static final int ITERATOR = 46;
-  public static final int DIV = 21;
-  public static final int UNTIL = 38;
-  public static final int PLUS = 29;
-  public static final int TH_C = 16;
-  public static final int DOT = 23;
-  public static final int ID = 20;
-  public static final int PAR_O = 33;
+  public static final int SCORE = 38;
+  public static final int TR_O = 15;
+  public static final int INTEGER = 2;
+  public static final int H1_C = 6;
+  public static final int TABLE_C = 10;
+  public static final int LESS = 32;
+  public static final int HTML_C = 4;
+  public static final int TR_C = 14;
+  public static final int SEMICOLON = 28;
+  public static final int TH_O = 19;
+  public static final int TYPE = 37;
+  public static final int ITERATOR = 45;
+  public static final int DIV = 23;
+  public static final int UNTIL = 39;
+  public static final int PLUS = 31;
+  public static final int TH_C = 18;
+  public static final int PAR_O = 35;
+  public static final int DOT = 25;
+  public static final int ID = 22;
   public static final int EOF = 0;
-  public static final int STRING_TYPE = 39;
+  public static final int STRING_TYPE = 3;
   public static final int error = 1;
-  public static final int NUMBER = 22;
-  public static final int PAR_C = 32;
-  public static final int PARAMETERS = 48;
-  public static final int BR = 18;
-  public static final int UNKNOWN = 19;
+  public static final int NUMBER = 24;
+  public static final int PAR_C = 34;
+  public static final int PARAMETERS = 47;
+  public static final int BR = 20;
+  public static final int UNKNOWN = 21;
   public static final int NAME = 40;
   public static final int CLASSES = 41;
-  public static final int BRACK_O = 25;
-  public static final int COLON = 27;
-  public static final int VARIABLES = 47;
+  public static final int BRACK_O = 27;
+  public static final int COLON = 29;
+  public static final int VARIABLES = 46;
   public static final int RESULT_T = 42;
-  public static final int TD_O = 15;
-  public static final int BRACK_C = 24;
-  public static final int STRING = 34;
-  public static final int TEXT = 50;
-  public static final int TD_C = 14;
-  public static final int H2_O = 7;
-  public static final int DOLAR = 35;
-  public static final int FOR_O = 11;
+  public static final int TD_O = 17;
+  public static final int BRACK_C = 26;
+  public static final int STRING = 51;
+  public static final int TEXT = 49;
+  public static final int TD_C = 16;
+  public static final int H2_O = 9;
+  public static final int GT = 50;
+  public static final int DOLAR = 36;
+  public static final int FOR_O = 13;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
+  "INTEGER",
+  "STRING_TYPE",
   "HTML_C",
   "HTML_O",
   "H1_C",
@@ -95,24 +97,22 @@ public class repSym {
   "MULT",
   "PAR_C",
   "PAR_O",
-  "STRING",
   "DOLAR",
   "TYPE",
   "SCORE",
   "UNTIL",
-  "STRING_TYPE",
   "NAME",
   "CLASSES",
   "RESULT_T",
   "METHODS",
   "FUNCTION",
-  "INTEGER",
   "ITERATOR",
   "VARIABLES",
   "PARAMETERS",
   "COMMENTS",
   "TEXT",
-  "LT"
+  "GT",
+  "STRING"
   };
 }
 

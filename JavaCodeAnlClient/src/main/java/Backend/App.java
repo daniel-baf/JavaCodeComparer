@@ -5,17 +5,9 @@
  */
 package Backend;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.StringReader;
-
 import Backend.Objects.Lexers.JSONLexer;
-import Backend.Objects.Lexers.ReportLexer;
 import Backend.Objects.Parsers.JSONParser;
-import Backend.Objects.Parsers.ReportParser;
-import FrontEnd.ProjectManagerView;
-import Utilities.Files.FileActioner;
+import java.io.FileReader;
 
 /**
  * Main class, show a GUI
@@ -35,21 +27,25 @@ public class App {
 
         // test JSON analyze
         try {
-            /*
-             * JSONLexer lexer = new JSONLexer(
-             * new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/result.json"));
-             * JSONParser parser = new JSONParser(lexer);
-             * parser.parse();
-             * // parser.getActioner().printData();
-             */
+
+            JSONLexer lexer = new JSONLexer(
+                    new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/result.json"));
+            JSONParser parser = new JSONParser(lexer);
+            parser.parse();
+            System.out.println("JSON OK");
+            // parser.getActioner().printData();
             // ProjectManagerView projectMannager = new ProjectManagerView();
             // analyze .def file
+
+            /*
             ReportLexer rl = new ReportLexer(new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/report.def"));
             ReportParser rp = new ReportParser(rl);
             rp.parse();
             System.out.println(" FILE OK");
+             */
         } catch (Exception e) {
             System.out.println("Exeption: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }

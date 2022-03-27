@@ -723,7 +723,7 @@ public class ReportLexer implements java_cup.runtime.Scanner {
             // fall through
           case 25: break;
           case 5: 
-            { return new Symbol(repSym.LT, yyline+1, yycolumn+1);
+            { return new Symbol(repSym.GT, yyline+1, yycolumn+1);
             } 
             // fall through
           case 26: break;
