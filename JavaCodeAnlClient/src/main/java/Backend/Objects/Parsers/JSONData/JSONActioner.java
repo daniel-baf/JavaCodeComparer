@@ -48,7 +48,7 @@ public class JSONActioner {
             }
             // save data
             this.data.getVariables()
-                    .add(new VariableJSON(name.replaceAll("\"", ""), type.replaceAll("\"", ""), functionsSplitted));
+                    .add(new JSONVariable(name.replaceAll("\"", ""), type.replaceAll("\"", ""), functionsSplitted));
         } catch (Exception e) {
             addToHash("error");
             System.out.println("Error saving variable " + e.getMessage());
@@ -97,6 +97,10 @@ public class JSONActioner {
             this.errors.add(new AnalysisError(-1, -1, "Debe haber 1 declaracion de " + name, "JSON", "PRYECTO COPY", "SEMANTICO", new ArrayList<>()));
         });
         return this.errors.isEmpty();
+    }
+
+    public JSONDataSaver getData() {
+        return data;
     }
 
 }

@@ -5,6 +5,11 @@
 package Backend.Objects.Parsers;
 
 import Backend.Objects.Lexers.ReportLexer;
+import Backend.Objects.Parsers.JSONData.JSONDataSaver;
+import Backend.Objects.Parsers.DefData.ReportActioner;
+import Backend.Objects.SymTable.Variables.VarElement;
+import Backend.Objects.SymTable.Variables.VarType;
+
 import java_cup.runtime.*;
 
 /**************************************************/
@@ -13,8 +18,12 @@ import java_cup.runtime.*;
 
 parser code {:
 
-    public ReportParser(ReportLexer lexer) {
+    private ReportActioner actioner;
+
+    public ReportParser(ReportLexer lexer, JSONDataSaver JSONData) {
         super(lexer);
+        this.actioner = new ReportActioner(JSONData);
+
     }
 
     // error methods
@@ -32,6 +41,12 @@ parser code {:
 
     public void unrecovered_syntax_error(Symbol cur_token) {
         System.out.println("unrecovered sintax error");
+    }
+
+    int n = 1;
+    private void printk(String message) {
+      System.out.println(n + ": " + message);
+      n++;
     }
 
 :}
@@ -67,6 +82,7 @@ start with main;
 main::=
       variables_section html_section
     | html_section
+    | variables_section
 ;
 
 // HTML
@@ -175,14 +191,14 @@ variables_section::=
 
 
 var_declaration::=
-      typeOf ID SEMICOLON
-    | typeOf ID EQUALS arithm_expr SEMICOLON
+      typeOf:type ID SEMICOLON                              {: printk("save var: " + type); :}
+    | typeOf:type ID EQUALS arithm_expr:value SEMICOLON     {: printk("save var: " + type + ", val: " + value); :}
     | error SEMICOLON
 ;
 
 // VARIABLES DATA
 arithm_expr::=
-    master_element
+    master_element:elem                     {: RESULT=elem; :}
   | arithm_expr sym_arithm arithm_expr
   | PAR_O arithm_expr PAR_C
 ;
@@ -194,73 +210,73 @@ data_set::=
 
 // TERMINAL GENERATORS
 master_element::=
-      element
-    | STRING
+      element:elem            {: RESULT=elem; :}
+    | STRING:str              {: RESULT=new VarElement(str.toString(), VarType.STRING); :}
 ;
 
 element::=
-      NUMBER
-    | id_vals
+      NUMBER:num              {: RESULT=new VarElement(Integer.valueOf(num.toString()), VarType.INTEGER); :}
+    | id_vals:id              {: RESULT=id; :}
     | error
 ;
 
 id_vals::=
-      ID
-    | result_object
+      ID:id                   {: RESULT=id; :} // TODO find on table the id
+    | result_object:result    {: RESULT=result; :}
 ;
 
 result_object::=
-      RESULT_T
-    | RESULT_T DOT result_object_attrs
+      RESULT_T                                  {: RESULT=actioner.getFromResult(1,null); :}
+    | RESULT_T DOT result_object_attrs:data     {: RESULT=data; :}
 ;
 
 result_object_attrs::=
-      SCORE
-    | result_data_classes
-    | result_data_variables
-    | result_data_methods
-    | result_data_comments
+      SCORE                         {: RESULT=actioner.getFromResult(2,null); :}
+    | result_data_classes:data      {: RESULT=data; :}
+    | result_data_variables:data    {: RESULT=data; :}
+    | result_data_methods:data      {: RESULT=data; :}
+    | result_data_comments:data     {: RESULT=data; :}
 ;
 
 result_data_classes::=
-      CLASSES
-    | CLASSES brack_and_num
-    | CLASSES brack_and_num DOT NAME
+      CLASSES                             {: RESULT=actioner.getFromResult(3,null); :}
+    | CLASSES brack_and_num:id            {: RESULT=actioner.getFromResult(4,id.toString()); :}
+    | CLASSES brack_and_num:id DOT NAME   {: RESULT=actioner.getFromResult(5,id.toString()); :}
 ;
 
 result_data_variables::=
-      VARIABLES
-    | VARIABLES brack_and_num
-    | VARIABLES brack_and_num DOT result_data_variables_children
+      VARIABLES                                                           {: RESULT=actioner.getFromResult(6,null); :}
+    | VARIABLES brack_and_num:id                                          {: RESULT=actioner.getFromResult(7,id.toString()); :}                             
+    | VARIABLES brack_and_num:id DOT result_data_variables_children:type  {: RESULT=actioner.getFromVariableResult(id.toString(),type.toString()); :} 
 ;
 
 result_data_methods::=
-      METHODS
-    | METHODS brack_and_num
-    | METHODS brack_and_num DOT result_data_methods_children
+      METHODS                                                            {: RESULT=actioner.getFromResult(11,null); :}
+    | METHODS brack_and_num:id                                           {: RESULT=actioner.getFromResult(12,id.toString()); :}    
+    | METHODS brack_and_num:id DOT result_data_methods_children:type     {: RESULT=actioner.getFromMethodResult(id.toString(), type.toString()); :}
 ;
 
 result_data_comments::=
-      COMMENTS
-    | COMMENTS brack_and_num
-    | COMMENTS brack_and_num DOT TEXT
+      COMMENTS                                  {: RESULT=actioner.getFromResult(8,null); :}
+    | COMMENTS brack_and_num:id                 {: RESULT=actioner.getFromResult(9,id.toString()); :}
+    | COMMENTS brack_and_num:id DOT TEXT        {: RESULT=actioner.getFromResult(10,id.toString()); :}
 ;
 
 result_data_variables_children::=
-      NAME
-    | TYPE
-    | FUNCTION
+      NAME          {: RESULT="name"; :}
+    | TYPE          {: RESULT="type"; :}
+    | FUNCTION      {: RESULT="function"; :}
 ;
 
 result_data_methods_children::=
-      NAME
-    | TYPE
-    | PARAMETERS
+      NAME          {: RESULT="name"; :}
+    | TYPE          {: RESULT="type"; :}
+    | PARAMETERS    {: RESULT="parameters"; :}
 ;
 
 brack_and_num::=
-      BRACK_O NUMBER BRACK_C
-    | BRACK_O ID BRACK_C
+      BRACK_O NUMBER:num BRACK_C    {: RESULT=num; :}
+    | BRACK_O ID:id BRACK_C         {: RESULT=id; :}
 ;
 
 sym_arithm::=
@@ -271,6 +287,6 @@ sym_arithm::=
 ;
 
 typeOf::=
-      INTEGER
-    | STRING_TYPE
+      INTEGER         {: RESULT=VarType.INTEGER; :}
+    | STRING_TYPE     {: RESULT=VarType.STRING; :}
 ;

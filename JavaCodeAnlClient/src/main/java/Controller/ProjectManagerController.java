@@ -21,8 +21,8 @@ import java.util.ArrayList;
  */
 public class ProjectManagerController {
 
-    private String filesPath;
-    private String reportFile;
+    private final String filesPath;
+    private final String reportFile;
     private String jsonFile;
     private String defFile;
     private ArrayList<AnalysisError> errors;
