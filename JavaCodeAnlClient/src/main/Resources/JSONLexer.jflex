@@ -3,8 +3,11 @@
 /**************************************************/
 
 package Backend.Objects.Lexers;
-import java_cup.runtime.*;
+
+import Backend.Objects.AnalysisError;
 import Backend.Objects.Parsers.sym;
+import java_cup.runtime.*;
+import java.util.ArrayList;
 
 /**************************************************/
 /*************** SECTION 2: CONFIGS ***************/
@@ -26,7 +29,17 @@ NUMBER=([0-9]+)
 
 // methods
 %{
-    // TODO add methodsI
+    ArrayList<AnalysisError> errors = new ArrayList<>();
+
+    public void addError(String lexeme) {
+        try {
+            this.errors.add(new AnalysisError(yyline+1, yycolumn+1, lexeme, "JSON", "PROJECTO COPY", "LEXICO", null));
+        } catch(Exception e) {
+            System.out.println("Unable to save error at lexer class");
+        }
+    }
+
+    public ArrayList<AnalysisError> getErrors() { return this.errors; }
 %}
 
 %%
@@ -60,4 +73,4 @@ NUMBER=([0-9]+)
 {NUMBER}        { return new Symbol(sym.NUMBER, yyline+1, yycolumn+1, yytext()); }
 {VAL_COMILLAS}  { return new Symbol(sym.STRING, yyline+1, yycolumn+1, yytext()); }
 
-[^]             { return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }
+[^]             { addError(yytext());  return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }

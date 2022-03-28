@@ -364,7 +364,7 @@ public class ReportParser extends java_cup.runtime.lr_parser {
 
     public void unrecovered_syntax_error(Symbol cur_token) {
         System.out.println("unrecovered sintax error");
-    }   
+    }
 
 
 

@@ -5,17 +5,26 @@
  */
 package FrontEnd;
 
+import Controller.ProjectManagerController;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author jefemayoneso
  */
 public class ProjectManagerView extends javax.swing.JFrame {
 
+    private final ProjectManagerController controller;
+    private int activeView;
+
     /**
      * Creates new form ProjectManager
      */
-    public ProjectManagerView() {
+    public ProjectManagerView(String copyFilePath, String reportFile) {
+        this.controller = new ProjectManagerController(copyFilePath, reportFile);
         initComponents();
+        setConfig();
     }
 
     /**
@@ -27,22 +36,410 @@ public class ProjectManagerView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jPanelContainer = new javax.swing.JPanel();
+        jPanelDef = new javax.swing.JPanel();
+        jPanelDefHeader = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jPanelDefContent = new javax.swing.JPanel();
+        jPanelDefText = new javax.swing.JPanel();
+        jScrollPaneDef = new javax.swing.JScrollPane();
+        jTextAreaDef = new javax.swing.JTextArea();
+        jPanelDefContentButton = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jPanelHTML = new javax.swing.JPanel();
+        jPanelHTMLHeader = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanelHTMLContent = new javax.swing.JPanel();
+        jPanelHTMLContentText = new javax.swing.JPanel();
+        jScrollPaneHTML = new javax.swing.JScrollPane();
+        jTextAreaHTML = new javax.swing.JTextArea();
+        jPanelHTMLContentButton = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanelJSON = new javax.swing.JPanel();
+        jPanelJSONHeader = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanelJSONContent = new javax.swing.JPanel();
+        jScrollPaneJSON = new javax.swing.JScrollPane();
+        jTextAreaJSON = new javax.swing.JTextArea();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuSwitchView = new javax.swing.JMenu();
+        jMenuItemSwitchToJSON = new javax.swing.JMenuItem();
+        jMenuItemSwitchToDef = new javax.swing.JMenuItem();
+        jMenuItemSwitchTYoHTML = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuSaveActiveView = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+
+        jMenu3.setText("File");
+        jMenuBar2.add(jMenu3);
+
+        jMenu4.setText("Edit");
+        jMenuBar2.add(jMenu4);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanelContainer.setLayout(new javax.swing.BoxLayout(jPanelContainer, javax.swing.BoxLayout.LINE_AXIS));
+
+        jPanelDefHeader.setLayout(new java.awt.CardLayout());
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("PANEL DE ARCHIVO .DEF");
+        jPanelDefHeader.add(jLabel2, "card2");
+
+        jTextAreaDef.setColumns(20);
+        jTextAreaDef.setRows(5);
+        jScrollPaneDef.setViewportView(jTextAreaDef);
+
+        javax.swing.GroupLayout jPanelDefTextLayout = new javax.swing.GroupLayout(jPanelDefText);
+        jPanelDefText.setLayout(jPanelDefTextLayout);
+        jPanelDefTextLayout.setHorizontalGroup(
+            jPanelDefTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelDefTextLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneDef, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelDefTextLayout.setVerticalGroup(
+            jPanelDefTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPaneDef, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+        );
+
+        jButton2.setText("GENERAR HTML");
+        jPanelDefContentButton.add(jButton2);
+
+        javax.swing.GroupLayout jPanelDefContentLayout = new javax.swing.GroupLayout(jPanelDefContent);
+        jPanelDefContent.setLayout(jPanelDefContentLayout);
+        jPanelDefContentLayout.setHorizontalGroup(
+            jPanelDefContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelDefContentButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelDefText, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelDefContentLayout.setVerticalGroup(
+            jPanelDefContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelDefContentLayout.createSequentialGroup()
+                .addComponent(jPanelDefText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelDefContentButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanelDefLayout = new javax.swing.GroupLayout(jPanelDef);
+        jPanelDef.setLayout(jPanelDefLayout);
+        jPanelDefLayout.setHorizontalGroup(
+            jPanelDefLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelDefHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelDefContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelDefLayout.setVerticalGroup(
+            jPanelDefLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelDefLayout.createSequentialGroup()
+                .addComponent(jPanelDefHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelDefContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanelContainer.add(jPanelDef);
+
+        jPanelHTMLHeader.setLayout(new java.awt.CardLayout());
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setText("VISTA SALIDA HTML");
+        jPanelHTMLHeader.add(jLabel3, "card2");
+
+        jTextAreaHTML.setEditable(false);
+        jTextAreaHTML.setColumns(20);
+        jTextAreaHTML.setRows(5);
+        jScrollPaneHTML.setViewportView(jTextAreaHTML);
+
+        javax.swing.GroupLayout jPanelHTMLContentTextLayout = new javax.swing.GroupLayout(jPanelHTMLContentText);
+        jPanelHTMLContentText.setLayout(jPanelHTMLContentTextLayout);
+        jPanelHTMLContentTextLayout.setHorizontalGroup(
+            jPanelHTMLContentTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHTMLContentTextLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneHTML, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelHTMLContentTextLayout.setVerticalGroup(
+            jPanelHTMLContentTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPaneHTML, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+        );
+
+        jButton1.setText("ABRIR NAVEGADOR");
+        jPanelHTMLContentButton.add(jButton1);
+
+        javax.swing.GroupLayout jPanelHTMLContentLayout = new javax.swing.GroupLayout(jPanelHTMLContent);
+        jPanelHTMLContent.setLayout(jPanelHTMLContentLayout);
+        jPanelHTMLContentLayout.setHorizontalGroup(
+            jPanelHTMLContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelHTMLContentText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelHTMLContentLayout.setVerticalGroup(
+            jPanelHTMLContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHTMLContentLayout.createSequentialGroup()
+                .addComponent(jPanelHTMLContentText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanelHTMLLayout = new javax.swing.GroupLayout(jPanelHTML);
+        jPanelHTML.setLayout(jPanelHTMLLayout);
+        jPanelHTMLLayout.setHorizontalGroup(
+            jPanelHTMLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelHTMLHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelHTMLContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelHTMLLayout.setVerticalGroup(
+            jPanelHTMLLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelHTMLLayout.createSequentialGroup()
+                .addComponent(jPanelHTMLHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelHTMLContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanelContainer.add(jPanelHTML);
+
+        jPanelJSONHeader.setLayout(new java.awt.CardLayout());
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("PANEL DE ARCHIVO JSON");
+        jPanelJSONHeader.add(jLabel1, "card2");
+
+        jTextAreaJSON.setColumns(20);
+        jTextAreaJSON.setRows(5);
+        jScrollPaneJSON.setViewportView(jTextAreaJSON);
+
+        javax.swing.GroupLayout jPanelJSONContentLayout = new javax.swing.GroupLayout(jPanelJSONContent);
+        jPanelJSONContent.setLayout(jPanelJSONContentLayout);
+        jPanelJSONContentLayout.setHorizontalGroup(
+            jPanelJSONContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelJSONContentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneJSON, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanelJSONContentLayout.setVerticalGroup(
+            jPanelJSONContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelJSONContentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPaneJSON, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanelJSONLayout = new javax.swing.GroupLayout(jPanelJSON);
+        jPanelJSON.setLayout(jPanelJSONLayout);
+        jPanelJSONLayout.setHorizontalGroup(
+            jPanelJSONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanelJSONHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelJSONContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelJSONLayout.setVerticalGroup(
+            jPanelJSONLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelJSONLayout.createSequentialGroup()
+                .addComponent(jPanelJSONHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelJSONContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanelContainer.add(jPanelJSON);
+
+        jMenuSwitchView.setText("Vista");
+
+        jMenuItemSwitchToJSON.setText("JSON");
+        jMenuItemSwitchToJSON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSwitchToJSONActionPerformed(evt);
+            }
+        });
+        jMenuSwitchView.add(jMenuItemSwitchToJSON);
+
+        jMenuItemSwitchToDef.setText("DEF");
+        jMenuItemSwitchToDef.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSwitchToDefActionPerformed(evt);
+            }
+        });
+        jMenuSwitchView.add(jMenuItemSwitchToDef);
+
+        jMenuItemSwitchTYoHTML.setText("HTML");
+        jMenuItemSwitchTYoHTML.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSwitchTYoHTMLActionPerformed(evt);
+            }
+        });
+        jMenuSwitchView.add(jMenuItemSwitchTYoHTML);
+
+        jMenuBar1.add(jMenuSwitchView);
+
+        jMenu2.setText("Proyecto");
+
+        jMenu1.setText("Guardar");
+
+        jMenuSaveActiveView.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuSaveActiveView.setText("Activo");
+        jMenuSaveActiveView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuSaveActiveViewActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuSaveActiveView);
+
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem5.setText("Todos");
+        jMenu1.add(jMenuItem5);
+
+        jMenu2.add(jMenu1);
+
+        jMenuItem1.setText("Abrir");
+        jMenu2.add(jMenuItem1);
+
+        jMenuItem2.setText("Cerrar");
+        jMenu2.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1101, Short.MAX_VALUE)
+            .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 595, Short.MAX_VALUE)
+            .addComponent(jPanelContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItemSwitchToJSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSwitchToJSONActionPerformed
+        hidePanels();
+        this.jPanelJSON.setVisible(true);
+        this.activeView = 0;
+    }//GEN-LAST:event_jMenuItemSwitchToJSONActionPerformed
+
+    private void jMenuItemSwitchToDefActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSwitchToDefActionPerformed
+        hidePanels();
+        this.jPanelDef.setVisible(true);
+        this.activeView = 1;
+    }//GEN-LAST:event_jMenuItemSwitchToDefActionPerformed
+
+    private void jMenuItemSwitchTYoHTMLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSwitchTYoHTMLActionPerformed
+        hidePanels();
+        this.jPanelHTML.setVisible(true);
+        this.activeView = 2;
+    }//GEN-LAST:event_jMenuItemSwitchTYoHTMLActionPerformed
+
+    private void jMenuSaveActiveViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuSaveActiveViewActionPerformed
+        // check with is visible
+        boolean isErrorEmpty = switch (this.activeView) {
+            case 0 ->
+                this.controller.saveJSON(this.jTextAreaJSON.getText());
+            case 1 ->
+                this.controller.saveDef(this.jTextAreaDef.getText());
+            default ->
+                true;
+        };
+
+        if (!isErrorEmpty) {
+            showErrors();
+        }
+    }//GEN-LAST:event_jMenuSaveActiveViewActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItemSwitchTYoHTML;
+    private javax.swing.JMenuItem jMenuItemSwitchToDef;
+    private javax.swing.JMenuItem jMenuItemSwitchToJSON;
+    private javax.swing.JMenuItem jMenuSaveActiveView;
+    private javax.swing.JMenu jMenuSwitchView;
+    private javax.swing.JPanel jPanelContainer;
+    private javax.swing.JPanel jPanelDef;
+    private javax.swing.JPanel jPanelDefContent;
+    private javax.swing.JPanel jPanelDefContentButton;
+    private javax.swing.JPanel jPanelDefHeader;
+    private javax.swing.JPanel jPanelDefText;
+    private javax.swing.JPanel jPanelHTML;
+    private javax.swing.JPanel jPanelHTMLContent;
+    private javax.swing.JPanel jPanelHTMLContentButton;
+    private javax.swing.JPanel jPanelHTMLContentText;
+    private javax.swing.JPanel jPanelHTMLHeader;
+    private javax.swing.JPanel jPanelJSON;
+    private javax.swing.JPanel jPanelJSONContent;
+    private javax.swing.JPanel jPanelJSONHeader;
+    private javax.swing.JScrollPane jScrollPaneDef;
+    private javax.swing.JScrollPane jScrollPaneHTML;
+    private javax.swing.JScrollPane jScrollPaneJSON;
+    private javax.swing.JTextArea jTextAreaDef;
+    private javax.swing.JTextArea jTextAreaHTML;
+    private javax.swing.JTextArea jTextAreaJSON;
     // End of variables declaration//GEN-END:variables
+
+    private void hidePanels() {
+        this.jPanelDef.setVisible(false);
+        this.jPanelHTML.setVisible(false);
+        this.jPanelJSON.setVisible(false);
+    }
+
+    private void setConfig() {
+        // show main panel
+        int tabSize = 1;
+        int formatterDefaultAnchor = 3;
+        hidePanels();
+        this.activeView = 0;
+        this.jPanelJSON.setVisible(true);
+        // custom text areas
+        // JSON
+        TextLineNumber lineFormatterJSON = new TextLineNumber(this.jTextAreaJSON, formatterDefaultAnchor);
+        this.jScrollPaneJSON.setRowHeaderView(lineFormatterJSON);
+        this.jTextAreaJSON.setTabSize(tabSize);
+        // DEF
+        TextLineNumber lineFormatterDef = new TextLineNumber(this.jTextAreaDef, formatterDefaultAnchor);
+        this.jScrollPaneDef.setRowHeaderView(lineFormatterDef);
+        this.jTextAreaDef.setTabSize(tabSize);
+        // HTML
+        TextLineNumber lineFormatterHTML = new TextLineNumber(this.jTextAreaHTML, formatterDefaultAnchor);
+        this.jScrollPaneHTML.setRowHeaderView(lineFormatterHTML);
+        this.jTextAreaHTML.setTabSize(tabSize);
+        // set text data
+        this.controller.getFileLines(this.controller.getJsonFile()).forEach(fileLine -> {
+            this.jTextAreaJSON.append(fileLine + "\n");
+        });
+        this.controller.getFileLines(this.controller.getDefFile()).forEach(fileLine -> {
+            this.jTextAreaDef.append(fileLine + "\n");
+        });
+    }
+
+    private void showErrors() {
+        // show message
+        JOptionPane.showMessageDialog(null, "Hay errores dentro de los archivos guardados", "GUARDADO", JOptionPane.WARNING_MESSAGE);
+        ErrorsTable errors = new ErrorsTable(this.controller.getErrors());
+        errors.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        errors.setLocationRelativeTo(null);
+        errors.setVisible(true);
+        this.controller.setErrors(new ArrayList<>());
+    }
 }

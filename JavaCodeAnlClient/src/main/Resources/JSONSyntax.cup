@@ -7,6 +7,7 @@ package Backend.Objects.Parsers;
 import Backend.Objects.Lexers.JSONLexer;
 import Backend.Objects.Parsers.JSONData.JSONActioner;
 import java_cup.runtime.*;
+import java.util.ArrayList;
 
 /**************************************************/
 /************ SECTION 2: USER METHODS *************/
@@ -32,7 +33,18 @@ parser code {:
     }
 
     public void syntax_error(Symbol cur_token) {
-        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d", sym.terminalNames[cur_token.sym], cur_token.left, cur_token.right));
+        try {
+            // save error to be shown
+            jsonActioner.addToHash("error");
+            ArrayList<String> expectedTkns = new ArrayList<>();
+            expected_token_ids().forEach(symT -> {
+                expectedTkns.add(sym.terminalNames[symT]);
+            });
+            String value = cur_token.value  != null? cur_token.value.toString(): "NA";
+            jsonActioner.addError(cur_token.left, cur_token.right, value, expectedTkns);
+        } catch (Exception e) {
+            System.out.println("unable to save error at json parser " + e.getMessage());
+        }
     }
 
     public void unrecovered_syntax_error(Symbol cur_token) {
@@ -56,7 +68,7 @@ terminal String STRING;
 non terminal main, json_content, score_section, classes_section, variables_section, comments_section,
     methods_section, classes_content, empty_section, classes_declarations, class_declaration, variables_declarations,
     variable_declaration, variables_content, methods_declarations, method_declaration, method_content, comment_declaration,
-comments_declarations, comments_content;
+comments_declarations, comments_content, json_content_available;
 
 start with main;
 
@@ -65,23 +77,33 @@ main::=
 ;
 
 json_content::=
-    score_section classes_section variables_section methods_section comments_section
+      json_content_available
+    | json_content COMMA json_content_available
+;
+
+json_content_available::=
+      score_section         {: jsonActioner.addToHash("score"); :}
+    | classes_section       {: jsonActioner.addToHash("classes"); :}
+    | variables_section     {: jsonActioner.addToHash("variables"); :}
+    | methods_section       {: jsonActioner.addToHash("methods"); :}
+    | comments_section      {: jsonActioner.addToHash("comments"); :}
+    | error
 ;
 
 score_section::=
-    SCORE COLON STRING:score COMMA          {: jsonActioner.saveScore(score); :}
+    SCORE COLON STRING:score          {: jsonActioner.saveScore(score); :}
 ;
 
 classes_section::=
-    CLASSES COLON classes_content COMMA
+    CLASSES COLON classes_content
 ;
 
 variables_section::=
-    VARIABLES COLON variables_content COMMA
+    VARIABLES COLON variables_content
 ;
 
 methods_section::=
-    METHODS COLON method_content COMMA
+    METHODS COLON method_content
 ;
 
 comments_section::=
@@ -92,25 +114,21 @@ comments_section::=
 classes_content::=
       empty_section
     | BRACKET_O  classes_declarations BRACKET_C
-    | error BRACKET_C
 ;
 
 variables_content::=
       empty_section
     | BRACKET_O variables_declarations BRACKET_C
-    | error BRACKET_C
 ;
 
 method_content::=
       empty_section
     | BRACKET_O methods_declarations BRACKET_C
-    | error BRACKET_C
 ;
 
 comments_content::=
       empty_section
     | BRACKET_O comments_declarations BRACKET_C
-    | error BRACKET_C
 ;
 
 empty_section::=

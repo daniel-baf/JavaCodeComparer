@@ -8,6 +8,7 @@ package Backend.Objects.Parsers;
 import Backend.Objects.Lexers.JSONLexer;
 import Backend.Objects.Parsers.JSONData.JSONActioner;
 import java_cup.runtime.*;
+import java.util.ArrayList;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 generated parser.
@@ -33,18 +34,19 @@ public class JSONParser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\045\000\002\002\004\000\002\002\005\000\002\003" +
-    "\007\000\002\004\006\000\002\005\006\000\002\006\006" +
-    "\000\002\010\006\000\002\007\005\000\002\011\003\000" +
-    "\002\011\005\000\002\011\004\000\002\017\003\000\002" +
-    "\017\005\000\002\017\004\000\002\022\003\000\002\022" +
-    "\005\000\002\022\004\000\002\025\003\000\002\025\005" +
-    "\000\002\025\004\000\002\012\004\000\002\013\003\000" +
-    "\002\013\005\000\002\014\007\000\002\014\004\000\002" +
-    "\015\003\000\002\015\005\000\002\016\017\000\002\016" +
-    "\004\000\002\020\003\000\002\020\005\000\002\021\017" +
-    "\000\002\021\004\000\002\024\003\000\002\024\005\000" +
-    "\002\023\007\000\002\023\004" });
+    "\000\050\000\002\002\004\000\002\002\005\000\002\003" +
+    "\003\000\002\003\005\000\002\026\003\000\002\026\003" +
+    "\000\002\026\003\000\002\026\003\000\002\026\003\000" +
+    "\002\026\003\000\002\004\005\000\002\005\005\000\002" +
+    "\006\005\000\002\010\005\000\002\007\005\000\002\011" +
+    "\003\000\002\011\005\000\002\017\003\000\002\017\005" +
+    "\000\002\022\003\000\002\022\005\000\002\025\003\000" +
+    "\002\025\005\000\002\012\004\000\002\013\003\000\002" +
+    "\013\005\000\002\014\007\000\002\014\004\000\002\015" +
+    "\003\000\002\015\005\000\002\016\017\000\002\016\004" +
+    "\000\002\020\003\000\002\020\005\000\002\021\017\000" +
+    "\002\021\004\000\002\024\003\000\002\024\005\000\002" +
+    "\023\007\000\002\023\004" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -52,63 +54,64 @@ public class JSONParser extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\157\000\004\004\005\001\002\000\004\002\161\001" +
-    "\002\000\004\014\010\001\002\000\004\005\160\001\002" +
-    "\000\004\015\015\001\002\000\004\011\011\001\002\000" +
-    "\004\026\012\001\002\000\004\010\013\001\002\000\004" +
-    "\015\ufffe\001\002\000\004\021\043\001\002\000\004\011" +
-    "\016\001\002\000\006\003\021\006\020\001\002\000\004" +
-    "\010\ufff9\001\002\000\010\003\025\004\030\007\026\001" +
-    "\002\000\004\007\024\001\002\000\004\010\023\001\002" +
-    "\000\004\021\ufffd\001\002\000\004\010\ufff7\001\002\000" +
-    "\004\005\041\001\002\000\006\005\uffed\010\uffed\001\002" +
-    "\000\004\007\040\001\002\000\004\020\034\001\002\000" +
-    "\006\007\uffec\010\032\001\002\000\006\003\025\004\030" +
-    "\001\002\000\004\007\uffeb\001\002\000\004\011\035\001" +
-    "\002\000\004\026\036\001\002\000\004\005\037\001\002" +
-    "\000\006\007\uffea\010\uffea\001\002\000\004\010\ufff8\001" +
-    "\002\000\006\007\uffe9\010\uffe9\001\002\000\004\016\100" +
-    "\001\002\000\004\011\044\001\002\000\006\003\047\006" +
-    "\046\001\002\000\004\010\ufff6\001\002\000\010\003\053" +
-    "\004\055\007\026\001\002\000\004\007\052\001\002\000" +
-    "\004\010\051\001\002\000\004\016\ufffc\001\002\000\004" +
-    "\010\ufff4\001\002\000\004\005\076\001\002\000\006\007" +
-    "\074\010\073\001\002\000\004\020\057\001\002\000\006" +
-    "\007\uffe8\010\uffe8\001\002\000\004\011\060\001\002\000" +
-    "\004\026\061\001\002\000\004\010\062\001\002\000\004" +
-    "\012\063\001\002\000\004\011\064\001\002\000\004\026" +
-    "\065\001\002\000\004\010\066\001\002\000\004\017\067" +
-    "\001\002\000\004\011\070\001\002\000\004\026\071\001" +
-    "\002\000\004\005\072\001\002\000\006\007\uffe6\010\uffe6" +
-    "\001\002\000\006\003\053\004\055\001\002\000\004\010" +
-    "\ufff5\001\002\000\006\007\uffe7\010\uffe7\001\002\000\006" +
-    "\007\uffe5\010\uffe5\001\002\000\004\024\135\001\002\000" +
-    "\004\011\101\001\002\000\006\003\105\006\104\001\002" +
-    "\000\004\010\ufff3\001\002\000\004\010\133\001\002\000" +
-    "\010\003\107\004\111\007\026\001\002\000\004\007\106" +
-    "\001\002\000\004\010\ufff1\001\002\000\004\005\132\001" +
-    "\002\000\006\007\130\010\127\001\002\000\004\020\113" +
-    "\001\002\000\006\007\uffe4\010\uffe4\001\002\000\004\011" +
-    "\114\001\002\000\004\026\115\001\002\000\004\010\116" +
-    "\001\002\000\004\012\117\001\002\000\004\011\120\001" +
-    "\002\000\004\026\121\001\002\000\004\010\122\001\002" +
-    "\000\004\022\123\001\002\000\004\011\124\001\002\000" +
-    "\004\023\125\001\002\000\004\005\126\001\002\000\006" +
-    "\007\uffe2\010\uffe2\001\002\000\006\003\107\004\111\001" +
-    "\002\000\004\010\ufff2\001\002\000\006\007\uffe3\010\uffe3" +
-    "\001\002\000\006\007\uffe1\010\uffe1\001\002\000\004\024" +
-    "\ufffb\001\002\000\004\005\uffff\001\002\000\004\011\136" +
-    "\001\002\000\006\003\142\006\141\001\002\000\004\005" +
-    "\ufff0\001\002\000\004\005\ufffa\001\002\000\010\003\144" +
-    "\004\147\007\026\001\002\000\004\007\143\001\002\000" +
-    "\004\005\uffee\001\002\000\004\005\157\001\002\000\006" +
-    "\007\155\010\154\001\002\000\006\007\uffe0\010\uffe0\001" +
-    "\002\000\004\013\150\001\002\000\004\011\151\001\002" +
-    "\000\004\026\152\001\002\000\004\005\153\001\002\000" +
-    "\006\007\uffde\010\uffde\001\002\000\006\003\144\004\147" +
-    "\001\002\000\004\005\uffef\001\002\000\006\007\uffdf\010" +
-    "\uffdf\001\002\000\006\007\uffdd\010\uffdd\001\002\000\004" +
-    "\002\000\001\002\000\004\002\001\001\002" });
+    "\000\147\000\004\004\005\001\002\000\004\002\151\001" +
+    "\002\000\016\003\012\014\020\015\013\016\011\021\010" +
+    "\024\021\001\002\000\006\005\ufff9\010\ufff9\001\002\000" +
+    "\006\005\147\010\146\001\002\000\004\011\116\001\002" +
+    "\000\004\011\066\001\002\000\006\005\ufff8\010\ufff8\001" +
+    "\002\000\004\011\046\001\002\000\006\005\uffff\010\uffff" +
+    "\001\002\000\006\005\ufffb\010\ufffb\001\002\000\006\005" +
+    "\ufffd\010\ufffd\001\002\000\006\005\ufffa\010\ufffa\001\002" +
+    "\000\004\011\044\001\002\000\004\011\023\001\002\000" +
+    "\006\005\ufffc\010\ufffc\001\002\000\004\006\026\001\002" +
+    "\000\006\005\uffec\010\uffec\001\002\000\006\005\ufff3\010" +
+    "\ufff3\001\002\000\010\003\027\004\033\007\030\001\002" +
+    "\000\004\005\043\001\002\000\006\005\uffea\010\uffea\001" +
+    "\002\000\006\007\041\010\040\001\002\000\006\007\uffdd" +
+    "\010\uffdd\001\002\000\004\013\034\001\002\000\004\011" +
+    "\035\001\002\000\004\026\036\001\002\000\004\005\037" +
+    "\001\002\000\006\007\uffdb\010\uffdb\001\002\000\006\003" +
+    "\027\004\033\001\002\000\006\005\uffeb\010\uffeb\001\002" +
+    "\000\006\007\uffdc\010\uffdc\001\002\000\006\007\uffda\010" +
+    "\uffda\001\002\000\004\026\045\001\002\000\006\005\ufff7" +
+    "\010\ufff7\001\002\000\004\006\050\001\002\000\006\005" +
+    "\ufff2\010\ufff2\001\002\000\010\003\052\004\054\007\030" +
+    "\001\002\000\006\005\ufff6\010\ufff6\001\002\000\004\005" +
+    "\065\001\002\000\004\007\064\001\002\000\004\020\060" +
+    "\001\002\000\006\007\uffe9\010\056\001\002\000\006\003" +
+    "\052\004\054\001\002\000\004\007\uffe8\001\002\000\004" +
+    "\011\061\001\002\000\004\026\062\001\002\000\004\005" +
+    "\063\001\002\000\006\007\uffe7\010\uffe7\001\002\000\006" +
+    "\005\ufff1\010\ufff1\001\002\000\006\007\uffe6\010\uffe6\001" +
+    "\002\000\004\006\070\001\002\000\006\005\uffee\010\uffee" +
+    "\001\002\000\010\003\072\004\074\007\030\001\002\000" +
+    "\006\005\ufff4\010\ufff4\001\002\000\004\005\115\001\002" +
+    "\000\006\007\113\010\112\001\002\000\004\020\076\001" +
+    "\002\000\006\007\uffe1\010\uffe1\001\002\000\004\011\077" +
+    "\001\002\000\004\026\100\001\002\000\004\010\101\001" +
+    "\002\000\004\012\102\001\002\000\004\011\103\001\002" +
+    "\000\004\026\104\001\002\000\004\010\105\001\002\000" +
+    "\004\022\106\001\002\000\004\011\107\001\002\000\004" +
+    "\023\110\001\002\000\004\005\111\001\002\000\006\007" +
+    "\uffdf\010\uffdf\001\002\000\006\003\072\004\074\001\002" +
+    "\000\006\005\uffed\010\uffed\001\002\000\006\007\uffe0\010" +
+    "\uffe0\001\002\000\006\007\uffde\010\uffde\001\002\000\004" +
+    "\006\120\001\002\000\006\005\ufff0\010\ufff0\001\002\000" +
+    "\010\003\122\004\124\007\030\001\002\000\006\005\ufff5" +
+    "\010\ufff5\001\002\000\004\005\145\001\002\000\006\007" +
+    "\143\010\142\001\002\000\004\020\126\001\002\000\006" +
+    "\007\uffe5\010\uffe5\001\002\000\004\011\127\001\002\000" +
+    "\004\026\130\001\002\000\004\010\131\001\002\000\004" +
+    "\012\132\001\002\000\004\011\133\001\002\000\004\026" +
+    "\134\001\002\000\004\010\135\001\002\000\004\017\136" +
+    "\001\002\000\004\011\137\001\002\000\004\026\140\001" +
+    "\002\000\004\005\141\001\002\000\006\007\uffe3\010\uffe3" +
+    "\001\002\000\006\003\122\004\124\001\002\000\006\005" +
+    "\uffef\010\uffef\001\002\000\006\007\uffe4\010\uffe4\001\002" +
+    "\000\006\007\uffe2\010\uffe2\001\002\000\016\003\012\014" +
+    "\020\015\013\016\011\021\010\024\021\001\002\000\004" +
+    "\002\000\001\002\000\006\005\ufffe\010\ufffe\001\002\000" +
+    "\004\002\001\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -116,45 +119,44 @@ public class JSONParser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\157\000\004\002\003\001\001\000\002\001\001\000" +
-    "\006\003\005\004\006\001\001\000\002\001\001\000\004" +
-    "\005\013\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\002\001\001\000\004\006\041\001\001" +
-    "\000\002\001\001\000\006\011\021\012\016\001\001\000" +
-    "\002\001\001\000\006\013\026\014\030\001\001\000\002" +
+    "\000\147\000\004\002\003\001\001\000\002\001\001\000" +
+    "\020\003\006\004\015\005\021\006\014\007\005\010\016" +
+    "\026\013\001\001\000\002\001\001\000\002\001\001\000" +
+    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\004\014\032\001" +
+    "\000\002\001\001\000\006\012\023\025\024\001\001\000" +
+    "\002\001\001\000\002\001\001\000\006\023\031\024\030" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\004\010\076\001\001\000\002\001\001" +
-    "\000\006\012\044\017\047\001\001\000\002\001\001\000" +
-    "\006\015\053\016\055\001\001\000\002\001\001\000\002" +
+    "\004\023\041\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\006\011\050\012\046\001\001\000\002\001\001\000\006" +
+    "\013\052\014\054\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\004\014\056\001\001\000\002\001\001\000\002\001" +
+    "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
+    "\000\002\001\001\000\002\001\001\000\006\012\066\022" +
+    "\070\001\001\000\002\001\001\000\006\020\072\021\074" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
     "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
-    "\001\000\002\001\001\000\002\001\001\000\004\016\074" +
-    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
-    "\001\000\004\007\133\001\001\000\002\001\001\000\006" +
-    "\012\101\022\102\001\001\000\002\001\001\000\002\001" +
-    "\001\000\006\020\107\021\111\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
+    "\001\000\002\001\001\000\004\021\113\001\001\000\002" +
+    "\001\001\000\002\001\001\000\002\001\001\000\006\012" +
+    "\116\017\120\001\001\000\002\001\001\000\006\015\122" +
+    "\016\124\001\001\000\002\001\001\000\002\001\001\000" +
     "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
     "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\004\021\130\001\001\000\002\001\001" +
+    "\002\001\001\000\002\001\001\000\004\016\143\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\002\001\001\000\006\012\136\025\137" +
-    "\001\001\000\002\001\001\000\002\001\001\000\006\023" +
-    "\145\024\144\001\001\000\002\001\001\000\002\001\001" +
-    "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
-    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\002\001\001\000\004\023\155\001\001\000" +
-    "\002\001\001\000\002\001\001\000\002\001\001\000\002" +
-    "\001\001\000\002\001\001" });
+    "\016\004\015\005\021\006\014\007\005\010\016\026\147" +
+    "\001\001\000\002\001\001\000\002\001\001\000\002\001" +
+    "\001" });
 
   /** Access to <code>reduce_goto</code> table. */
   public short[][] reduce_table() {return _reduce_table;}
@@ -212,7 +214,18 @@ public class JSONParser extends java_cup.runtime.lr_parser {
     }
 
     public void syntax_error(Symbol cur_token) {
-        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d", sym.terminalNames[cur_token.sym], cur_token.left, cur_token.right));
+        try {
+            // save error to be shown
+            jsonActioner.addToHash("error");
+            ArrayList<String> expectedTkns = new ArrayList<>();
+            expected_token_ids().forEach(symT -> {
+                expectedTkns.add(sym.terminalNames[symT]);
+            });
+            String value = cur_token.value  != null? cur_token.value.toString(): "NA";
+            jsonActioner.addError(cur_token.left, cur_token.right, value, expectedTkns);
+        } catch (Exception e) {
+            System.out.println("unable to save error at json parser " + e.getMessage());
+        }
     }
 
     public void unrecovered_syntax_error(Symbol cur_token) {
@@ -272,55 +285,118 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 2: // json_content ::= score_section classes_section variables_section methods_section comments_section 
+          case 2: // json_content ::= json_content_available 
             {
               Object RESULT =null;
 
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content",1, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-4)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content",1, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
             }
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 3: // score_section ::= SCORE COLON STRING COMMA 
+          case 3: // json_content ::= json_content COMMA json_content_available 
             {
               Object RESULT =null;
-		int scoreleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)).left;
-		int scoreright = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)).right;
-		String score = (String)((java_cup.runtime.Symbol) CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)).value;
+
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content",1, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-2)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 4: // json_content_available ::= score_section 
+            {
+              Object RESULT =null;
+		 jsonActioner.addToHash("score"); 
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 5: // json_content_available ::= classes_section 
+            {
+              Object RESULT =null;
+		 jsonActioner.addToHash("classes"); 
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 6: // json_content_available ::= variables_section 
+            {
+              Object RESULT =null;
+		 jsonActioner.addToHash("variables"); 
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 7: // json_content_available ::= methods_section 
+            {
+              Object RESULT =null;
+		 jsonActioner.addToHash("methods"); 
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 8: // json_content_available ::= comments_section 
+            {
+              Object RESULT =null;
+		 jsonActioner.addToHash("comments"); 
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 9: // json_content_available ::= error 
+            {
+              Object RESULT =null;
+
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("json_content_available",20, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+            }
+          return CUP$JSONParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 10: // score_section ::= SCORE COLON STRING 
+            {
+              Object RESULT =null;
+		int scoreleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()).left;
+		int scoreright = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()).right;
+		String score = (String)((java_cup.runtime.Symbol) CUP$JSONParser$stack.peek()).value;
 		 jsonActioner.saveScore(score); 
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("score_section",2, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-3)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("score_section",2, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-2)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
             }
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 4: // classes_section ::= CLASSES COLON classes_content COMMA 
+          case 11: // classes_section ::= CLASSES COLON classes_content 
             {
               Object RESULT =null;
 
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("classes_section",3, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-3)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("classes_section",3, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-2)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
             }
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 5: // variables_section ::= VARIABLES COLON variables_content COMMA 
+          case 12: // variables_section ::= VARIABLES COLON variables_content 
             {
               Object RESULT =null;
 
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("variables_section",4, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-3)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("variables_section",4, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-2)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
             }
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 6: // methods_section ::= METHODS COLON method_content COMMA 
+          case 13: // methods_section ::= METHODS COLON method_content 
             {
               Object RESULT =null;
 
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("methods_section",6, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-3)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
+              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("methods_section",6, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-2)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
             }
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 7: // comments_section ::= COMMENTS COLON comments_content 
+          case 14: // comments_section ::= COMMENTS COLON comments_content 
             {
               Object RESULT =null;
 
@@ -329,7 +405,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // classes_content ::= empty_section 
+          case 15: // classes_content ::= empty_section 
             {
               Object RESULT =null;
 
@@ -338,7 +414,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 9: // classes_content ::= BRACKET_O classes_declarations BRACKET_C 
+          case 16: // classes_content ::= BRACKET_O classes_declarations BRACKET_C 
             {
               Object RESULT =null;
 
@@ -347,16 +423,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // classes_content ::= error BRACKET_C 
-            {
-              Object RESULT =null;
-
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("classes_content",7, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
-            }
-          return CUP$JSONParser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 11: // variables_content ::= empty_section 
+          case 17: // variables_content ::= empty_section 
             {
               Object RESULT =null;
 
@@ -365,7 +432,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 12: // variables_content ::= BRACKET_O variables_declarations BRACKET_C 
+          case 18: // variables_content ::= BRACKET_O variables_declarations BRACKET_C 
             {
               Object RESULT =null;
 
@@ -374,16 +441,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 13: // variables_content ::= error BRACKET_C 
-            {
-              Object RESULT =null;
-
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("variables_content",13, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
-            }
-          return CUP$JSONParser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 14: // method_content ::= empty_section 
+          case 19: // method_content ::= empty_section 
             {
               Object RESULT =null;
 
@@ -392,7 +450,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 15: // method_content ::= BRACKET_O methods_declarations BRACKET_C 
+          case 20: // method_content ::= BRACKET_O methods_declarations BRACKET_C 
             {
               Object RESULT =null;
 
@@ -401,16 +459,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 16: // method_content ::= error BRACKET_C 
-            {
-              Object RESULT =null;
-
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("method_content",16, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
-            }
-          return CUP$JSONParser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 17: // comments_content ::= empty_section 
+          case 21: // comments_content ::= empty_section 
             {
               Object RESULT =null;
 
@@ -419,7 +468,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 18: // comments_content ::= BRACKET_O comments_declarations BRACKET_C 
+          case 22: // comments_content ::= BRACKET_O comments_declarations BRACKET_C 
             {
               Object RESULT =null;
 
@@ -428,16 +477,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 19: // comments_content ::= error BRACKET_C 
-            {
-              Object RESULT =null;
-
-              CUP$JSONParser$result = parser.getSymbolFactory().newSymbol("comments_content",19, ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)), ((java_cup.runtime.Symbol)CUP$JSONParser$stack.peek()), RESULT);
-            }
-          return CUP$JSONParser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 20: // empty_section ::= BRACKET_O BRACKET_C 
+          case 23: // empty_section ::= BRACKET_O BRACKET_C 
             {
               Object RESULT =null;
 
@@ -446,7 +486,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 21: // classes_declarations ::= class_declaration 
+          case 24: // classes_declarations ::= class_declaration 
             {
               Object RESULT =null;
 
@@ -455,7 +495,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 22: // classes_declarations ::= class_declaration COMMA class_declaration 
+          case 25: // classes_declarations ::= class_declaration COMMA class_declaration 
             {
               Object RESULT =null;
 
@@ -464,7 +504,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 23: // class_declaration ::= BRACE_O NAME COLON STRING BRACE_C 
+          case 26: // class_declaration ::= BRACE_O NAME COLON STRING BRACE_C 
             {
               Object RESULT =null;
 		int classNleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)).left;
@@ -476,7 +516,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 24: // class_declaration ::= error BRACE_C 
+          case 27: // class_declaration ::= error BRACE_C 
             {
               Object RESULT =null;
 
@@ -485,7 +525,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 25: // variables_declarations ::= variable_declaration 
+          case 28: // variables_declarations ::= variable_declaration 
             {
               Object RESULT =null;
 
@@ -494,7 +534,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 26: // variables_declarations ::= variables_declarations COMMA variable_declaration 
+          case 29: // variables_declarations ::= variables_declarations COMMA variable_declaration 
             {
               Object RESULT =null;
 
@@ -503,7 +543,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 27: // variable_declaration ::= BRACE_O NAME COLON STRING COMMA TYPE COLON STRING COMMA FUNCTION COLON STRING BRACE_C 
+          case 30: // variable_declaration ::= BRACE_O NAME COLON STRING COMMA TYPE COLON STRING COMMA FUNCTION COLON STRING BRACE_C 
             {
               Object RESULT =null;
 		int nameleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-9)).left;
@@ -521,7 +561,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // variable_declaration ::= error BRACE_C 
+          case 31: // variable_declaration ::= error BRACE_C 
             {
               Object RESULT =null;
 
@@ -530,7 +570,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // methods_declarations ::= method_declaration 
+          case 32: // methods_declarations ::= method_declaration 
             {
               Object RESULT =null;
 
@@ -539,7 +579,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // methods_declarations ::= methods_declarations COMMA method_declaration 
+          case 33: // methods_declarations ::= methods_declarations COMMA method_declaration 
             {
               Object RESULT =null;
 
@@ -548,7 +588,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // method_declaration ::= BRACE_O NAME COLON STRING COMMA TYPE COLON STRING COMMA PARAMETER COLON NUMBER BRACE_C 
+          case 34: // method_declaration ::= BRACE_O NAME COLON STRING COMMA TYPE COLON STRING COMMA PARAMETER COLON NUMBER BRACE_C 
             {
               Object RESULT =null;
 		int nameleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-9)).left;
@@ -566,7 +606,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 32: // method_declaration ::= error BRACE_C 
+          case 35: // method_declaration ::= error BRACE_C 
             {
               Object RESULT =null;
 
@@ -575,7 +615,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 33: // comments_declarations ::= comment_declaration 
+          case 36: // comments_declarations ::= comment_declaration 
             {
               Object RESULT =null;
 
@@ -584,7 +624,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 34: // comments_declarations ::= comments_declarations COMMA comment_declaration 
+          case 37: // comments_declarations ::= comments_declarations COMMA comment_declaration 
             {
               Object RESULT =null;
 
@@ -593,7 +633,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 35: // comment_declaration ::= BRACE_O TEXT COLON STRING BRACE_C 
+          case 38: // comment_declaration ::= BRACE_O TEXT COLON STRING BRACE_C 
             {
               Object RESULT =null;
 		int commentleft = ((java_cup.runtime.Symbol)CUP$JSONParser$stack.elementAt(CUP$JSONParser$top-1)).left;
@@ -605,7 +645,7 @@ class CUP$JSONParser$actions {
           return CUP$JSONParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 36: // comment_declaration ::= error BRACE_C 
+          case 39: // comment_declaration ::= error BRACE_C 
             {
               Object RESULT =null;
 

@@ -5,9 +5,8 @@
  */
 package Backend;
 
-import Backend.Objects.Lexers.JSONLexer;
-import Backend.Objects.Parsers.JSONParser;
-import java.io.FileReader;
+import FrontEnd.ProjectManagerView;
+import javax.swing.WindowConstants;
 
 /**
  * Main class, show a GUI
@@ -27,22 +26,18 @@ public class App {
 
         // test JSON analyze
         try {
-
-            JSONLexer lexer = new JSONLexer(
-                    new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/result.json"));
-            JSONParser parser = new JSONParser(lexer);
-            parser.parse();
-            System.out.println("JSON OK");
-            // parser.getActioner().printData();
-            // ProjectManagerView projectMannager = new ProjectManagerView();
             // analyze .def file
-
             /*
             ReportLexer rl = new ReportLexer(new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/report.def"));
             ReportParser rp = new ReportParser(rl);
             rp.parse();
             System.out.println(" FILE OK");
              */
+            // UI for projects
+            ProjectManagerView pm = new ProjectManagerView("/home/jefemayoneso/Desktop/compi1proj/RESULTS", "report.copy");
+            pm.setVisible(true);
+            pm.setLocationRelativeTo(null);
+            pm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         } catch (Exception e) {
             System.out.println("Exeption: " + e.getMessage());
             e.printStackTrace();

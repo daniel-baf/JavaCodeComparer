@@ -3,8 +3,13 @@
 /**************************************************/
 
 package Backend.Objects.Lexers;
+
+
 import java_cup.runtime.*;
 import Backend.Objects.Parsers.repSym;
+import Backend.Objects.AnalysisError;
+import java.util.ArrayList;
+
 
 /**************************************************/
 /*************** SECTION 2: CONFIGS ***************/
@@ -29,7 +34,9 @@ NUMBER=[0-9]+
 
 // methods
 %{
-      public Symbol calcSym(String text, boolean isClose) {
+      private ArrayList<AnalysisError> errors = new ArrayList<>();
+
+      private Symbol calcSym(String text, boolean isClose) {
         try {
           // entry -> <type> or </type> if is close
           String transaction = isClose ? text.substring(2, text.length() - 1) : text.substring(1, text.length() - 1);
@@ -74,7 +81,7 @@ NUMBER=[0-9]+
         }
       }
 
-      public Symbol calcReserved(String text) {
+      private Symbol calcReserved(String text) {
           switch(text.toLowerCase()) {
             case "tipo":
               return new Symbol(repSym.TYPE, yyline+1, yycolumn+1);
@@ -110,6 +117,16 @@ NUMBER=[0-9]+
               return new Symbol(repSym.ID, yyline+1, yycolumn+1, text);
           }
       }
+
+      private void addError(String lexeme) {
+            try {
+                this.errors.add(new AnalysisError(yyline+1, yycolumn+1, lexeme, "DEF", "PROJECTO COPY", "LEXICO", null));
+            } catch(Exception e) {
+                System.out.println("Unable to save error at lexer report class");
+            }
+      }
+
+      public ArrayList<AnalysisError> getErrors() { return this.errors; }
 %}
 
 %%
@@ -154,4 +171,4 @@ NUMBER=[0-9]+
 // custom EOF
 <<EOF>>         { return new Symbol(repSym.EOF, -1, -1); }
 // error
-[^]             { return new Symbol(repSym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }
+[^]             { addError(yytext()); return new Symbol(repSym.UNKNOWN, yyline+1, yycolumn+1, yytext()); }

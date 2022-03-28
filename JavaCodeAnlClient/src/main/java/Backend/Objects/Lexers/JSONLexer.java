@@ -5,8 +5,11 @@
 /**************************************************/
 
 package Backend.Objects.Lexers;
-import java_cup.runtime.*;
+
+import Backend.Objects.AnalysisError;
 import Backend.Objects.Parsers.sym;
+import java_cup.runtime.*;
+import java.util.ArrayList;
 
 /**************************************************/
 /*************** SECTION 2: CONFIGS ***************/
@@ -269,7 +272,17 @@ public class JSONLexer implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-    // TODO add methodsI
+    ArrayList<AnalysisError> errors = new ArrayList<>();
+
+    public void addError(String lexeme) {
+        try {
+            this.errors.add(new AnalysisError(yyline+1, yycolumn+1, lexeme, "JSON", "PROJECTO COPY", "LEXICO", null));
+        } catch(Exception e) {
+            System.out.println("Unable to save error at lexer class");
+        }
+    }
+
+    public ArrayList<AnalysisError> getErrors() { return this.errors; }
 
 
   /**
@@ -638,7 +651,7 @@ public class JSONLexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext());
+            { addError(yytext());  return new Symbol(sym.UNKNOWN, yyline+1, yycolumn+1, yytext());
             } 
             // fall through
           case 21: break;
