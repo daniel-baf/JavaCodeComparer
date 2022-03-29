@@ -9,7 +9,9 @@ import Backend.Objects.Lexers.ReportLexer;
 import Backend.Objects.Parsers.JSONData.JSONDataSaver;
 import Backend.Objects.Parsers.DefData.ReportActioner;
 import Backend.Objects.SymTable.Variables.VarElement;
+import Backend.Objects.SymTable.Variables.VarAction;
 import Backend.Objects.SymTable.Variables.VarType;
+import java.util.ArrayList;
 import java_cup.runtime.*;
 import java_cup.runtime.XMLElement;
 
@@ -368,18 +370,24 @@ public class ReportParser extends java_cup.runtime.lr_parser {
     }
 
     public void syntax_error(Symbol cur_token) {
-        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d valor: %4$s", repSym.terminalNames[cur_token.sym], cur_token.left, cur_token.right, cur_token.value));        
+      try {
+        // save error to be shown
+        ArrayList<String> expectedTkns = new ArrayList<>();
+        expected_token_ids().forEach(symT -> {
+            expectedTkns.add(repSym.terminalNames[symT]);
+        });
+        String value = cur_token.value  != null? cur_token.value.toString(): "NA";
+        this.actioner.addError(cur_token.left, cur_token.right, value, expectedTkns, "SINTACTICO");
+      } catch (Exception e) {
+        System.out.println("unable to save error at json parser " + e.getMessage());
+      }
     }
 
     public void unrecovered_syntax_error(Symbol cur_token) {
         System.out.println("unrecovered sintax error");
     }
 
-    int n = 1;
-    private void printk(String message) {
-      System.out.println(n + ": " + message);
-      n++;
-    }
+    public ReportActioner getActioner() { return this.actioner; } 
 
 
 
@@ -824,7 +832,10 @@ class CUP$ReportParser$actions {
 		int typeleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).left;
 		int typeright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).right;
 		Object type = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).value;
-		 printk("save var: " + type); 
+		int idleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).value;
+		 actioner.saveOnTable(null, id.toString(), (VarType) type, cur_token.left, cur_token.right); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("var_declaration",1, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -836,10 +847,13 @@ class CUP$ReportParser$actions {
 		int typeleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-4)).left;
 		int typeright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-4)).right;
 		Object type = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-4)).value;
+		int idleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-3)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-3)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-3)).value;
 		int valueleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).left;
 		int valueright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).right;
 		Object value = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).value;
-		 printk("save var: " + type + ", val: " + value); 
+		 actioner.saveOnTable(value, id.toString(), (VarType) type, cur_token.left, cur_token.right); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("var_declaration",1, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-4)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -869,7 +883,16 @@ class CUP$ReportParser$actions {
           case 49: // arithm_expr ::= arithm_expr sym_arithm arithm_expr 
             {
               Object RESULT =null;
-
+		int elemLleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).left;
+		int elemLright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).right;
+		Object elemL = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).value;
+		int actionleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).left;
+		int actionright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).right;
+		Object action = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).value;
+		int elemRleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
+		int elemRright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
+		Object elemR = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
+		 RESULT=actioner.castElements(elemL, elemR, (VarAction) action, cur_token.left, cur_token.right); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("arithm_expr",4, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -878,7 +901,10 @@ class CUP$ReportParser$actions {
           case 50: // arithm_expr ::= PAR_O arithm_expr PAR_C 
             {
               Object RESULT =null;
-
+		int elemleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).left;
+		int elemright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).right;
+		Object elem = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).value;
+		 RESULT=elem; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("arithm_expr",4, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -965,7 +991,7 @@ class CUP$ReportParser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=id; 
+		 RESULT=new VarElement(id.toString(), VarType.ID); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("id_vals",8, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -1280,7 +1306,7 @@ class CUP$ReportParser$actions {
           case 87: // sym_arithm ::= PLUS 
             {
               Object RESULT =null;
-
+		 RESULT=VarAction.ADD; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("sym_arithm",6, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -1289,7 +1315,7 @@ class CUP$ReportParser$actions {
           case 88: // sym_arithm ::= LESS 
             {
               Object RESULT =null;
-
+		 RESULT=VarAction.SUB; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("sym_arithm",6, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -1298,7 +1324,7 @@ class CUP$ReportParser$actions {
           case 89: // sym_arithm ::= MULT 
             {
               Object RESULT =null;
-
+		 RESULT=VarAction.MULT; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("sym_arithm",6, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -1307,7 +1333,7 @@ class CUP$ReportParser$actions {
           case 90: // sym_arithm ::= DIV 
             {
               Object RESULT =null;
-
+		 RESULT=VarAction.DIV; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("sym_arithm",6, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;

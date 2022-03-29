@@ -13,14 +13,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author jefemayoneso
  */
-public class ErrorsTable extends javax.swing.JFrame {
+public class ErrorShowerView extends javax.swing.JFrame {
 
     private ArrayList<AnalysisError> errors;
 
     /**
      * Creates new form ErrorsTable
      */
-    public ErrorsTable(ArrayList<AnalysisError> errors) {
+    public ErrorShowerView(ArrayList<AnalysisError> errors) {
         initComponents();
         this.errors = errors;
         fillTable();

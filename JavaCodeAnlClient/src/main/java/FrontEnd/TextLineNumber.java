@@ -8,12 +8,8 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
+ * Custom TextArea Line formatter
  *
  * @author jefemayoneso
  */
@@ -58,9 +54,9 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     /**
      * Create a line number component for a text component.
      *
-     * @param component            the related text component
+     * @param component the related text component
      * @param minimumDisplayDigits the number of digits used to calculate the
-     *                             minimum width of the component
+     * minimum width of the component
      */
     public TextLineNumber(JTextComponent component, int minimumDisplayDigits) {
         this.component = component;
@@ -92,7 +88,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
      * changed.
      *
      * @param updateFont when true update the Font and repaint the line numbers,
-     *                   otherwise just repaint the line numbers.
+     * otherwise just repaint the line numbers.
      */
     public void setUpdateFont(boolean updateFont) {
         this.updateFont = updateFont;
@@ -177,7 +173,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
      * width of the component. Default is 3.
      *
      * @param minimumDisplayDigits the number digits used in the preferred width
-     *                             calculation
+     * calculation
      */
     public void setMinimumDisplayDigits(int minimumDisplayDigits) {
         this.minimumDisplayDigits = minimumDisplayDigits;

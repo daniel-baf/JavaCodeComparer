@@ -19,7 +19,7 @@ import java.util.ArrayList;
  *
  * @author jefemayoneso
  */
-public class ProjectManagerController {
+public class ProjectEditorController {
 
     private final String filesPath;
     private final String reportFile;
@@ -27,7 +27,7 @@ public class ProjectManagerController {
     private String defFile;
     private ArrayList<AnalysisError> errors;
 
-    public ProjectManagerController(String filesPath, String reportFile) {
+    public ProjectEditorController(String filesPath, String reportFile) {
         this.filesPath = filesPath;
         this.reportFile = reportFile;
         this.errors = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ProjectManagerController {
             this.jsonFile = files[0];
             this.defFile = files[1];
         } catch (Exception e) {
-            System.out.println("Error getting data from copy file");
+            System.out.println("Error getting data from copy file " + e.getMessage());
         }
     }
 
@@ -97,6 +97,7 @@ public class ProjectManagerController {
                 parser.parse();
                 // get possible errors
                 addErrors(lexer.getErrors());
+                addErrors(parser.getActioner().getErrors());
                 return this.errors.isEmpty();
             }
         } catch (Exception e) {

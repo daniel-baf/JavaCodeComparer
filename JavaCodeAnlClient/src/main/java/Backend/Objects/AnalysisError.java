@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
+ * This class is general, is used to save all data related with an Analysis
+ * error
  *
  * @author jefemayoneso
  */
@@ -44,7 +46,7 @@ public class AnalysisError implements Serializable {
 
     @Override
     public String toString() {
-        return "AnalysisError{" + "line=" + line + ", column=" + column + ", lexeme=" + lexeme + ", file=" + file + ", expectedSymbols=" + expectedSymbols + " Projecto: " + this.project + '}';
+        return "AnalysisError{" + "line=" + line + ", column=" + column + ", lexeme=" + lexeme + ", file=" + file + ", expectedSymbols=" + expectedSymbols + " Projecto: " + this.project + ", tipo=" + type + '}';
     }
 
     public int getLine() {

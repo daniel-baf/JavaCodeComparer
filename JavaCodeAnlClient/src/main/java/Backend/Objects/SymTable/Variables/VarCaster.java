@@ -3,9 +3,9 @@ package Backend.Objects.SymTable.Variables;
 public class VarCaster {
 
     /**
-     * Cast 2 elements to a new single element, used at parser to generate a final
-     * value wich will be assigned to symbol table
-     * 
+     * Cast 2 elements to a new single element, used at parser to generate a
+     * final value wich will be assigned to symbol table
+     *
      * @param element
      * @param newElement
      * @param action
@@ -13,52 +13,36 @@ public class VarCaster {
      */
     public VarElement castElements(VarElement element, VarElement newElement, VarAction action) {
         // cast errors
-        if (!isError(element.getType(), newElement.getType(), action)) {
+        if (isValid(element.getType(), newElement.getType(), action)) {
             return createNewElement(element, newElement, action);
         }
-        return null;
+        return new VarElement(element.getValue().toString().replaceAll("\"", "") + " " + newElement.getValue().toString().replaceAll("\"", ""), VarType.ERROR);
     }
 
     /**
      * Check if element 1 type and element 2 type cann be applied to action
-     * 
+     *
      * @param type1
      * @param type2
      * @param action
      * @return
      */
-    private boolean isError(VarType type1, VarType type2, VarAction action) {
+    private boolean isValid(VarType type1, VarType type2, VarAction action) {
         // ex: INTEGER * STRING -> error
         if (type1 == VarType.ERROR || type2 == VarType.ERROR) {
             return false; // previously got error, do not check again
-        } else if ((type1 == VarType.STRING || type2 == VarType.STRING) && isInvalidForString(action)) {
+        } else if ((type1 == VarType.STRING || type2 == VarType.STRING) && action != VarAction.ADD) {
             return false;
-        } else if (type1 == type2) {
-            return true;
-        } else if ((type1 == VarType.STRING && type2 == VarType.INTEGER)
-                || (type1 == VarType.INTEGER && type2 == VarType.STRING)) {
-            return true;
         } else {
-            return false;
+            return true;
         }
-
-    }
-
-    /**
-     * Check the operation is valid for string, just adding is valid for strings
-     * 
-     * @param action
-     * @return
-     */
-    private boolean isInvalidForString(VarAction action) {
-        return action == VarAction.SUB || action == VarAction.MUL || action == VarAction.DIV;
     }
 
     /**
      * Return a new VarElement with the correct type, this method is only called
-     * when the action and the element types are valid, valid states are STRING +
-     * STRING, STRING + INT, INT +/*- INT
-     * 
+     * when the action and the element types are valid, valid states are STRING
+     * + STRING, STRING + INT, INT +/*- INT
+     *
      * @param element
      * @param newElement
      * @param action
@@ -66,40 +50,44 @@ public class VarCaster {
      */
     private VarElement createNewElement(VarElement element, VarElement newElement, VarAction action) {
         if (element.getType() == newElement.getType() && element.getType() == VarType.INTEGER) {
-            return new VarElement(getNewInteger((Integer) element.getValue(), (Integer) newElement.getValue(), action),
-                    VarType.INTEGER);
-
+            return getArithmNum(Double.parseDouble(element.getValue().toString()), Double.parseDouble(newElement.getValue().toString()), action);
         } else { // different types
-            return new VarElement(getNewString((String) element.getValue(), (String) newElement.getValue()),
+            return new VarElement(getNewString(element.getValue().toString(), newElement.getValue().toString()),
                     VarType.STRING);
         }
     }
 
     /**
      * Return a new INteger based on the elements gotten from the parser
-     * 
+     *
      * @param n1
      * @param n2
      * @param action
      * @return
      */
-    private Integer getNewInteger(Integer n1, Integer n2, VarAction action) {
+    private VarElement getArithmNum(Double n1, Double n2, VarAction action) {
         try {
-            return switch (action) {
-                case ADD -> n1 + n2;
-                case SUB -> n1 - n2;
-                case MUL -> n1 * n2;
-                case DIV -> n1 / n2;
-                default -> 0;
+            Double data = switch (action) {
+                case ADD ->
+                    n1 + n2 * 1.0;
+                case SUB ->
+                    n1 - n2 * 1.0;
+                case MULT ->
+                    n1 * n2 * 1.0;
+                case DIV ->
+                    n1 / n2 * 1.0;
+                default ->
+                    0.0;
             };
+            return new VarElement(data, VarType.INTEGER);
         } catch (Exception e) {
-            return 0;
-            // TODO handle exception when div 0
+            System.out.println("Unable to generate integer element cast " + e.getMessage());
+            return new VarElement(n1, VarType.ERROR);
         }
     }
 
     private String getNewString(String s1, String s2) {
-        return s1 + s2;
+        return s1.replaceAll("\"", "") + s2.replaceAll("\"", "");
     }
 
 }

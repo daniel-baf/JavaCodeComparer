@@ -5,7 +5,7 @@
  */
 package FrontEnd;
 
-import Controller.ProjectManagerController;
+import Controller.ProjectEditorController;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -13,16 +13,16 @@ import javax.swing.JOptionPane;
  *
  * @author jefemayoneso
  */
-public class ProjectManagerView extends javax.swing.JFrame {
+public class ProjectEditorView extends javax.swing.JFrame {
 
-    private final ProjectManagerController controller;
+    private final ProjectEditorController controller;
     private int activeView;
 
     /**
      * Creates new form ProjectManager
      */
-    public ProjectManagerView(String copyFilePath, String reportFile) {
-        this.controller = new ProjectManagerController(copyFilePath, reportFile);
+    public ProjectEditorView(String copyFilePath, String reportFile) {
+        this.controller = new ProjectEditorController(copyFilePath, reportFile);
         initComponents();
         setConfig();
     }
@@ -436,7 +436,7 @@ public class ProjectManagerView extends javax.swing.JFrame {
     private void showErrors() {
         // show message
         JOptionPane.showMessageDialog(null, "Hay errores dentro de los archivos guardados", "GUARDADO", JOptionPane.WARNING_MESSAGE);
-        ErrorsTable errors = new ErrorsTable(this.controller.getErrors());
+        ErrorShowerView errors = new ErrorShowerView(this.controller.getErrors());
         errors.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         errors.setLocationRelativeTo(null);
         errors.setVisible(true);

@@ -12,6 +12,7 @@ import Backend.Objects.Message;
 import Utilities.ReqRes;
 import Utilities.Delivers.DataDeliver;
 import Utilities.Files.FileSelector;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -20,7 +21,7 @@ import javax.swing.JOptionPane;
  *
  * @author jefemayoneso
  */
-public class ProjectLoaderViewController<T> {
+public class ProjectCopyLoaderController<T> {
 
     private String path1;
     private String path2;
@@ -28,7 +29,7 @@ public class ProjectLoaderViewController<T> {
     private DataDeliver<T> dataDeliver;
     private ArrayList<AnalysisError> errors;
 
-    public ProjectLoaderViewController() {
+    public ProjectCopyLoaderController() {
         this.path1 = null;
         this.path2 = null;
         this.fChooser = new FileSelector();
@@ -56,7 +57,7 @@ public class ProjectLoaderViewController<T> {
                     // get path to save data
                     JOptionPane.showMessageDialog(null, "Selecciona la ruta \ndonde guardar los archivos generados");
                     String path = this.fChooser.getPath();
-                    if(!this.dataDeliver.createNewProjectFromServer("result.json", path)) {
+                    if (!this.dataDeliver.createNewProjectFromServer("result.json", path)) {
                         JOptionPane.showMessageDialog(null, "No se pudo guardar \nel proyecto en la ruta especificada", "RUTAS", JOptionPane.ERROR_MESSAGE);
                     }
                     return true;
@@ -65,7 +66,7 @@ public class ProjectLoaderViewController<T> {
                     Message<ArrayList<AnalysisError>> errorsRec = (Message<ArrayList<AnalysisError>>) response;
                     this.errors = errorsRec.getData();
                 }
-            } catch (Exception e) {
+            } catch (HeadlessException e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
         } else {

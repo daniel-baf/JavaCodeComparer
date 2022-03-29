@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Utilities.Files;
 
 import java.io.BufferedReader;
@@ -37,6 +32,13 @@ public class FileActioner {
         return text;
     }
 
+    /**
+     * Write/overwrite a file into a specific path
+     *
+     * @param name
+     * @param path
+     * @return
+     */
     public boolean createFile(String name, String path) {
         try {
             File file = new File(String.format("%1$s%2$s", path, name));
@@ -49,6 +51,12 @@ public class FileActioner {
 
     }
 
+    /**
+     * Return an ArrayList<String> with each line of a file
+     *
+     * @param path
+     * @return
+     */
     public ArrayList<String> getFileLines(String path) {
         ArrayList<String> lines = new ArrayList<>();
         try ( BufferedReader reader = new BufferedReader(new FileReader(path))) {
@@ -62,6 +70,14 @@ public class FileActioner {
         return lines;
     }
 
+    /**
+     * Update the text into a file
+     *
+     * @param data
+     * @param path
+     * @param filename
+     * @return
+     */
     public boolean writeFile(String data, String path, String filename) {
         File file = new File(String.format("%1$s/%2$s", path, filename));
         try ( FileWriter writter = new FileWriter(file)) {

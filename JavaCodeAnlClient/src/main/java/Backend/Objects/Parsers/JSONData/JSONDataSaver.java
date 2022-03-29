@@ -9,8 +9,8 @@ public class JSONDataSaver {
 
     private double score;
     private ArrayList<String> classes;
-    private ArrayList<JSONVariable> variables;
-    private ArrayList<JSONMethod> methods;
+    private final ArrayList<JSONVariable> variables;
+    private final ArrayList<JSONMethod> methods;
     private ArrayList<String> comments;
 
     public JSONDataSaver() {

@@ -5,20 +5,20 @@
  */
 package FrontEnd;
 
-import Controller.ProjectLoaderViewController;
+import Controller.ProjectCopyLoaderController;
 
 /**
  *
  * @author jefemayoneso
  */
-public class ProjectLoaderView<T> extends javax.swing.JFrame {
+public class ProjectCopyLoaderView<T> extends javax.swing.JFrame {
 
-    ProjectLoaderViewController<T> controller;
+    ProjectCopyLoaderController<T> controller;
 
     /**
      * Creates new form ProjectLoaderView
      */
-    public ProjectLoaderView() {
+    public ProjectCopyLoaderView() {
         initComponents();
         initVars();
     }
@@ -203,7 +203,7 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
 
     private void jButtonAnalyzePjctsActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonAnalyzePjctsActionPerformed
         if (!this.controller.analyzeFiles()) {
-            ErrorsTable tableErrors = new ErrorsTable(this.controller.getErrors());
+            ErrorShowerView tableErrors = new ErrorShowerView(this.controller.getErrors());
             tableErrors.setVisible(true);
             tableErrors.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             tableErrors.setLocationRelativeTo(null);
@@ -232,7 +232,7 @@ public class ProjectLoaderView<T> extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initVars() {
-        this.controller = new ProjectLoaderViewController<T>();
+        this.controller = new ProjectCopyLoaderController<>();
     }
 
 }

@@ -5,5 +5,6 @@ public enum VarType {
     STRING,
     OBJECT,
     LIST,
+    ID,
     ERROR
 }

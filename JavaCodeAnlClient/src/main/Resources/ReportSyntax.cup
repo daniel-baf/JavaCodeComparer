@@ -8,7 +8,9 @@ import Backend.Objects.Lexers.ReportLexer;
 import Backend.Objects.Parsers.JSONData.JSONDataSaver;
 import Backend.Objects.Parsers.DefData.ReportActioner;
 import Backend.Objects.SymTable.Variables.VarElement;
+import Backend.Objects.SymTable.Variables.VarAction;
 import Backend.Objects.SymTable.Variables.VarType;
+import java.util.ArrayList;
 
 import java_cup.runtime.*;
 
@@ -36,18 +38,24 @@ parser code {:
     }
 
     public void syntax_error(Symbol cur_token) {
-        System.out.println(String.format("El error es el simbolo: %1$s, en posicion: %2$d, %3$d valor: %4$s", repSym.terminalNames[cur_token.sym], cur_token.left, cur_token.right, cur_token.value));        
+      try {
+        // save error to be shown
+        ArrayList<String> expectedTkns = new ArrayList<>();
+        expected_token_ids().forEach(symT -> {
+            expectedTkns.add(repSym.terminalNames[symT]);
+        });
+        String value = cur_token.value  != null? cur_token.value.toString(): "NA";
+        this.actioner.addError(cur_token.left, cur_token.right, value, expectedTkns, "SINTACTICO");
+      } catch (Exception e) {
+        System.out.println("unable to save error at json parser " + e.getMessage());
+      }
     }
 
     public void unrecovered_syntax_error(Symbol cur_token) {
         System.out.println("unrecovered sintax error");
     }
 
-    int n = 1;
-    private void printk(String message) {
-      System.out.println(n + ": " + message);
-      n++;
-    }
+    public ReportActioner getActioner() { return this.actioner; } 
 
 :}
 
@@ -191,16 +199,16 @@ variables_section::=
 
 
 var_declaration::=
-      typeOf:type ID SEMICOLON                              {: printk("save var: " + type); :}
-    | typeOf:type ID EQUALS arithm_expr:value SEMICOLON     {: printk("save var: " + type + ", val: " + value); :}
+      typeOf:type ID:id SEMICOLON                              {: actioner.saveOnTable(null, id.toString(), (VarType) type, cur_token.left, cur_token.right); :}
+    | typeOf:type ID:id EQUALS arithm_expr:value SEMICOLON     {: actioner.saveOnTable(value, id.toString(), (VarType) type, cur_token.left, cur_token.right); :}
     | error SEMICOLON
 ;
 
 // VARIABLES DATA
 arithm_expr::=
-    master_element:elem                     {: RESULT=elem; :}
-  | arithm_expr sym_arithm arithm_expr
-  | PAR_O arithm_expr PAR_C
+    master_element:elem                                       {: RESULT=elem; :}
+  | arithm_expr:elemL sym_arithm:action arithm_expr:elemR     {: RESULT=actioner.castElements(elemL, elemR, (VarAction) action, cur_token.left, cur_token.right); :}
+  | PAR_O arithm_expr:elem PAR_C                              {: RESULT=elem; :}
 ;
 
 data_set::=
@@ -221,7 +229,7 @@ element::=
 ;
 
 id_vals::=
-      ID:id                   {: RESULT=id; :} // TODO find on table the id
+      ID:id                   {: RESULT=new VarElement(id.toString(), VarType.ID); :} // TODO find on table the id
     | result_object:result    {: RESULT=result; :}
 ;
 
@@ -280,10 +288,10 @@ brack_and_num::=
 ;
 
 sym_arithm::=
-      PLUS
-    | LESS
-    | MULT
-    | DIV
+      PLUS    {: RESULT=VarAction.ADD; :}
+    | LESS    {: RESULT=VarAction.SUB; :}
+    | MULT    {: RESULT=VarAction.MULT; :}
+    | DIV     {: RESULT=VarAction.DIV; :}
 ;
 
 typeOf::=
