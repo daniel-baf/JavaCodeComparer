@@ -12,6 +12,7 @@ import Backend.Objects.SymTable.Variables.VarAction;
 import Backend.Objects.SymTable.Variables.VarElement;
 import Backend.Objects.SymTable.Variables.VarType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -81,7 +82,8 @@ public class ReportActioner {
      * @param column
      * @return
      */
-    public ArrayList<GlobalHTML> createMultipleTdTh(Object dataToDuplicate, int start, Object end, int line, int column) {
+    public ArrayList<GlobalHTML> createMultipleTdTh(Object dataToDuplicate, int start, Object end, int line,
+            int column) {
         ArrayList<GlobalHTML> data = new ArrayList<>();
         try {
             ArrayList<GlobalHTML> backup = (ArrayList<GlobalHTML>) dataToDuplicate;
@@ -144,6 +146,20 @@ public class ReportActioner {
         }
     }
 
+    public ArrayList<HTMLContent> getHTMLContentAsArray(Object... data) {
+        ArrayList<HTMLContent> dataToReturn = new ArrayList<>();
+        try {
+            for (Object object : data) {
+                if (object instanceof HTMLContent) {
+                    dataToReturn.add((HTMLContent) object);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR GETTING HTML CONTENT AS ARRAY " + e.getMessage());
+        }
+        return dataToReturn;
+    }
+
     /**
      * Create a Table Row to be saved into HTML
      *
@@ -183,7 +199,20 @@ public class ReportActioner {
         try {
             return this.htmlGenerator.mergeHTMLToArray((ArrayList<HTMLContent>) array, (HTMLContent) element);
         } catch (Exception e) {
-            System.out.println("Error casting array: " + e.getMessage());
+            System.out.println("Error casting array wih single element: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public ArrayList<HTMLContent> mergeHTMLArrays(Object array1, Object array2) {
+        try {
+            ArrayList<HTMLContent> arrayMerged = array1 != null ? (ArrayList<HTMLContent>) array1 : new ArrayList<>();
+            if (array2 != null) {
+                arrayMerged.addAll((Collection<? extends HTMLContent>) array2);
+            }
+            return arrayMerged;
+        } catch (Exception e) {
+            System.out.println("Error merrging arrays: " + e.getMessage());
             return null;
         }
     }
@@ -197,7 +226,7 @@ public class ReportActioner {
             merge.removeAll(Collections.singleton(null));
             return merge;
         } catch (Exception e) {
-            System.out.println("Error casting array: " + e.getMessage());
+            System.out.println("Error casting array of Tr: " + e.getMessage());
             return null;
         }
     }
@@ -211,6 +240,25 @@ public class ReportActioner {
         }
     }
 
+    public ArrayList<HTMLContent> multipliHTMLContentForTimes(Object dataToMultiply, Object end, int line, int column) {
+        ArrayList<HTMLContent> data = new ArrayList<>();
+        try {
+            VarElement[] forData = (VarElement[]) end;
+            int repeat = this.caster.getIfIntFrom(forData[1]);
+            for (int i = 0; i < repeat; i++) {
+                // multiply data
+                data.addAll((Collection<? extends HTMLContent>) dataToMultiply);
+            }
+            // delete iterator
+            this.caster.getGenerator().removeFromTable(forData[0].getId());
+            // return list
+            return data;
+        } catch (Exception e) {
+            System.out.println("Error multipliHTMLContentForTimes: " + e.getMessage());
+        }
+        return data;
+    }
+
     /**
      * Find data for an especific item int sym table
      *
@@ -222,13 +270,15 @@ public class ReportActioner {
     public Object findDataForId(Object elem, int line, int column) {
         try {
             // try for VARS WHEN IS VARELEMENT
-            Object found = elem.getClass() == VarElement.class && ((VarElement) elem).getType() == VarType.ID ? this.caster.findDataOnTableById((VarElement) elem) : elem;
+            Object found = elem.getClass() == VarElement.class && ((VarElement) elem).getType() == VarType.ID
+                    ? this.caster.findDataOnTableById((VarElement) elem)
+                    : elem;
             if (found == null) {
                 addError(line, column, "Variable no declarada", null, "SEMANTICO");
             }
             return found;
         } catch (Exception e) {
-            System.out.println("Error casting array: " + e.getMessage());
+            System.out.println("Error searching for Data by ID: " + e.getMessage());
             return null;
         }
     }

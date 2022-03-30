@@ -404,7 +404,8 @@ public class ReportParser extends java_cup.runtime.lr_parser {
       try {
         return ((VarElement) obj).getValue().toString();
       }catch (Exception e) {
-        return null; // TODO save error
+        this.actioner.addError(cur_token.left, cur_token.right, obj +  ": Variable no declarada", null, "SEMANTICO");
+        return "ERROR, no existe datos"; // TODO save error
       }
     }
 
@@ -513,7 +514,7 @@ class CUP$ReportParser$actions {
 		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=actioner.getVarElementsAsArray(null, data); 
+		 RESULT=actioner.mergeHTMLArrays(null, data); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("html_content",18, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -528,7 +529,7 @@ class CUP$ReportParser$actions {
 		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=actioner.getVarElementsAsArray(nextData, data); 
+		 RESULT=actioner.mergeHTMLArrays(nextData, data); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("html_content",18, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -540,7 +541,7 @@ class CUP$ReportParser$actions {
 		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=data; 
+		 RESULT=actioner.getHTMLContentAsArray(data); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("html_declarations",19, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -552,7 +553,7 @@ class CUP$ReportParser$actions {
 		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=data; 
+		 RESULT=actioner.getHTMLContentAsArray(data); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("html_declarations",19, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -916,7 +917,7 @@ class CUP$ReportParser$actions {
           case 40: // for_declaration ::= for_open FOR_C 
             {
               Object RESULT =null;
-
+		 RESULT=null; 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("for_declaration",22, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -925,7 +926,13 @@ class CUP$ReportParser$actions {
           case 41: // for_declaration ::= for_open html_content FOR_C 
             {
               Object RESULT =null;
-
+		int forDataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).left;
+		int forDataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).right;
+		Object forData = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)).value;
+		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).left;
+		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).right;
+		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-1)).value;
+		 RESULT=actioner.multipliHTMLContentForTimes(data,forData,cur_token.left, cur_token.right ); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("for_declaration",22, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.elementAt(CUP$ReportParser$top-2)), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;
@@ -1066,7 +1073,7 @@ class CUP$ReportParser$actions {
 		int dataleft = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).left;
 		int dataright = ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()).right;
 		Object data = (Object)((java_cup.runtime.Symbol) CUP$ReportParser$stack.peek()).value;
-		 RESULT=((VarElement)data).getValue(); 
+		 RESULT=getValueFrom(data); 
               CUP$ReportParser$result = parser.getSymbolFactory().newSymbol("data_set",26, ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$ReportParser$stack.peek()), RESULT);
             }
           return CUP$ReportParser$result;

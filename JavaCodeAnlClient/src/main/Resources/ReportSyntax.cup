@@ -61,7 +61,8 @@ parser code {:
       try {
         return ((VarElement) obj).getValue().toString();
       }catch (Exception e) {
-        return null; // TODO save error
+        this.actioner.addError(cur_token.left, cur_token.right, obj +  ": Variable no declarada", null, "SEMANTICO");
+        return "ERROR, no existe datos"; // TODO save error
       }
     }
 
@@ -118,13 +119,13 @@ html_section::=
 ;
 
 html_content::=
-      html_declarations:data                          {: RESULT=actioner.getVarElementsAsArray(null, data); :}
-    | html_content:nextData html_declarations:data    {: RESULT=actioner.getVarElementsAsArray(nextData, data); :}
+      html_declarations:data                          {: RESULT=actioner.mergeHTMLArrays(null, data); :}
+    | html_content:nextData html_declarations:data    {: RESULT=actioner.mergeHTMLArrays(nextData, data); :}
 ;
 
 html_declarations::=
-      html_declarations_global:data    {: RESULT=data; :}
-    | table_declaration:data           {: RESULT=data; :}
+      html_declarations_global:data    {: RESULT=actioner.getHTMLContentAsArray(data); :}
+    | table_declaration:data           {: RESULT=actioner.getHTMLContentAsArray(data); :}
     | for_declaration:data             {: RESULT=data; :}
     | error
 ;
@@ -206,8 +207,8 @@ table_row_bodies_content::=
 
 
 for_declaration::=
-      for_open FOR_C
-    | for_open html_content FOR_C
+      for_open FOR_C                             {: RESULT=null; :}
+    | for_open:forData html_content:data FOR_C   {: RESULT=actioner.multipliHTMLContentForTimes(data,forData,cur_token.left, cur_token.right ); :}
 ;
 
 for_open::=
@@ -238,7 +239,7 @@ arithm_expr::=
 
 data_set::=
       DOLAR PAR_O id_vals:data PAR_C DOLAR        {: RESULT=data; :}
-    | element:data                                {: RESULT=((VarElement)data).getValue(); :}
+    | element:data                                {: RESULT=getValueFrom(data); :}
     | html_declarations_global:data               {: RESULT=data; :}
 ;
 
