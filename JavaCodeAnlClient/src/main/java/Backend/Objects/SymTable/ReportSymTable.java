@@ -1,6 +1,7 @@
 package Backend.Objects.SymTable;
 
 import Backend.Objects.SymTable.Variables.VarElement;
+import Backend.Objects.SymTable.Variables.VarType;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +37,26 @@ public class ReportSymTable {
 
     public ArrayList<VarElement> getTable() {
         return table;
+    }
+
+    public VarElement delete(String id) {
+        for (VarElement varElement : table) {
+            if (varElement.getId().equals(id)) {
+                this.table.remove(varElement);
+                return varElement;
+            }
+        }
+        return null;
+    }
+
+    public boolean updateTable(String id, Object data, VarType type) {
+        for (VarElement varElement : this.table) {
+            if (varElement.getId().equals(id)) {
+                varElement.setValue(data);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

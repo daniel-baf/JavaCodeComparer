@@ -38,12 +38,22 @@ public class JSONVariable {
         this.functions = functions;
     }
 
+    public String getFunctionsAsString() {
+        String function = "";
+        for (String[] data : this.functions) {
+            function += data[0] + ": " + data[1] + ", ";
+        }
+        return function;
+    }
+
     @Override
     public String toString() {
         String functPrint = "[";
-        functPrint = functions.stream().map(strings -> "\n\t\t\t\t" + strings[0] + ": " + strings[1]).reduce(functPrint, String::concat);
+        functPrint = functions.stream().map(strings -> "\n\t\t\t\t" + strings[0] + ": " + strings[1]).reduce(functPrint,
+                String::concat);
         functPrint += "\n\t\t\t]";
-        return "\n\t\t{\n\t\t\tfunctions=" + functPrint + ", \n\t\t\tname=" + name + ", \n\t\t\ttype=" + type + "\n\t\t}";
+        return "\n\t\t{\n\t\t\tfunctions=" + functPrint + ", \n\t\t\tname=" + name + ", \n\t\t\ttype=" + type
+                + "\n\t\t}";
     }
 
 }

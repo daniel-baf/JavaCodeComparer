@@ -3,8 +3,9 @@ package Backend.Objects.SymTable.Variables;
 public enum VarType {
     INTEGER,
     STRING,
-    OBJECT,
-    LIST,
     ID,
+    H1,
+    H2,
+    BR,
     ERROR
 }

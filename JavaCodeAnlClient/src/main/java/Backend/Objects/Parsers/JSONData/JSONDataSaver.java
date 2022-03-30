@@ -55,7 +55,8 @@ public class JSONDataSaver {
 
     @Override
     public String toString() {
-        return "JSONDataSaver [\n\tclasses=" + classes + ", \n\tcomments=" + comments + ", \n\tmethods=" + methods + ", \n\tscore="
+        return "JSONDataSaver [\n\tclasses=" + classes + ", \n\tcomments=" + comments + ", \n\tmethods=" + methods
+                + ", \n\tscore="
                 + score + ", \n\tvariables=" + variables + "\n]";
     }
 }

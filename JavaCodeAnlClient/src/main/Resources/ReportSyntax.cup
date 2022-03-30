@@ -4,12 +4,12 @@
 
 package Backend.Objects.Parsers;
 
+import Backend.Objects.HTML.Extra.*;
+import Backend.Objects.HTML.Table.*;
+import Backend.Objects.SymTable.Variables.*;
 import Backend.Objects.Lexers.ReportLexer;
 import Backend.Objects.Parsers.JSONData.JSONDataSaver;
 import Backend.Objects.Parsers.DefData.ReportActioner;
-import Backend.Objects.SymTable.Variables.VarElement;
-import Backend.Objects.SymTable.Variables.VarAction;
-import Backend.Objects.SymTable.Variables.VarType;
 import java.util.ArrayList;
 
 import java_cup.runtime.*;
@@ -57,6 +57,24 @@ parser code {:
 
     public ReportActioner getActioner() { return this.actioner; } 
 
+    public String getValueFrom(Object obj) {
+      try {
+        return ((VarElement) obj).getValue().toString();
+      }catch (Exception e) {
+        return null; // TODO save error
+      }
+    }
+
+    public VarElement createFor(Object iter) {
+        try {
+            iter = new VarElement(0, VarType.INTEGER, ((VarElement) iter).getValue().toString());
+            actioner.saveOnTable(iter , ((VarElement) iter).getId(), VarType.INTEGER, cur_token.left, cur_token.right); 
+            return (VarElement) iter;
+        } catch(Exception e) {
+            System.out.println("Error creating for declaration: " + e.getMessage());
+            return null;
+        }
+    }
 :}
 
 /**************************************************/
@@ -95,88 +113,95 @@ main::=
 
 // HTML
 html_section::=
-      HTML_O HTML_C
-    | HTML_O html_content HTML_C
+      HTML_O HTML_C                       {: actioner.saveHTML(null); :}
+    | HTML_O html_content:data HTML_C     {: actioner.saveHTML(data); :}
 ;
 
 html_content::=
-      html_declarations
-    | html_content html_declarations
+      html_declarations:data                          {: RESULT=actioner.getVarElementsAsArray(null, data); :}
+    | html_content:nextData html_declarations:data    {: RESULT=actioner.getVarElementsAsArray(nextData, data); :}
 ;
 
 html_declarations::=
-      html_declarations_global
-    | table_declaration
-    | for_declaration
+      html_declarations_global:data    {: RESULT=data; :}
+    | table_declaration:data           {: RESULT=data; :}
+    | for_declaration:data             {: RESULT=data; :}
     | error
 ;
 
 html_declarations_global::=
-      h1_declaration
-    | h2_declaration
-    | br_declaration
+      h1_declaration:data         {: RESULT=data; :}
+    | h2_declaration:data         {: RESULT=data; :}
+    | br_declaration:data         {: RESULT=data; :}
 ;
 
 h1_declaration::=
-      H1_O H1_C
-    | H1_O data_set H1_C
+      H1_O H1_C                   {: RESULT=new H1(""); :}
+    | H1_O data_set:data H1_C     {: RESULT=new H1(actioner.findDataForId(data, cur_token.left, cur_token.right)); :}
 ;
 
 h2_declaration::=
-      H2_O H2_C
-    | H2_O data_set H2_C
+      H2_O H2_C                   {: RESULT=new H2(""); :}
+    | H2_O data_set:data H2_C     {: RESULT=new H2(actioner.findDataForId(data, cur_token.left, cur_token.right)); :}
 ;
 
-br_declaration::=BR;
+br_declaration::=
+  BR    {: RESULT=new Br(); :}
+;
 
 table_declaration::=
-      TABLE_O TABLE_C
-    | TABLE_O table_content TABLE_C
+      TABLE_O TABLE_C                        {: RESULT=new Table(); :}
+    | TABLE_O table_content:data TABLE_C     {: RESULT=actioner.saveTable(data); :}
 ;
 
 table_content::=
-      table_row_declaration
-    | table_content table_row_declaration
+      table_row_declaration:data                                     {: RESULT=actioner.getTrsAsArray(null, data); :}
+    | table_content:nextData table_row_declaration:data              {: RESULT=actioner.getTrsAsArray(nextData, data); :}
 ;
 
-table_row_declaration::= // TODO add for
-        table_row_sub
-      | for_open table_row_sub FOR_C
+table_row_declaration::=
+        table_row_sub:data      
+            {:
+                ArrayList<Tr> tmp = new ArrayList<>();
+                tmp.add((Tr) data);
+                RESULT=tmp; 
+            :}
+      | for_open:forInc table_row_sub:data FOR_C        {: RESULT=actioner.createMultipleTr ((Tr)data, 0, forInc, cur_token.left, cur_token.right); :}
 ;
 
 table_row_sub::=
-      TR_O TR_C
-    | TR_O table_row_content TR_C
+      TR_O TR_C                                         {: RESULT=actioner.createTr(null); :}
+    | TR_O table_row_content:data TR_C                  {: RESULT=actioner.createTr(data); :}
 ;
 
 table_row_content::=
-      table_row_content_sub
-    | for_open table_row_content_sub FOR_C
+      table_row_content_sub:data                           {: RESULT=data; :}
+    | for_open:forInc table_row_content_sub:data FOR_C     {: RESULT=actioner.createMultipleTdTh(data, 0, forInc, cur_token.left, cur_token.right); :}
 ;
 
 table_row_content_sub::=
-      table_row_headers
-    | table_row_bodies    
+      table_row_headers:data              {: RESULT=data; :}
+    | table_row_bodies:data               {: RESULT=data; :}
 ;
 
 table_row_headers::=
-      table_row_headers_content
-    | table_row_headers table_row_headers_content
+      table_row_headers_content:data                                {: RESULT=actioner.getVarElementsAsArray(null, data); :}
+    | table_row_headers:nextData table_row_headers_content:data     {: RESULT=actioner.getVarElementsAsArray(nextData, data); :}
 ;
 
 table_row_headers_content::=
-      TH_O TH_C
-    | TH_O data_set TH_C
+      TH_O TH_C                 {: RESULT=new Th(""); :}
+    | TH_O data_set:data TH_C   {: RESULT=new Th(data); :}
 ;
 
 table_row_bodies::=
-      table_row_bodies_content
-    | table_row_bodies table_row_bodies_content
+      table_row_bodies_content:data                              {: RESULT=actioner.getVarElementsAsArray(null, data); :}
+    | table_row_bodies:nextData table_row_bodies_content:data    {: RESULT=actioner.getVarElementsAsArray(nextData, data); :}
 ;
 
 table_row_bodies_content::=
-      TD_O TD_C
-    | TD_O data_set TD_C
+      TD_O TD_C                 {: RESULT=new Td(""); :}
+    | TD_O data_set:data TD_C   {: RESULT=new Td(data); :}
 ;
 
 
@@ -186,7 +211,7 @@ for_declaration::=
 ;
 
 for_open::=
-    FOR_O ITERATOR COLON id_vals UNTIL COLON element SEMICOLON GT
+    FOR_O ITERATOR COLON id_vals:iter UNTIL COLON element:until SEMICOLON GT   {: actioner.findDataForId(until, cur_token.left, cur_token.right); RESULT=new VarElement[]{createFor(iter), (VarElement) until}; :}
 ;
 
 
@@ -212,8 +237,9 @@ arithm_expr::=
 ;
 
 data_set::=
-      DOLAR PAR_O id_vals PAR_C DOLAR
-    | element
+      DOLAR PAR_O id_vals:data PAR_C DOLAR        {: RESULT=data; :}
+    | element:data                                {: RESULT=((VarElement)data).getValue(); :}
+    | html_declarations_global:data               {: RESULT=data; :}
 ;
 
 // TERMINAL GENERATORS
@@ -229,7 +255,7 @@ element::=
 ;
 
 id_vals::=
-      ID:id                   {: RESULT=new VarElement(id.toString(), VarType.ID); :} // TODO find on table the id
+      ID:id                   {: RESULT=new VarElement(id.toString(), VarType.ID); :}
     | result_object:result    {: RESULT=result; :}
 ;
 

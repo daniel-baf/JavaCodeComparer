@@ -10,6 +10,7 @@ import Backend.Objects.Lexers.JSONLexer;
 import Backend.Objects.Lexers.ReportLexer;
 import Backend.Objects.Parsers.JSONParser;
 import Backend.Objects.Parsers.ReportParser;
+
 import java.io.FileReader;
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ public class App {
          */
         // test JSON analyze
         try {
+
             ArrayList<AnalysisError> errors = new ArrayList<>();
             // analyze json
             JSONLexer jl = new JSONLexer(new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/result.json"));
@@ -38,24 +40,30 @@ public class App {
             jp.parse();
             errors.addAll(jl.getErrors());
             errors.addAll(jp.getActioner().getErrors());
-            System.out.println("JSON OK");
             // analyze .def file
-            ReportLexer rl = new ReportLexer(new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/report.def"));
+            ReportLexer rl = new ReportLexer(
+                    new FileReader("/home/jefemayoneso/Desktop/compi1proj/RESULTS/report.def"));
             ReportParser rp = new ReportParser(rl, jp.getActioner().getData());
             rp.parse();
             errors.addAll(rl.getErrors());
             errors.addAll(rp.getActioner().getErrors());
-            System.out.println(" FILE OK");
-
             System.out.println("----- ERRORS ----");
             errors.forEach(error -> {
                 System.out.println(error.toString());
             }); // UI for projects
+
+            // PRINT VARIABLES
+            System.out.println("---- VARIABLES ----");
+            rp.getActioner().getGenerator().getReportTable().getTable().forEach(element -> {
+                System.out.println(element.toString());
+            }); 
             /*
-            ProjectManagerView pm = new ProjectManagerView("/home/jefemayoneso/Desktop/compi1proj/RESULTS", "report.copy");
-            pm.setVisible(true);
-            pm.setLocationRelativeTo(null);
-            pm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+             * ProjectManagerView pm = new
+             * ProjectManagerView("/home/jefemayoneso/Desktop/compi1proj/RESULTS",
+             * "report.copy");
+             * pm.setVisible(true);
+             * pm.setLocationRelativeTo(null);
+             * pm.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
              */
         } catch (Exception e) {
             System.out.println("Exeption in thread main: " + e.getMessage());
