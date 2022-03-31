@@ -6,6 +6,7 @@
 package FrontEnd;
 
 import Controller.ProjectEditorController;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -21,8 +22,8 @@ public class ProjectEditorView extends javax.swing.JFrame {
     /**
      * Creates new form ProjectManager
      */
-    public ProjectEditorView(String copyFilePath, String reportFile) {
-        this.controller = new ProjectEditorController(copyFilePath, reportFile);
+    public ProjectEditorView(File copyFilePath) {
+        this.controller = new ProjectEditorController(copyFilePath);
         initComponents();
         setConfig();
     }
@@ -54,10 +55,9 @@ public class ProjectEditorView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPanelHTMLContent = new javax.swing.JPanel();
         jPanelHTMLContentText = new javax.swing.JPanel();
-        jScrollPaneHTML = new javax.swing.JScrollPane();
-        jTextAreaHTML = new javax.swing.JTextArea();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jEditorPaneHTML = new javax.swing.JEditorPane();
         jPanelHTMLContentButton = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jPanelJSON = new javax.swing.JPanel();
         jPanelJSONHeader = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -152,41 +152,35 @@ public class ProjectEditorView extends javax.swing.JFrame {
         jLabel3.setText("VISTA SALIDA HTML");
         jPanelHTMLHeader.add(jLabel3, "card2");
 
-        jTextAreaHTML.setEditable(false);
-        jTextAreaHTML.setColumns(20);
-        jTextAreaHTML.setRows(5);
-        jScrollPaneHTML.setViewportView(jTextAreaHTML);
+        jEditorPaneHTML.setEditable(false);
+        jScrollPane1.setViewportView(jEditorPaneHTML);
 
         javax.swing.GroupLayout jPanelHTMLContentTextLayout = new javax.swing.GroupLayout(jPanelHTMLContentText);
         jPanelHTMLContentText.setLayout(jPanelHTMLContentTextLayout);
         jPanelHTMLContentTextLayout.setHorizontalGroup(
             jPanelHTMLContentTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelHTMLContentTextLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPaneHTML, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         jPanelHTMLContentTextLayout.setVerticalGroup(
             jPanelHTMLContentTextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneHTML, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+            .addGroup(jPanelHTMLContentTextLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
         );
-
-        jButton1.setText("ABRIR NAVEGADOR");
-        jPanelHTMLContentButton.add(jButton1);
 
         javax.swing.GroupLayout jPanelHTMLContentLayout = new javax.swing.GroupLayout(jPanelHTMLContent);
         jPanelHTMLContent.setLayout(jPanelHTMLContentLayout);
         jPanelHTMLContentLayout.setHorizontalGroup(
             jPanelHTMLContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelHTMLContentText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
         );
         jPanelHTMLContentLayout.setVerticalGroup(
             jPanelHTMLContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelHTMLContentLayout.createSequentialGroup()
                 .addComponent(jPanelHTMLContentText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelHTMLContentButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -346,7 +340,7 @@ public class ProjectEditorView extends javax.swing.JFrame {
             case 0 ->
                 this.controller.saveJSON(this.jTextAreaJSON.getText());
             case 1 ->
-                this.controller.saveDef(this.jTextAreaDef.getText());
+                execDef();
             default ->
                 true;
         };
@@ -357,8 +351,8 @@ public class ProjectEditorView extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuSaveActiveViewActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JEditorPane jEditorPaneHTML;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -390,11 +384,10 @@ public class ProjectEditorView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelJSON;
     private javax.swing.JPanel jPanelJSONContent;
     private javax.swing.JPanel jPanelJSONHeader;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPaneDef;
-    private javax.swing.JScrollPane jScrollPaneHTML;
     private javax.swing.JScrollPane jScrollPaneJSON;
     private javax.swing.JTextArea jTextAreaDef;
-    private javax.swing.JTextArea jTextAreaHTML;
     private javax.swing.JTextArea jTextAreaJSON;
     // End of variables declaration//GEN-END:variables
 
@@ -421,16 +414,16 @@ public class ProjectEditorView extends javax.swing.JFrame {
         this.jScrollPaneDef.setRowHeaderView(lineFormatterDef);
         this.jTextAreaDef.setTabSize(tabSize);
         // HTML
-        TextLineNumber lineFormatterHTML = new TextLineNumber(this.jTextAreaHTML, formatterDefaultAnchor);
-        this.jScrollPaneHTML.setRowHeaderView(lineFormatterHTML);
-        this.jTextAreaHTML.setTabSize(tabSize);
-        // set text data
+        this.jEditorPaneHTML.setContentType("text/html");// set text data
         this.controller.getFileLines(this.controller.getJsonFile()).forEach(fileLine -> {
             this.jTextAreaJSON.append(fileLine + "\n");
         });
         this.controller.getFileLines(this.controller.getDefFile()).forEach(fileLine -> {
             this.jTextAreaDef.append(fileLine + "\n");
         });
+        String txt = "";
+        txt = this.controller.getFileLines(this.controller.getHtmlFile()).stream().map(fileLine -> fileLine + "\n").reduce(txt, String::concat);
+        this.jEditorPaneHTML.setText(txt);
     }
 
     private void showErrors() {
@@ -441,5 +434,14 @@ public class ProjectEditorView extends javax.swing.JFrame {
         errors.setLocationRelativeTo(null);
         errors.setVisible(true);
         this.controller.setErrors(new ArrayList<>());
+    }
+
+    private boolean execDef() {
+        boolean jsonValid = this.controller.saveJSON(this.jTextAreaJSON.getText());
+        boolean defValid = this.controller.saveDef(this.jTextAreaDef.getText());
+        String txt = "";
+        txt = this.controller.getFileLines(this.controller.getHtmlFile()).stream().map(fileLine -> fileLine + "\n").reduce(txt, String::concat);
+        this.jEditorPaneHTML.setText(txt);
+        return jsonValid && defValid;
     }
 }

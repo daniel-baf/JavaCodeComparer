@@ -8,6 +8,7 @@ package Controller;
 import Backend.Objects.AnalysisError;
 import Backend.Objects.Lexers.JSONLexer;
 import Backend.Objects.Lexers.ReportLexer;
+import Backend.Objects.Parsers.JSONData.JSONDataSaver;
 import Backend.Objects.Parsers.JSONParser;
 import Backend.Objects.Parsers.ReportParser;
 import Utilities.Files.FileActioner;
@@ -23,13 +24,17 @@ public class ProjectEditorController {
 
     private final String filesPath;
     private final String reportFile;
+    private final String htmlFile;
+    private JSONDataSaver JSONData;
     private String jsonFile;
     private String defFile;
     private ArrayList<AnalysisError> errors;
 
-    public ProjectEditorController(String filesPath, String reportFile) {
-        this.filesPath = filesPath;
-        this.reportFile = reportFile;
+    public ProjectEditorController(File copyFilePath) {
+        this.filesPath = copyFilePath.getParent();
+        this.reportFile = copyFilePath.getName();
+        this.htmlFile = String.format("%1$s/%2$s", this.filesPath, "report.html");
+        this.JSONData = new JSONDataSaver();
         this.errors = new ArrayList<>();
         getFilesProject();
     }
@@ -54,8 +59,8 @@ public class ProjectEditorController {
         }
     }
 
-    public ArrayList<String> getFileLines(String fileName) {
-        return new FileActioner().getFileLines(String.format("%1$s/%2$s", this.filesPath, fileName));
+    public ArrayList<String> getFileLines(String path) {
+        return new FileActioner().getFileLines(path);
     }
 
     /**
@@ -68,11 +73,13 @@ public class ProjectEditorController {
         // save files
         try {
             if (saveFile(data, this.jsonFile)) {
-                JSONLexer lexer = new JSONLexer(new FileReader(String.format("%1$s/%2$s", this.filesPath, this.jsonFile)));
+                JSONLexer lexer = new JSONLexer(new FileReader(this.jsonFile));
                 JSONParser parser = new JSONParser(lexer);
                 parser.parse();
                 // get possible errors
                 parser.getActioner().isOk();
+                // save JSON data
+                this.JSONData = parser.getActioner().getData();
                 addErrors(lexer.getErrors(), parser.getActioner().getErrors());
                 // check more than 1 attribute declared multiple times
                 return this.errors.isEmpty();
@@ -92,18 +99,29 @@ public class ProjectEditorController {
     public boolean saveDef(String data) {
         try {
             if (saveFile(data, this.defFile)) {
-                ReportLexer lexer = new ReportLexer(new FileReader(String.format("%1$s/%2$s", this.filesPath, this.defFile)));
-                ReportParser parser = new ReportParser(lexer);
+                ReportLexer lexer = new ReportLexer(new FileReader(this.defFile));
+                ReportParser parser = new ReportParser(lexer, this.JSONData);
                 parser.parse();
                 // get possible errors
                 addErrors(lexer.getErrors());
                 addErrors(parser.getActioner().getErrors());
+                // export HTML
+                exportHTML(parser.getActioner().getHTMLGen().getHtml().getDataAsHTML());
                 return this.errors.isEmpty();
             }
         } catch (Exception e) {
             System.out.println("Error saving the def file" + e.getMessage());
         }
         return false;
+    }
+
+    public void exportHTML(ArrayList<String> lines) {
+        try {
+            FileActioner fa = new FileActioner();
+            fa.writeFile(lines, this.htmlFile);
+        } catch (Exception e) {
+            System.out.println("Unable to save HTML: " + e.getMessage());
+        }
     }
 
     // GETTERS AND UTILITIES
@@ -115,12 +133,16 @@ public class ProjectEditorController {
         return defFile;
     }
 
+    public String getHtmlFile() {
+        return htmlFile;
+    }
+
     public ArrayList<AnalysisError> getErrors() {
         return errors;
     }
 
     private boolean saveFile(String data, String file) {
-        return new FileActioner().writeFile(data, this.filesPath, file);
+        return new FileActioner().writeFile(data, file);
     }
 
     private void addErrors(ArrayList<AnalysisError>... errors) {

@@ -41,7 +41,7 @@ public class FileActioner {
      */
     public boolean createFile(String name, String path) {
         try {
-            File file = new File(String.format("%1$s%2$s", path, name));
+            File file = new File(String.format("%1$s/%2$s", path, name));
             file.createNewFile();
             return true;
         } catch (IOException ex) {
@@ -60,7 +60,7 @@ public class FileActioner {
     public ArrayList<String> getFileLines(String path) {
         ArrayList<String> lines = new ArrayList<>();
         try ( BufferedReader reader = new BufferedReader(new FileReader(path))) {
-            String tmp = "";
+            String tmp;
             while ((tmp = reader.readLine()) != null) {
                 lines.add(tmp);
             }
@@ -78,14 +78,40 @@ public class FileActioner {
      * @param filename
      * @return
      */
-    public boolean writeFile(String data, String path, String filename) {
-        File file = new File(String.format("%1$s/%2$s", path, filename));
+    public boolean writeFile(String data, String path) {
+        File file = new File(path);
         try ( FileWriter writter = new FileWriter(file)) {
             file.createNewFile();
             writter.write(data);
             return true;
         } catch (Exception e) {
+            System.out.println("ERROR SAVING FILE: " + e.getMessage());
             return false;
         }
+    }
+
+    public boolean writeFile(ArrayList<String> data, String path) {
+        File file = new File(path);
+        try ( FileWriter writter = new FileWriter(file)) {
+            file.createNewFile();
+            for (String string : data) {
+                writter.write(string + "\n");
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println("ERROR SAVING FILE: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean createCopyFile(String defFile, String jsonFile, String path) {
+        String data = String.format("JSON:%1$s\nREPORT:%2$s", String.format("%1$s/%2$s", path, jsonFile), String.format("%1$s/%2$s", path, defFile));
+        // create report.copy
+        if (createFile("report.copy", path)) {
+            if (writeFile(data, path + "/report.copy")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

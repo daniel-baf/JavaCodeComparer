@@ -132,12 +132,19 @@ public class ErrorShowerView extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) this.jTable1.getModel();
         model.setColumnIdentifiers(titles);
         // fill table
-        this.errors.forEach(_error -> {
-            Object[] row = new Object[]{_error.getProject(), _error.getLine(), _error.getColumn(), _error.getFile(), _error.getLexeme(), _error.getType(), ""};
-            String expected = _error.getExpectedSymbols() != null ? _error.getExpectedSymbols().toString() : "";
-            row[6] = expected;
-            model.addRow(row);
-        });
+        if (this.errors != null) {
+            this.errors.forEach(_error -> {
+                try {
+                    Object[] row = new Object[]{_error.getProject(), _error.getLine(), _error.getColumn(), _error.getFile(), _error.getLexeme(), _error.getType(), ""};
+                    String expected = _error.getExpectedSymbols() != null ? _error.getExpectedSymbols().toString() : "";
+                    row[6] = expected;
+                    model.addRow(row);
+                } catch (Exception e) {
+                    System.out.println("ERROR: " + e.getMessage());
+                }
+
+            });
+        }
         this.jTable1.setModel(model);
 
     }

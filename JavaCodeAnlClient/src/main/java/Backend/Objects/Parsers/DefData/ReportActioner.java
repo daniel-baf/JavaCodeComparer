@@ -2,6 +2,7 @@ package Backend.Objects.Parsers.DefData;
 
 import Backend.Objects.AnalysisError;
 import Backend.Objects.HTML.Extra.GlobalHTML;
+import Backend.Objects.HTML.HTML;
 import Backend.Objects.HTML.HTMLContent;
 import Backend.Objects.HTML.Table.Table;
 import Backend.Objects.HTML.Table.Td;
@@ -12,7 +13,6 @@ import Backend.Objects.SymTable.Variables.VarAction;
 import Backend.Objects.SymTable.Variables.VarElement;
 import Backend.Objects.SymTable.Variables.VarType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -140,7 +140,6 @@ public class ReportActioner {
             if (object != null) {
                 this.htmlGenerator.addData((ArrayList<HTMLContent>) object);
             }
-            this.htmlGenerator.printHTML();
         } catch (Exception e) {
             System.out.println("ERROR SAVING HTML " + e.getMessage());
         }
@@ -305,6 +304,10 @@ public class ReportActioner {
 
     public ReportElementGenerator getGenerator() {
         return this.caster.getGenerator();
+    }
+
+    public HTMLGenerator getHTMLGen() {
+        return this.htmlGenerator;
     }
 
 }

@@ -6,6 +6,7 @@
 package FrontEnd;
 
 import Controller.ProjectCopyLoaderController;
+import java.io.File;
 
 /**
  *
@@ -51,6 +52,7 @@ public class ProjectCopyLoaderView<T> extends javax.swing.JFrame {
         jButtonAnalyzePjcts = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItemOpenProject = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -169,6 +171,15 @@ public class ProjectCopyLoaderView<T> extends javax.swing.JFrame {
         );
 
         jMenu1.setText("Archivo");
+
+        jMenuItemOpenProject.setText("Abrir");
+        jMenuItemOpenProject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemOpenProjectActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItemOpenProject);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -187,17 +198,27 @@ public class ProjectCopyLoaderView<T> extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jMenuItemOpenProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenProjectActionPerformed
+        File copyFile = this.controller.getCopyFile();
+        if (copyFile != null) {
+            ProjectEditorView pev = new ProjectEditorView(copyFile);
+            pev.setLocationRelativeTo(null);
+            pev.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            pev.setVisible(true);
+        }
+    }//GEN-LAST:event_jMenuItemOpenProjectActionPerformed
+
     private void jButtonChooseDir1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonChooseDir1ActionPerformed
         this.controller.savePath1();
         String show = this.controller.getPath1();
-        show = show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
+        show = show != null && show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
         this.jLablePath1.setText(show);
     }// GEN-LAST:event_jButtonChooseDir1ActionPerformed
 
     private void jButtonChooseDir2ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButtonChooseDir2ActionPerformed
         this.controller.savePath2();
         String show = this.controller.getPath2();
-        show = show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
+        show = show != null && show.length() > 23 ? String.format("...%1$s", show.substring(show.length() - 20, show.length())) : show;
         this.jLabelPath2.setText(show);
     }// GEN-LAST:event_jButtonChooseDir2ActionPerformed
 
@@ -220,6 +241,7 @@ public class ProjectCopyLoaderView<T> extends javax.swing.JFrame {
     private javax.swing.JLabel jLablePath1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItemOpenProject;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanelBtnsProjects;

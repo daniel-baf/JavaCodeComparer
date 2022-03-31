@@ -25,6 +25,7 @@ public class ProjectCopyLoaderController<T> {
 
     private String path1;
     private String path2;
+    private String outputPath;
     private final FileSelector fChooser;
     private DataDeliver<T> dataDeliver;
     private ArrayList<AnalysisError> errors;
@@ -34,6 +35,7 @@ public class ProjectCopyLoaderController<T> {
         this.path2 = null;
         this.fChooser = new FileSelector();
         this.dataDeliver = null;
+        this.outputPath = "";
     }
 
     /**
@@ -56,8 +58,8 @@ public class ProjectCopyLoaderController<T> {
                 if (response.getAction() == ReqRes.JSON_OK) {
                     // get path to save data
                     JOptionPane.showMessageDialog(null, "Selecciona la ruta \ndonde guardar los archivos generados");
-                    String path = this.fChooser.getPath();
-                    if (!this.dataDeliver.createNewProjectFromServer("result.json", path)) {
+                    this.outputPath = this.fChooser.getPath();
+                    if (!this.dataDeliver.createNewProjectFromServer("result.json", this.outputPath)) {
                         JOptionPane.showMessageDialog(null, "No se pudo guardar \nel proyecto en la ruta especificada", "RUTAS", JOptionPane.ERROR_MESSAGE);
                     }
                     return true;
@@ -124,12 +126,20 @@ public class ProjectCopyLoaderController<T> {
         this.path1 = this.fChooser.getPath();
     }
 
+    public String getOutputPath() {
+        return outputPath;
+    }
+
     public void savePath2() {
         this.path2 = this.fChooser.getPath();
     }
 
     public ArrayList<AnalysisError> getErrors() {
         return this.errors;
+    }
+
+    public File getCopyFile() {
+        return this.fChooser.chooseFile("copy");
     }
 
 }

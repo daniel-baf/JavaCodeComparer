@@ -85,7 +85,7 @@ public class DataDeliver<T> {
         // create .def
         if (actioner.createFile("report.def", path)) {
             if (actioner.createFile("report.html", path)) {
-                return true;
+                return actioner.createCopyFile("report.def", "result.json", path);
             }
         }
         return false;

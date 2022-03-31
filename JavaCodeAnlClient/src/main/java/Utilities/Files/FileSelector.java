@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -21,7 +23,7 @@ public class FileSelector {
         fChooser.setDialogTitle("Selecciona el archivo dentro de la carpeta");
         fChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int tmp = fChooser.showOpenDialog(null);
-        return tmp == JFileChooser.APPROVE_OPTION ? String.format("%1$s/", fChooser.getSelectedFile()) : null;
+        return tmp == JFileChooser.APPROVE_OPTION ? String.format("%1$s", fChooser.getSelectedFile().getPath()) : null;
     }
 
     /**
@@ -68,6 +70,14 @@ public class FileSelector {
      */
     public boolean endsWith(String extension, String string) {
         return string.endsWith(extension);
+    }
+
+    public File chooseFile(String extension) {
+        JFileChooser fChooser = new JFileChooser();
+        FileFilter filter = new FileNameExtensionFilter(extension, extension);
+        fChooser.setDialogTitle("Selecciona el archivo " + extension);
+        fChooser.setFileFilter(filter);
+        return fChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION ? fChooser.getSelectedFile() : null;
     }
 
 }

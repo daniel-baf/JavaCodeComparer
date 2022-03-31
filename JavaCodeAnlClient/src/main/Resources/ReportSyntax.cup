@@ -147,7 +147,7 @@ h2_declaration::=
 ;
 
 br_declaration::=
-  BR    {: RESULT=new Br(); :}
+    BR    {: RESULT=new Br(); :}
 ;
 
 table_declaration::=

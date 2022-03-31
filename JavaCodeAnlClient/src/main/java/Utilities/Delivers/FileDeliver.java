@@ -51,7 +51,6 @@ public class FileDeliver {
      */
     public void receiveFile(String filename, String savePath) {
         File file = new File(String.format("%1$s/%2$s", savePath, filename));
-
         try ( FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             int bytes = 0;
             long size = this.inputStream.readLong();
